@@ -33,11 +33,6 @@ module alu (
         boolean.a = a;
         boolean.b = b;
         boolean.alufn_signal = alufn_signal;
-        // out = boolean.bool
-        
-        shifter.a = a;
-        shifter.b = b[4:0];
-        shifter.alufn_signal = alufn_signal;
-        out = shifter.shift
+        out = boolean.bool
     }
 }
