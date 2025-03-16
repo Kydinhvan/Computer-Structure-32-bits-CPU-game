@@ -1,0 +1,23 @@
+module alu (
+    input a[32],
+    input b[32],
+    input alufn_signal[6],
+    output out[32],
+    output z,
+    output v,
+    output n
+) {
+    adder adder(#SIZE(32));
+    
+    
+    always {
+        // implement alu logic here
+        adder.a = a;
+        adder.b = b;
+        adder.alufn_signal = alufn_signal;
+        z = adder.z;
+        v = adder.v;
+        n = adder.n;
+        out = adder.out;   
+    }
+}
