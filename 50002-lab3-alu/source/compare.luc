@@ -2,13 +2,19 @@ module compare (
     input z,
     input v,
     input n,
-    input alufn[6],
+    input alufn_signal[6],
     output cmp
 ) {
-    
+    mux_4 mux_4;
     always {
         
-        cmp = 0
+        mux_4.in[0] = 0;
+        mux_4.in[1] = z;                //if alufn[2:1] == 01, compare a=b
+        mux_4.in[2] = n^v;              //if alufn[2:1] == 10, compare a<b
+        mux_4.in[3] = z|(n^v);          //if alufn[2:1] == 11, compare a<=b
+        mux_4.s0 = alufn_signal[1];
+        mux_4.s1 = alufn_signal[2];
+        cmp = mux_4.out;
+        }
         
-    }
 }

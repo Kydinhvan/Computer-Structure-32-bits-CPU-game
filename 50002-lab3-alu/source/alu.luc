@@ -8,7 +8,8 @@ module alu (
     output n
 ) {
     adder adder(#SIZE(32));
-    
+    compare compare;
+    sig cmp[32];
     
     always {
         // implement alu logic here
@@ -18,6 +19,13 @@ module alu (
         z = adder.z;
         v = adder.v;
         n = adder.n;
-        out = adder.out;   
+        // out = adder.out;   
+        
+        compare.z = adder.z;
+        compare.v = adder.v;
+        compare.n = adder.n;
+        compare.alufn_signal = alufn_signal;
+        cmp = c{31x{b0}, compare.cmp};
+        out = cmp
     }
 }
