@@ -10,6 +10,8 @@ module alu (
     adder adder(#SIZE(32));
     compare compare;
     sig cmp[32];
+    boolean boolean;
+    compact_shifter shifter;
     
     always {
         // implement alu logic here
@@ -26,6 +28,16 @@ module alu (
         compare.n = adder.n;
         compare.alufn_signal = alufn_signal;
         cmp = c{31x{b0}, compare.cmp};
-        out = cmp
+        // out = cmp
+        
+        boolean.a = a;
+        boolean.b = b;
+        boolean.alufn_signal = alufn_signal;
+        // out = boolean.bool
+        
+        shifter.a = a;
+        shifter.b = b[4:0];
+        shifter.alufn_signal = alufn_signal;
+        out = shifter.shift
     }
 }

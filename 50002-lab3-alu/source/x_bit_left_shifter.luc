@@ -1,0 +1,26 @@
+module x_bit_left_shifter #(
+  // parameter declaration, to be set during module instantiation
+  // default value given is 8
+  SHIFT = 8 : SHIFT > -1 & SHIFT < 32
+  )(
+    input a[32],
+    input shift,
+    input pad,
+    output out[32]
+  ) {
+  
+    mux_2 mux_2[32]
+    sig shifted_bits[32];
+  
+  always {
+    // assign value to shifted_bits[32] depending on the value of SHIFT
+        shifted_bits = c{a[31-SHIFT:0], SHIFTx{pad}};
+    // connect the selector of each mux_2 with shift 
+        mux_2.s0 = 32x{shift};
+        repeat(i, 32, 0, 1) {
+            mux_2.in[i][0] = a[i];
+            mux_2.in[i][1] = shifted_bits[i];
+        }
+        out = mux_2.out;
+  }
+}

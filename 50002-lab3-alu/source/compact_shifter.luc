@@ -1,0 +1,57 @@
+module compact_shifter (
+    input a[32],
+    input b[5],
+    input alufn_signal[6],
+    output shift[32]
+) {
+    shifter left_shifter // 32-bit left shifter
+    bit_reverser reverser1
+    bit_reverser reverser2
+    mux_2 mux1[32] // first 32-bit mux in the diagram
+    mux_2 mux2[32] // second 32-bit mux in the diagram
+    mux_2 padding
+    
+    always {
+        // A input into 32-Bit-Reverse
+        reverser1.in = a
+        
+        repeat(i, 32, 0, 1) {
+            // 0 and 1 inputs of first 32-bit mux
+            mux1.in[i][0] = a[i]
+            mux1.in[i][1] = reverser1.reversed[i]
+            
+            // S0 input of first mux
+            mux1.s0[i] = alufn_signal[0]
+
+            // Output of first mux into A-input of 32-Bit Left Shifter
+            left_shifter.a[i] = mux1.out[i]
+        }
+        // B-input of 32-Bit Left Shifter
+        left_shifter.b = b
+        
+        // 0 and 1 inputs of padder mux
+        padding.in[0] = b0 //normal shifting
+        padding.in[1] = a[31] //SRA shifting, take MSB of A.
+
+        // S1 input of padder mux
+        padding.s0 = alufn_signal[1]
+
+        // Padder output into GND input of 32-Bit Left Shifter
+        left_shifter.pad = padding.out
+        
+        // 32-Bit Left Shifter output into second 32-Bit-Reverse
+        reverser2.in = left_shifter.shift
+        
+        repeat(i, 32, 0, 1) {
+            // 0 and 1 input of second 32-bit mux
+            mux2.in[i][0] = left_shifter.shift[i]
+            mux2.in[i][1] = reverser2.reversed[i]
+            
+            // S0 input of second 32-bit mux
+            mux2.s0[i] = alufn_signal[0]
+
+            // Output of second 32-bit mux
+            shift[i] = mux2.out[i]
+        }
+    }
+}
