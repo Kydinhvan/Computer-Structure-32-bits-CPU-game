@@ -35,53 +35,72 @@ module alu_manual_tester #(
     );
     
     
+    localparam SEVEN_SEG_DIV = 5'h10;
     localparam E_States_IDLE = 3'h0;
     localparam E_States_A1 = 3'h1;
     localparam E_States_A2 = 3'h2;
     localparam E_States_B1 = 3'h3;
     localparam E_States_B2 = 3'h4;
-    localparam logic [4:0][0:0] _MP_RISE_147350729 = {{1'h1, 1'h1, 1'h1, 1'h1, 1'h1}};
-    localparam logic [4:0][0:0] _MP_FALL_147350729 = {{1'h0, 1'h0, 1'h0, 1'h0, 1'h0}};
+    localparam logic [4:0][0:0] _MP_RISE_713133665 = {{1'h1, 1'h1, 1'h1, 1'h1, 1'h1}};
+    localparam logic [4:0][0:0] _MP_FALL_713133665 = {{1'h0, 1'h0, 1'h0, 1'h0, 1'h0}};
     logic [4:0] M_io_button_edge_in;
     logic [4:0] M_io_button_edge_out;
     
-    genvar idx_0_147350729;
+    genvar idx_0_713133665;
     
     generate
-        for (idx_0_147350729 = 0; idx_0_147350729 < 5; idx_0_147350729 = idx_0_147350729 + 1) begin: forLoop_idx_0_147350729
+        for (idx_0_713133665 = 0; idx_0_713133665 < 5; idx_0_713133665 = idx_0_713133665 + 1) begin: forLoop_idx_0_713133665
             edge_detector #(
-                .RISE(_MP_RISE_147350729[idx_0_147350729]),
-                .FALL(_MP_FALL_147350729[idx_0_147350729])
+                .RISE(_MP_RISE_713133665[idx_0_713133665]),
+                .FALL(_MP_FALL_713133665[idx_0_713133665])
             ) io_button_edge (
                 .clk(clk),
-                .in(M_io_button_edge_in[idx_0_147350729]),
-                .out(M_io_button_edge_out[idx_0_147350729])
+                .in(M_io_button_edge_in[idx_0_713133665]),
+                .out(M_io_button_edge_out[idx_0_713133665])
             );
         end
     endgenerate
     
     
-    localparam logic [4:0][9:0] _MP_CLK_FREQ_1133851979 = {{10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8}};
-    localparam _MP_MIN_DELAY_1133851979 = 5'h14;
-    localparam _MP_NUM_SYNC_1133851979 = 2'h2;
+    localparam logic [4:0][9:0] _MP_CLK_FREQ_1586936409 = {{10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8}};
+    localparam _MP_MIN_DELAY_1586936409 = 5'h14;
+    localparam _MP_NUM_SYNC_1586936409 = 2'h2;
     logic [4:0] M_io_button_cond_in;
     logic [4:0] M_io_button_cond_out;
     
-    genvar idx_0_1133851979;
+    genvar idx_0_1586936409;
     
     generate
-        for (idx_0_1133851979 = 0; idx_0_1133851979 < 5; idx_0_1133851979 = idx_0_1133851979 + 1) begin: forLoop_idx_0_1133851979
+        for (idx_0_1586936409 = 0; idx_0_1586936409 < 5; idx_0_1586936409 = idx_0_1586936409 + 1) begin: forLoop_idx_0_1586936409
             button_conditioner #(
-                .CLK_FREQ(_MP_CLK_FREQ_1133851979[idx_0_1133851979]),
-                .MIN_DELAY(_MP_MIN_DELAY_1133851979),
-                .NUM_SYNC(_MP_NUM_SYNC_1133851979)
+                .CLK_FREQ(_MP_CLK_FREQ_1586936409[idx_0_1586936409]),
+                .MIN_DELAY(_MP_MIN_DELAY_1586936409),
+                .NUM_SYNC(_MP_NUM_SYNC_1586936409)
             ) io_button_cond (
                 .clk(clk),
-                .in(M_io_button_cond_in[idx_0_1133851979]),
-                .out(M_io_button_cond_out[idx_0_1133851979])
+                .in(M_io_button_cond_in[idx_0_1586936409]),
+                .out(M_io_button_cond_out[idx_0_1586936409])
             );
         end
     endgenerate
+    
+    
+    localparam _MP_DIGITS_1187637757 = 3'h4;
+    localparam _MP_DIV_1187637757 = 5'h10;
+    logic [3:0][3:0] M_seg_values;
+    logic [6:0] M_seg_seg;
+    logic [3:0] M_seg_sel;
+    
+    multi_seven_seg #(
+        .DIGITS(_MP_DIGITS_1187637757),
+        .DIV(_MP_DIV_1187637757)
+    ) seg (
+        .clk(clk),
+        .rst(rst),
+        .values(M_seg_values),
+        .seg(M_seg_seg),
+        .sel(M_seg_sel)
+    );
     
     
     logic [2:0] D_states_d, D_states_q = 3'h0;
@@ -102,15 +121,15 @@ module alu_manual_tester #(
         M_alu_alufn_signal = io_dip[2'h2][3'h5:1'h0];
         led = 8'h0;
         io_led = {{8'h0, 8'h0, 8'h0}};
-        io_segment = 1'h0;
-        io_select = 4'hf;
-        led = M_alu_out[3'h7:1'h0];
-        io_led[1'h0] = M_alu_out[4'hf:4'h8];
-        io_led[1'h1] = M_alu_out[5'h17:5'h10];
-        io_led[2'h2] = M_alu_out[5'h1f:5'h18];
+        M_seg_values = {{4'h0, 4'h0, 4'h0, 4'h0}};
+        io_segment = ~M_seg_seg;
+        io_select = ~M_seg_sel;
         
         case (D_states_q)
             3'h0: begin
+                M_seg_values = {{3'h0, M_alu_z}, {3'h0, M_alu_v}, {3'h0, M_alu_n}, 4'h0};
+                led = M_alu_out[3'h7:1'h0];
+                io_led = M_alu_out[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h0]) begin
                     D_states_d = 3'h1;
                 end else begin
@@ -122,6 +141,8 @@ module alu_manual_tester #(
             3'h1: begin
                 D_a_d[3'h7:1'h0] = io_dip[1'h0];
                 D_a_d[4'hf:4'h8] = io_dip[1'h1];
+                led = D_a_q[3'h7:1'h0];
+                io_led = D_a_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
                     D_states_d = 3'h2;
                 end
@@ -129,6 +150,8 @@ module alu_manual_tester #(
             3'h2: begin
                 D_a_d[5'h17:5'h10] = io_dip[1'h0];
                 D_a_d[5'h1f:5'h18] = io_dip[1'h1];
+                led = D_a_q[3'h7:1'h0];
+                io_led = D_a_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
                     D_states_d = 3'h0;
                 end
@@ -136,6 +159,8 @@ module alu_manual_tester #(
             3'h3: begin
                 D_b_d[3'h7:1'h0] = io_dip[1'h0];
                 D_b_d[4'hf:4'h8] = io_dip[1'h1];
+                led = D_b_q[3'h7:1'h0];
+                io_led = D_b_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
                     D_states_d = 3'h4;
                 end
@@ -143,6 +168,8 @@ module alu_manual_tester #(
             3'h4: begin
                 D_b_d[5'h17:5'h10] = io_dip[1'h0];
                 D_b_d[5'h1f:5'h18] = io_dip[1'h1];
+                led = D_b_q[3'h7:1'h0];
+                io_led = D_b_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
                     D_states_d = 3'h0;
                 end

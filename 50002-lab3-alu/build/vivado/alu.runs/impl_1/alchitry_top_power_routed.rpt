@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
-| Date             : Tue Mar 18 11:18:49 2025
+| Date             : Tue Mar 18 13:03:02 2025
 | Host             : Freddie running 64-bit major release  (build 9200)
 | Command          : report_power -file alchitry_top_power_routed.rpt -pb alchitry_top_power_summary_routed.pb -rpx alchitry_top_power_routed.rpx
 | Design           : alchitry_top
@@ -30,10 +30,10 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.139        |
+| Total On-Chip Power (W)  | 0.153        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.067        |
+| Dynamic (W)              | 0.081        |
 | Device Static (W)        | 0.072        |
 | Effective TJA (C/W)      | 4.9          |
 | Max Ambient (C)          | 84.3         |
@@ -53,14 +53,15 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |    <0.001 |        3 |       --- |             --- |
-| Slice Logic    |     0.013 |     1753 |       --- |             --- |
-|   LUT as Logic |     0.013 |     1323 |     20800 |            6.36 |
-|   Register     |    <0.001 |       86 |     41600 |            0.21 |
-|   Others       |     0.000 |       24 |       --- |             --- |
-| Signals        |     0.011 |     1745 |       --- |             --- |
-| I/O            |     0.042 |       73 |       170 |           42.94 |
+| Slice Logic    |     0.014 |     1826 |       --- |             --- |
+|   LUT as Logic |     0.014 |     1364 |     20800 |            6.56 |
+|   Register     |    <0.001 |      104 |     41600 |            0.25 |
+|   CARRY4       |    <0.001 |        5 |      8150 |            0.06 |
+|   Others       |     0.000 |       26 |       --- |             --- |
+| Signals        |     0.011 |     1814 |       --- |             --- |
+| I/O            |     0.055 |       73 |       170 |           42.94 |
 | Static Power   |     0.072 |          |           |                 |
-| Total          |     0.139 |          |           |                 |
+| Total          |     0.153 |          |           |                 |
 +----------------+-----------+----------+-----------+-----------------+
 
 
@@ -71,8 +72,8 @@ Table of Contents
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Vccint    |       1.000 |     0.035 |       0.026 |      0.010 |       NA    | Unspecified | NA         |
-| Vccaux    |       1.800 |     0.014 |       0.002 |      0.013 |       NA    | Unspecified | NA         |
-| Vcco33    |       3.300 |     0.013 |       0.012 |      0.001 |       NA    | Unspecified | NA         |
+| Vccaux    |       1.800 |     0.015 |       0.002 |      0.013 |       NA    | Unspecified | NA         |
+| Vcco33    |       3.300 |     0.017 |       0.016 |      0.001 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco18    |       1.800 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco15    |       1.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -136,13 +137,11 @@ Table of Contents
 3.1 By Hierarchy
 ----------------
 
-+------------------+-----------+
-| Name             | Power (W) |
-+------------------+-----------+
-| alchitry_top     |     0.067 |
-|   alu_manual     |     0.025 |
-|     alu          |     0.022 |
-|       multiplier |     0.022 |
-+------------------+-----------+
++--------------+-----------+
+| Name         | Power (W) |
++--------------+-----------+
+| alchitry_top |     0.081 |
+|   alu_manual |     0.025 |
++--------------+-----------+
 
 

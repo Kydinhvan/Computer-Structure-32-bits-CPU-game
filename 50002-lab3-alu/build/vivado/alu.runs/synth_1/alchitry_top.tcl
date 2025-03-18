@@ -78,14 +78,18 @@ read_verilog -library xil_defaultlib -sv {
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/button_conditioner.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/compact_shifter.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/compare.sv}
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/counter.sv}
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/decoder.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/edge_detector.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/fa.sv}
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/multi_seven_seg.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/multiplier.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_4.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/pipeline.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/rca.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/reset_conditioner.sv}
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/seven_seg.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/shifter.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/x_bit_left_shifter.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alchitry_top.sv}
