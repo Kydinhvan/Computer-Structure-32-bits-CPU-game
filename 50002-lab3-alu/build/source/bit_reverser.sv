@@ -4,18 +4,18 @@
     This is a temporary file and any changes made to it will be destroyed.
 */
 
-module bit_reverse #(
+module bit_reverser #(
         parameter SIZE = 6'h20
     ) (
         input wire [(SIZE)-1:0] in,
         output reg [(SIZE)-1:0] reversed
     );
-    logic [31:0] R_7e9effa7_i;
-    logic [31:0] RR_7e9effa7_i;
+    logic [31:0] R_1341a228_i;
+    logic [31:0] RR_1341a228_i;
     always @* begin
-        for (RR_7e9effa7_i = 0; RR_7e9effa7_i < SIZE; RR_7e9effa7_i = RR_7e9effa7_i + 1) begin
-      R_7e9effa7_i = (0) + RR_7e9effa7_i * (1);
-            reversed[R_7e9effa7_i] = in[SIZE - 1'h1 - R_7e9effa7_i];
+        for (RR_1341a228_i = 0; RR_1341a228_i < SIZE; RR_1341a228_i = RR_1341a228_i + 1) begin
+      R_1341a228_i = (0) + RR_1341a228_i * (1);
+            reversed[R_1341a228_i] = in[SIZE - 1'h1 - R_1341a228_i];
         end
     end
     
