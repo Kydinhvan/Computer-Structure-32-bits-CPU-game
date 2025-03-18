@@ -8,7 +8,7 @@
   **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
   **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
   **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
-  **** Start of session at: Tue Mar 18 13:00:19 2025
+  **** Start of session at: Wed Mar 19 07:23:30 2025
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
     ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 
@@ -20,16 +20,16 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t
 INFO: [Device 21-403] Loading part xc7a35tftg256-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 9860
+INFO: [Synth 8-7075] Helper process launched with PID 19108
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 947.332 ; gain = 466.430
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 949.598 ; gain = 466.941
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'alchitry_top' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alchitry_top.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'reset_conditioner' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/reset_conditioner.sv:7]
 	Parameter STAGES bound to: 3'b100 
 INFO: [Synth 8-6155] done synthesizing module 'reset_conditioner' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/reset_conditioner.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'alu_manual_tester' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu_manual_tester.sv:7]
-	Parameter CLK_FREQ bound to: 27'b101111101011110000100000000 
+	Parameter CLK_FREQ bound to: 24'b100110001001011010000000 
 INFO: [Synth 8-6157] synthesizing module 'edge_detector' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/edge_detector.sv:7]
 	Parameter RISE bound to: 1'b1 
 	Parameter FALL bound to: 1'b0 
@@ -43,9 +43,6 @@ INFO: [Synth 8-6157] synthesizing module 'pipeline' [C:/Users/flgoa/Desktop/SUTD
 INFO: [Synth 8-6155] done synthesizing module 'pipeline' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/pipeline.sv:7]
 INFO: [Synth 8-6155] done synthesizing module 'button_conditioner' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/button_conditioner.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'alu' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu.sv:7]
-INFO: [Synth 8-6157] synthesizing module 'mux_2' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv:7]
-INFO: [Synth 8-226] default block is never used [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv:14]
-INFO: [Synth 8-6155] done synthesizing module 'mux_2' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'mux_4' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_4.sv:7]
 INFO: [Synth 8-226] default block is never used [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_4.sv:15]
 INFO: [Synth 8-6155] done synthesizing module 'mux_4' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_4.sv:7]
@@ -63,6 +60,9 @@ INFO: [Synth 8-6157] synthesizing module 'boolean' [C:/Users/flgoa/Desktop/SUTD/
 	Parameter SIZE bound to: 6'b100000 
 INFO: [Synth 8-6155] done synthesizing module 'boolean' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/boolean.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'compact_shifter' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/compact_shifter.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'mux_2' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv:7]
+INFO: [Synth 8-226] default block is never used [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv:14]
+INFO: [Synth 8-6155] done synthesizing module 'mux_2' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/mux_2.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'shifter' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/shifter.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'x_bit_left_shifter' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/x_bit_left_shifter.sv:7]
 	Parameter SHIFT bound to: 5'b00001 
@@ -86,7 +86,17 @@ INFO: [Synth 8-6155] done synthesizing module 'bit_reverser' (0#1) [C:/Users/flg
 INFO: [Synth 8-6155] done synthesizing module 'compact_shifter' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/compact_shifter.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'multiplier' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/multiplier.sv:7]
 INFO: [Synth 8-6155] done synthesizing module 'multiplier' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/multiplier.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'abs' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/abs.sv:7]
+	Parameter SIZE bound to: 6'b100000 
+INFO: [Synth 8-6155] done synthesizing module 'abs' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/abs.sv:7]
 INFO: [Synth 8-6155] done synthesizing module 'alu' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'test_cases' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/test_cases.sv:7]
+	Parameter SIZE bound to: 6'b101000 
+INFO: [Synth 8-6155] done synthesizing module 'test_cases' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/test_cases.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'bin_to_dec' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/bin_to_dec.sv:7]
+	Parameter DIGITS bound to: 3'b100 
+	Parameter LEADING_ZEROS bound to: 1'b1 
+INFO: [Synth 8-6155] done synthesizing module 'bin_to_dec' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/bin_to_dec.sv:7]
 INFO: [Synth 8-6157] synthesizing module 'multi_seven_seg' [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/multi_seven_seg.sv:7]
 	Parameter DIGITS bound to: 3'b100 
 	Parameter DIV bound to: 5'b10000 
@@ -102,7 +112,8 @@ INFO: [Synth 8-6157] synthesizing module 'decoder' [C:/Users/flgoa/Desktop/SUTD/
 	Parameter WIDTH bound to: 2 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'decoder' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/decoder.sv:7]
 INFO: [Synth 8-6155] done synthesizing module 'multi_seven_seg' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/multi_seven_seg.sv:7]
-INFO: [Synth 8-155] case statement is not full and has no default [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu_manual_tester.sv:128]
+INFO: [Synth 8-226] default block is never used [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu_manual_tester.sv:234]
+INFO: [Synth 8-155] case statement is not full and has no default [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu_manual_tester.sv:246]
 INFO: [Synth 8-6155] done synthesizing module 'alu_manual_tester' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu_manual_tester.sv:7]
 INFO: [Synth 8-6155] done synthesizing module 'alchitry_top' (0#1) [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alchitry_top.sv:7]
 WARNING: [Synth 8-7129] Port alufn_signal[5] in module compact_shifter is either unconnected or has no load
@@ -120,21 +131,20 @@ WARNING: [Synth 8-7129] Port alufn_signal[4] in module adder is either unconnect
 WARNING: [Synth 8-7129] Port alufn_signal[3] in module adder is either unconnected or has no load
 WARNING: [Synth 8-7129] Port alufn_signal[2] in module adder is either unconnected or has no load
 WARNING: [Synth 8-7129] Port alufn_signal[1] in module adder is either unconnected or has no load
-WARNING: [Synth 8-7129] Port io_dip[2][7] in module alu_manual_tester is either unconnected or has no load
-WARNING: [Synth 8-7129] Port io_dip[2][6] in module alu_manual_tester is either unconnected or has no load
+WARNING: [Synth 8-7129] Port alufn_signal[7] in module alu is either unconnected or has no load
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 1072.465 ; gain = 591.562
+Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1080.988 ; gain = 598.332
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1072.465 ; gain = 591.562
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1080.988 ; gain = 598.332
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1072.465 ; gain = 591.562
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1080.988 ; gain = 598.332
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.022 . Memory (MB): peak = 1072.465 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.027 . Memory (MB): peak = 1080.988 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
@@ -147,65 +157,84 @@ Parsing XDC File [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompSt
 Finished Parsing XDC File [C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/constraint/au_props.xdc]
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1163.598 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1174.418 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 1163.598 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 1174.418 ; gain = 0.000
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:17 ; elapsed = 00:00:20 . Memory (MB): peak = 1163.598 ; gain = 682.695
+Finished Constraint Validation : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1174.418 ; gain = 691.762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a35tftg256-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:17 ; elapsed = 00:00:20 . Memory (MB): peak = 1163.598 ; gain = 682.695
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1174.418 ; gain = 691.762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:17 ; elapsed = 00:00:20 . Memory (MB): peak = 1163.598 ; gain = 682.695
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1174.418 ; gain = 691.762
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'D_states_q_reg' in module 'alu_manual_tester'
 ---------------------------------------------------------------------------------------------------
                    State |                     New Encoding |                Previous Encoding 
 ---------------------------------------------------------------------------------------------------
-                  iSTATE |                              000 |                              000
-                 iSTATE3 |                              001 |                              001
-                 iSTATE0 |                              010 |                              010
-                 iSTATE2 |                              011 |                              011
-                 iSTATE1 |                              100 |                              100
+                 iSTATE7 |                             0000 |                             0000
+                 iSTATE6 |                             0001 |                             0001
+                 iSTATE1 |                             0010 |                             0010
+                 iSTATE0 |                             0011 |                             0011
+                  iSTATE |                             0100 |                             0100
+                iSTATE12 |                             0101 |                             0101
+                 iSTATE2 |                             0110 |                             1101
+                 iSTATE8 |                             0111 |                             0111
+                 iSTATE5 |                             1000 |                             1010
+                iSTATE11 |                             1001 |                             1000
+                 iSTATE9 |                             1010 |                             1001
+                 iSTATE4 |                             1011 |                             1011
+                 iSTATE3 |                             1100 |                             1100
+                iSTATE10 |                             1101 |                             0110
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'D_states_q_reg' using encoding 'sequential' in module 'alu_manual_tester'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:21 . Memory (MB): peak = 1163.598 ; gain = 682.695
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1174.418 ; gain = 691.762
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
 +---Adders : 
+	   3 Input   32 Bit       Adders := 1     
+	   3 Input   14 Bit       Adders := 6     
+	   2 Input    8 Bit       Adders := 2     
+	   2 Input    6 Bit       Adders := 1     
 	   2 Input    2 Bit       Adders := 5     
 +---XORs : 
 	   2 Input     32 Bit         XORs := 1     
 	   3 Input      1 Bit         XORs := 528   
 	   2 Input      1 Bit         XORs := 1     
 +---Registers : 
-	               32 Bit    Registers := 2     
-	                4 Bit    Registers := 1     
+	               32 Bit    Registers := 3     
+	                8 Bit    Registers := 3     
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 1     
+	                4 Bit    Registers := 2     
 	                2 Bit    Registers := 10    
-	                1 Bit    Registers := 5     
+	                1 Bit    Registers := 7     
 +---Muxes : 
-	   5 Input   32 Bit        Muxes := 4     
-	   5 Input    8 Bit        Muxes := 4     
+	   2 Input   32 Bit        Muxes := 2     
+	  14 Input   32 Bit        Muxes := 4     
+	   2 Input   14 Bit        Muxes := 6     
+	  14 Input    8 Bit        Muxes := 5     
 	   4 Input    4 Bit        Muxes := 1     
-	   5 Input    3 Bit        Muxes := 1     
-	   2 Input    3 Bit        Muxes := 1     
-	   2 Input    1 Bit        Muxes := 258   
-	   4 Input    1 Bit        Muxes := 65    
-	   5 Input    1 Bit        Muxes := 4     
+	  14 Input    4 Bit        Muxes := 6     
+	   2 Input    4 Bit        Muxes := 5     
+	  41 Input    3 Bit        Muxes := 1     
+	   4 Input    1 Bit        Muxes := 97    
+	   2 Input    1 Bit        Muxes := 231   
+	  14 Input    1 Bit        Muxes := 9     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -222,28 +251,42 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
-WARNING: [Synth 8-7129] Port io_dip[2][7] in module alu_manual_tester is either unconnected or has no load
-WARNING: [Synth 8-7129] Port io_dip[2][6] in module alu_manual_tester is either unconnected or has no load
+WARNING: [Synth 8-7129] Port alufn_signal[7] in module alu is either unconnected or has no load
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:37 ; elapsed = 00:00:41 . Memory (MB): peak = 1296.223 ; gain = 815.320
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:36 ; elapsed = 00:00:38 . Memory (MB): peak = 1312.535 ; gain = 829.879
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+ROM: Preliminary Mapping Report
++------------+------------+---------------+----------------+
+|Module Name | RTL Object | Depth x Width | Implemented As | 
++------------+------------+---------------+----------------+
+|test_cases  | alufn_test | 64x7          | LUT            | 
+|test_cases  | alufn_test | 64x7          | LUT            | 
++------------+------------+---------------+----------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:42 ; elapsed = 00:00:46 . Memory (MB): peak = 1296.223 ; gain = 815.320
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1312.535 ; gain = 829.879
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:43 ; elapsed = 00:00:47 . Memory (MB): peak = 1306.500 ; gain = 825.598
+Finished Timing Optimization : Time (s): cpu = 00:01:06 ; elapsed = 00:01:07 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:44 ; elapsed = 00:00:48 . Memory (MB): peak = 1387.469 ; gain = 906.566
+Finished Technology Mapping : Time (s): cpu = 00:01:07 ; elapsed = 00:01:09 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -261,37 +304,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished IO Insertion : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -308,41 +351,41 @@ Report Cell Usage:
 |      |Cell   |Count |
 +------+-------+------+
 |1     |BUFG   |     1|
-|2     |CARRY4 |     5|
-|3     |LUT1   |     2|
-|4     |LUT2   |   469|
-|5     |LUT3   |    19|
-|6     |LUT4   |   145|
-|7     |LUT5   |    43|
-|8     |LUT6   |  1013|
-|9     |FDRE   |   100|
-|10    |FDSE   |     4|
-|11    |IBUF   |    28|
-|12    |OBUF   |    45|
+|2     |CARRY4 |    37|
+|3     |LUT1   |     8|
+|4     |LUT2   |   545|
+|5     |LUT3   |    74|
+|6     |LUT4   |   281|
+|7     |LUT5   |   192|
+|8     |LUT6   |  1122|
+|9     |MUXF7  |    21|
+|10    |FDRE   |   197|
+|11    |FDSE   |     5|
+|12    |IBUF   |    31|
+|13    |OBUF   |    45|
 +------+-------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 3 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:37 ; elapsed = 00:00:49 . Memory (MB): peak = 1492.664 ; gain = 920.629
-Synthesis Optimization Complete : Time (s): cpu = 00:00:48 ; elapsed = 00:00:52 . Memory (MB): peak = 1492.664 ; gain = 1011.762
+Synthesis finished with 0 errors, 0 critical warnings and 2 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:02 ; elapsed = 00:01:11 . Memory (MB): peak = 1677.523 ; gain = 1101.438
+Synthesis Optimization Complete : Time (s): cpu = 00:01:11 ; elapsed = 00:01:13 . Memory (MB): peak = 1677.523 ; gain = 1194.867
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 1501.996 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 5 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.024 . Memory (MB): peak = 1677.523 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 58 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
-WARNING: [Netlist 29-101] Netlist 'alchitry_top' is not ideal for floorplanning, since the cellview 'alu_manual_tester' contains a large number of primitives.  Please consider enabling hierarchy in synthesis if you want to do floorplanning.
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1506.070 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1677.523 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Synth Design complete | Checksum: 7f59a3a6
+Synth Design complete | Checksum: d60c77ec
 INFO: [Common 17-83] Releasing license: Synthesis
-74 Infos, 21 Warnings, 0 Critical Warnings and 0 Errors encountered.
+81 Infos, 18 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:53 ; elapsed = 00:01:10 . Memory (MB): peak = 1506.070 ; gain = 1220.039
-Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1506.070 ; gain = 0.000
+synth_design: Time (s): cpu = 00:01:14 ; elapsed = 00:01:19 . Memory (MB): peak = 1677.523 ; gain = 1390.492
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 1677.523 ; gain = 0.000
 INFO: [Common 17-1381] The checkpoint 'C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.runs/synth_1/alchitry_top.dcp' has been generated.
 INFO: [Vivado 12-24828] Executing command : report_utilization -file alchitry_top_utilization_synth.rpt -pb alchitry_top_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Tue Mar 18 13:01:33 2025...
+INFO: [Common 17-206] Exiting Vivado at Wed Mar 19 07:24:52 2025...

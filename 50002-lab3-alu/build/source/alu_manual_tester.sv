@@ -18,7 +18,7 @@ module alu_manual_tester #(
     );
     logic [31:0] M_alu_a;
     logic [31:0] M_alu_b;
-    logic [5:0] M_alu_alufn_signal;
+    logic [7:0] M_alu_alufn_signal;
     logic [31:0] M_alu_out;
     logic M_alu_z;
     logic M_alu_v;
@@ -35,65 +35,139 @@ module alu_manual_tester #(
     );
     
     
+    localparam _MP_SIZE_1028430775 = 6'h28;
+    logic [5:0] M_test_cases_test_sel;
+    logic [31:0] M_test_cases_a_test;
+    logic [31:0] M_test_cases_b_test;
+    logic [31:0] M_test_cases_result;
+    logic [7:0] M_test_cases_alufn_test;
+    logic [2:0] M_test_cases_zvn;
+    
+    test_cases #(
+        .SIZE(_MP_SIZE_1028430775)
+    ) test_cases (
+        .test_sel(M_test_cases_test_sel),
+        .a_test(M_test_cases_a_test),
+        .b_test(M_test_cases_b_test),
+        .result(M_test_cases_result),
+        .alufn_test(M_test_cases_alufn_test),
+        .zvn(M_test_cases_zvn)
+    );
+    
+    
+    logic slow_clock;
+    localparam _MP_DIGITS_1849468554 = 3'h4;
+    localparam _MP_LEADING_ZEROS_1849468554 = 1'h1;
+    logic [13:0] M_pass_renderer_value;
+    logic [3:0][3:0] M_pass_renderer_digits;
+    
+    bin_to_dec #(
+        .DIGITS(_MP_DIGITS_1849468554),
+        .LEADING_ZEROS(_MP_LEADING_ZEROS_1849468554)
+    ) pass_renderer (
+        .value(M_pass_renderer_value),
+        .digits(M_pass_renderer_digits)
+    );
+    
+    
+    localparam _MP_DIGITS_1135277274 = 3'h4;
+    localparam _MP_LEADING_ZEROS_1135277274 = 1'h1;
+    logic [13:0] M_error_renderer_value;
+    logic [3:0][3:0] M_error_renderer_digits;
+    
+    bin_to_dec #(
+        .DIGITS(_MP_DIGITS_1135277274),
+        .LEADING_ZEROS(_MP_LEADING_ZEROS_1135277274)
+    ) error_renderer (
+        .value(M_error_renderer_value),
+        .digits(M_error_renderer_digits)
+    );
+    
+    
     localparam SEVEN_SEG_DIV = 5'h10;
-    localparam E_States_IDLE = 3'h0;
-    localparam E_States_A1 = 3'h1;
-    localparam E_States_A2 = 3'h2;
-    localparam E_States_B1 = 3'h3;
-    localparam E_States_B2 = 3'h4;
-    localparam logic [4:0][0:0] _MP_RISE_713133665 = {{1'h1, 1'h1, 1'h1, 1'h1, 1'h1}};
-    localparam logic [4:0][0:0] _MP_FALL_713133665 = {{1'h0, 1'h0, 1'h0, 1'h0, 1'h0}};
+    localparam SLOW_CLOCK_DEFAULT_SPEED = 5'h19;
+    localparam E_States_IDLE = 4'h0;
+    localparam E_States_A1 = 4'h1;
+    localparam E_States_A2 = 4'h2;
+    localparam E_States_B1 = 4'h3;
+    localparam E_States_B2 = 4'h4;
+    localparam E_States_IDLE2 = 4'h5;
+    localparam E_States_RUN = 4'h6;
+    localparam E_States_SCORE = 4'h7;
+    localparam E_States_SHOWA = 4'h8;
+    localparam E_States_SHOWB = 4'h9;
+    localparam E_States_SHOWALUFN = 4'ha;
+    localparam E_States_CALC = 4'hb;
+    localparam E_States_RESULT = 4'hc;
+    localparam E_States_STOP = 4'hd;
+    localparam logic [4:0][0:0] _MP_RISE_2058960635 = {{1'h1, 1'h1, 1'h1, 1'h1, 1'h1}};
+    localparam logic [4:0][0:0] _MP_FALL_2058960635 = {{1'h0, 1'h0, 1'h0, 1'h0, 1'h0}};
     logic [4:0] M_io_button_edge_in;
     logic [4:0] M_io_button_edge_out;
     
-    genvar idx_0_713133665;
+    genvar idx_0_2058960635;
     
     generate
-        for (idx_0_713133665 = 0; idx_0_713133665 < 5; idx_0_713133665 = idx_0_713133665 + 1) begin: forLoop_idx_0_713133665
+        for (idx_0_2058960635 = 0; idx_0_2058960635 < 5; idx_0_2058960635 = idx_0_2058960635 + 1) begin: forLoop_idx_0_2058960635
             edge_detector #(
-                .RISE(_MP_RISE_713133665[idx_0_713133665]),
-                .FALL(_MP_FALL_713133665[idx_0_713133665])
+                .RISE(_MP_RISE_2058960635[idx_0_2058960635]),
+                .FALL(_MP_FALL_2058960635[idx_0_2058960635])
             ) io_button_edge (
                 .clk(clk),
-                .in(M_io_button_edge_in[idx_0_713133665]),
-                .out(M_io_button_edge_out[idx_0_713133665])
+                .in(M_io_button_edge_in[idx_0_2058960635]),
+                .out(M_io_button_edge_out[idx_0_2058960635])
             );
         end
     endgenerate
     
     
-    localparam logic [4:0][9:0] _MP_CLK_FREQ_1586936409 = {{10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8}};
-    localparam _MP_MIN_DELAY_1586936409 = 5'h14;
-    localparam _MP_NUM_SYNC_1586936409 = 2'h2;
+    localparam _MP_RISE_2001222378 = 1'h1;
+    localparam _MP_FALL_2001222378 = 1'h0;
+    logic M_slow_clock_edge_in;
+    logic M_slow_clock_edge_out;
+    
+    edge_detector #(
+        .RISE(_MP_RISE_2001222378),
+        .FALL(_MP_FALL_2001222378)
+    ) slow_clock_edge (
+        .clk(clk),
+        .in(M_slow_clock_edge_in),
+        .out(M_slow_clock_edge_out)
+    );
+    
+    
+    localparam logic [4:0][9:0] _MP_CLK_FREQ_523382033 = {{10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8, 10'h3e8}};
+    localparam _MP_MIN_DELAY_523382033 = 5'h14;
+    localparam _MP_NUM_SYNC_523382033 = 2'h2;
     logic [4:0] M_io_button_cond_in;
     logic [4:0] M_io_button_cond_out;
     
-    genvar idx_0_1586936409;
+    genvar idx_0_523382033;
     
     generate
-        for (idx_0_1586936409 = 0; idx_0_1586936409 < 5; idx_0_1586936409 = idx_0_1586936409 + 1) begin: forLoop_idx_0_1586936409
+        for (idx_0_523382033 = 0; idx_0_523382033 < 5; idx_0_523382033 = idx_0_523382033 + 1) begin: forLoop_idx_0_523382033
             button_conditioner #(
-                .CLK_FREQ(_MP_CLK_FREQ_1586936409[idx_0_1586936409]),
-                .MIN_DELAY(_MP_MIN_DELAY_1586936409),
-                .NUM_SYNC(_MP_NUM_SYNC_1586936409)
+                .CLK_FREQ(_MP_CLK_FREQ_523382033[idx_0_523382033]),
+                .MIN_DELAY(_MP_MIN_DELAY_523382033),
+                .NUM_SYNC(_MP_NUM_SYNC_523382033)
             ) io_button_cond (
                 .clk(clk),
-                .in(M_io_button_cond_in[idx_0_1586936409]),
-                .out(M_io_button_cond_out[idx_0_1586936409])
+                .in(M_io_button_cond_in[idx_0_523382033]),
+                .out(M_io_button_cond_out[idx_0_523382033])
             );
         end
     endgenerate
     
     
-    localparam _MP_DIGITS_1187637757 = 3'h4;
-    localparam _MP_DIV_1187637757 = 5'h10;
+    localparam _MP_DIGITS_1394171106 = 3'h4;
+    localparam _MP_DIV_1394171106 = 5'h10;
     logic [3:0][3:0] M_seg_values;
     logic [6:0] M_seg_seg;
     logic [3:0] M_seg_sel;
     
     multi_seven_seg #(
-        .DIGITS(_MP_DIGITS_1187637757),
-        .DIV(_MP_DIV_1187637757)
+        .DIGITS(_MP_DIGITS_1394171106),
+        .DIV(_MP_DIV_1394171106)
     ) seg (
         .clk(clk),
         .rst(rst),
@@ -103,75 +177,221 @@ module alu_manual_tester #(
     );
     
     
-    logic [2:0] D_states_d, D_states_q = 3'h0;
+    logic [3:0] D_states_d, D_states_q = 4'h0;
+    logic [3:0] D_state_counter_d, D_state_counter_q = 1'h1;
     logic [31:0] D_a_d, D_a_q = 1'h0;
     logic [31:0] D_b_d, D_b_q = 1'h0;
+    logic [5:0] D_test_sel_d, D_test_sel_q = 1'h0;
+    logic [7:0] D_pass_counter_d, D_pass_counter_q = 1'h0;
+    logic [7:0] D_error_counter_d, D_error_counter_q = 1'h0;
+    logic [31:0] D_counter_d, D_counter_q = 0;
+    logic [4:0] D_speed_pointer_d, D_speed_pointer_q = 5'h19;
+    logic D_slow_clock_enable_d, D_slow_clock_enable_q = 1'h0;
+    logic [7:0] D_alufn_signal_d, D_alufn_signal_q = 1'h0;
+    logic [31:0] D_aluout_d, D_aluout_q = 1'h0;
     always @* begin
         D_states_d = D_states_q;
+        D_state_counter_d = D_state_counter_q;
+        D_test_sel_d = D_test_sel_q;
+        D_pass_counter_d = D_pass_counter_q;
+        D_error_counter_d = D_error_counter_q;
         D_a_d = D_a_q;
         D_b_d = D_b_q;
+        D_alufn_signal_d = D_alufn_signal_q;
+        D_aluout_d = D_aluout_q;
+        D_speed_pointer_d = D_speed_pointer_q;
+        D_counter_d = D_counter_q;
+        D_slow_clock_enable_d = D_slow_clock_enable_q;
         
         M_io_button_cond_in = io_button;
         M_io_button_edge_in = M_io_button_cond_out;
         D_states_d = D_states_q;
+        D_state_counter_d = D_state_counter_q;
+        D_test_sel_d = D_test_sel_q;
+        D_pass_counter_d = D_pass_counter_q;
+        M_pass_renderer_value = D_pass_counter_q;
+        D_error_counter_d = D_error_counter_q;
+        M_error_renderer_value = D_error_counter_q;
         D_a_d = D_a_q;
         D_b_d = D_b_q;
+        D_alufn_signal_d = D_alufn_signal_q;
+        D_aluout_d = D_aluout_q;
+        D_speed_pointer_d = D_speed_pointer_q;
+        D_counter_d = D_counter_q + 1'h1;
+        D_slow_clock_enable_d = D_slow_clock_enable_q;
         M_alu_a = D_a_q;
         M_alu_b = D_b_q;
-        M_alu_alufn_signal = io_dip[2'h2][3'h5:1'h0];
+        M_alu_alufn_signal = D_alufn_signal_q;
+        D_aluout_d = M_alu_out;
         led = 8'h0;
         io_led = {{8'h0, 8'h0, 8'h0}};
         M_seg_values = {{4'h0, 4'h0, 4'h0, 4'h0}};
         io_segment = ~M_seg_seg;
         io_select = ~M_seg_sel;
+        slow_clock = D_counter_q[D_speed_pointer_q];
+        M_test_cases_test_sel = D_test_sel_q;
+        
+        case (D_slow_clock_enable_q)
+            1'h0: begin
+                M_slow_clock_edge_in = 1'h0;
+            end
+            1'h1: begin
+                M_slow_clock_edge_in = slow_clock;
+            end
+            default: begin
+                M_slow_clock_edge_in = 1'h0;
+            end
+        endcase
         
         case (D_states_q)
-            3'h0: begin
+            4'h0: begin
+                if (io_dip[2'h2][3'h7]) begin
+                    D_aluout_d[1'h0] = ~D_aluout_q[1'h0];
+                end
+                M_alu_alufn_signal = io_dip[2'h2][3'h7:1'h0];
                 M_seg_values = {{3'h0, M_alu_z}, {3'h0, M_alu_v}, {3'h0, M_alu_n}, 4'h0};
                 led = M_alu_out[3'h7:1'h0];
                 io_led = M_alu_out[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h0]) begin
-                    D_states_d = 3'h1;
+                    D_states_d = 4'h1;
                 end else begin
                     if (M_io_button_edge_out[2'h2]) begin
-                        D_states_d = 3'h3;
+                        D_states_d = 4'h3;
+                    end else begin
+                        if (M_io_button_edge_out[2'h3]) begin
+                            D_states_d = 4'h5;
+                        end
                     end
                 end
             end
-            3'h1: begin
+            4'h1: begin
                 D_a_d[3'h7:1'h0] = io_dip[1'h0];
                 D_a_d[4'hf:4'h8] = io_dip[1'h1];
                 led = D_a_q[3'h7:1'h0];
                 io_led = D_a_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
-                    D_states_d = 3'h2;
+                    D_states_d = 4'h2;
                 end
             end
-            3'h2: begin
+            4'h2: begin
                 D_a_d[5'h17:5'h10] = io_dip[1'h0];
                 D_a_d[5'h1f:5'h18] = io_dip[1'h1];
                 led = D_a_q[3'h7:1'h0];
                 io_led = D_a_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
-                    D_states_d = 3'h0;
+                    D_states_d = 4'h0;
                 end
             end
-            3'h3: begin
+            4'h3: begin
                 D_b_d[3'h7:1'h0] = io_dip[1'h0];
                 D_b_d[4'hf:4'h8] = io_dip[1'h1];
                 led = D_b_q[3'h7:1'h0];
                 io_led = D_b_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
-                    D_states_d = 3'h4;
+                    D_states_d = 4'h4;
                 end
             end
-            3'h4: begin
+            4'h4: begin
                 D_b_d[5'h17:5'h10] = io_dip[1'h0];
                 D_b_d[5'h1f:5'h18] = io_dip[1'h1];
                 led = D_b_q[3'h7:1'h0];
                 io_led = D_b_q[5'h1f:4'h8];
                 if (M_io_button_edge_out[1'h1]) begin
-                    D_states_d = 3'h0;
+                    D_states_d = 4'h0;
+                end
+            end
+            4'h5: begin
+                led = 8'h0;
+                io_led = {{8'h0, 8'h0, 8'h0}};
+                M_seg_values = {M_pass_renderer_digits[1'h1:1'h0], M_error_renderer_digits[1'h1:1'h0]};
+                if (M_slow_clock_edge_out) begin
+                    if (D_test_sel_q == 6'h28) begin
+                        D_states_d = 4'hd;
+                    end else begin
+                        D_test_sel_d = D_test_sel_q + 1'h1;
+                        D_states_d = 4'h7;
+                    end
+                end else begin
+                    if (M_io_button_edge_out[1'h1]) begin
+                        if (~(|D_slow_clock_enable_q)) begin
+                            D_states_d = 4'h6;
+                        end else begin
+                            D_states_d = 4'hd;
+                        end
+                    end
+                end
+            end
+            4'h7: begin
+                M_seg_values = {10'h0, D_test_sel_q};
+                if (M_slow_clock_edge_out) begin
+                    D_states_d = 4'ha;
+                end
+            end
+            4'h6: begin
+                D_slow_clock_enable_d = 1'h1;
+                D_states_d = 4'h5;
+            end
+            4'hd: begin
+                D_slow_clock_enable_d = 1'h0;
+                D_states_d = 4'h5;
+            end
+            4'ha: begin
+                D_state_counter_d = 1'h1;
+                M_seg_values = {4'h0, 4'h0, 4'h0, D_state_counter_q};
+                D_alufn_signal_d = M_test_cases_alufn_test[3'h7:1'h0];
+                led = 8'h0;
+                io_led[2'h2] = M_test_cases_alufn_test;
+                if (M_slow_clock_edge_out) begin
+                    D_states_d = 4'h8;
+                end
+            end
+            4'h8: begin
+                D_state_counter_d = 2'h2;
+                M_seg_values = {4'h0, 4'h0, 4'h0, D_state_counter_q};
+                D_a_d = M_test_cases_a_test;
+                led = D_a_q[3'h7:1'h0];
+                io_led = D_a_q[5'h1f:4'h8];
+                if (M_slow_clock_edge_out) begin
+                    D_states_d = 4'h9;
+                end
+            end
+            4'h9: begin
+                D_state_counter_d = 2'h3;
+                M_seg_values = {4'h0, 4'h0, 4'h0, D_state_counter_q};
+                D_b_d = M_test_cases_b_test;
+                led = D_b_q[3'h7:1'h0];
+                io_led = D_b_q[5'h1f:4'h8];
+                if (M_slow_clock_edge_out) begin
+                    D_states_d = 4'hb;
+                end
+            end
+            4'hb: begin
+                D_state_counter_d = 3'h4;
+                if (io_dip[2'h2][3'h7]) begin
+                    D_aluout_d[1'h0] = ~D_aluout_q[1'h0];
+                end
+                M_seg_values = {{3'h0, M_alu_z}, {3'h0, M_alu_v}, {3'h0, M_alu_n}, D_state_counter_q};
+                led = D_aluout_q[3'h7:1'h0];
+                io_led = D_aluout_q[5'h1f:4'h8];
+                if (M_slow_clock_edge_out) begin
+                    D_states_d = 4'hc;
+                end
+            end
+            4'hc: begin
+                D_state_counter_d = 3'h5;
+                M_seg_values = {{3'h0, M_test_cases_zvn[2'h2]}, {3'h0, M_test_cases_zvn[1'h1]}, {3'h0, M_test_cases_zvn[1'h0]}, D_state_counter_q};
+                if (io_dip[2'h2][3'h7]) begin
+                    D_aluout_d[1'h0] = ~D_aluout_q[1'h0];
+                end
+                led = M_test_cases_result[3'h7:1'h0];
+                io_led = M_test_cases_result[5'h1f:4'h8];
+                if (M_slow_clock_edge_out) begin
+                    if ((D_aluout_q == M_test_cases_result) & ({M_alu_z, M_alu_v, M_alu_n} == M_test_cases_zvn)) begin
+                        D_pass_counter_d = D_pass_counter_q + 1'h1;
+                    end else begin
+                        D_error_counter_d = D_error_counter_q + 1'h1;
+                    end
+                    D_states_d = 4'h5;
                 end
             end
         endcase
@@ -180,13 +400,31 @@ module alu_manual_tester #(
     
     always @(posedge (clk)) begin
         if ((rst) == 1'b1) begin
-            D_states_q <= 3'h0;
+            D_states_q <= 4'h0;
+            D_state_counter_q <= 1'h1;
             D_a_q <= 1'h0;
             D_b_q <= 1'h0;
+            D_test_sel_q <= 1'h0;
+            D_pass_counter_q <= 1'h0;
+            D_error_counter_q <= 1'h0;
+            D_counter_q <= 0;
+            D_speed_pointer_q <= 5'h19;
+            D_slow_clock_enable_q <= 1'h0;
+            D_alufn_signal_q <= 1'h0;
+            D_aluout_q <= 1'h0;
         end else begin
             D_states_q <= D_states_d;
+            D_state_counter_q <= D_state_counter_d;
             D_a_q <= D_a_d;
             D_b_q <= D_b_d;
+            D_test_sel_q <= D_test_sel_d;
+            D_pass_counter_q <= D_pass_counter_d;
+            D_error_counter_q <= D_error_counter_d;
+            D_counter_q <= D_counter_d;
+            D_speed_pointer_q <= D_speed_pointer_d;
+            D_slow_clock_enable_q <= D_slow_clock_enable_d;
+            D_alufn_signal_q <= D_alufn_signal_d;
+            D_aluout_q <= D_aluout_d;
         end
     end
 endmodule

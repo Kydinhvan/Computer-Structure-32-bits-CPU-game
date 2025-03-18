@@ -1,0 +1,262 @@
+module test_cases #(
+    SIZE ~ 40 : SIZE > 1
+)(
+    input test_sel[6], // selector
+    output a_test[32],
+    output b_test[32],
+    output result[32],
+    output alufn_test[8],
+    output zvn[3]
+) {  
+    always {
+        // 32-bit operand arrays (A = A2:A1, B = B2:B1)        
+        case (test_sel) {
+            1: // Test 1: ALUFN=0x00, A=0x00000000, B=0x00000000, Expected=0x00000000, ZVN=100
+                alufn_test = h00
+                a_test = h00000000
+                b_test = h00000000
+                result = h00000000
+                zvn = b100
+            2: // Test 2: ALUFN=0x00, A=0x00000000, B=0x00000001, Expected=0x00000001, ZVN=000
+                alufn_test = h00
+                a_test = h00000001
+                b_test = h00000001
+                result = h00000002
+                zvn = b000
+            3: // Test 3: ALUFN=0x00, A=0x00000001, B=0x00000001, Expected=0x00000002, ZVN=000
+                alufn_test = h00
+                a_test = hFFFFFFFF
+                b_test = hFFFFFFFF
+                result = hFFFFFFFE
+                zvn = b001
+            4: // Test 4: ALUFN=0x00, A=0x7FFFFFFF, B=0x7FFFFFFF, Expected=0xFFFFFFFE, ZVN=011
+                alufn_test = h00
+                a_test = h7FFFFFFF
+                b_test = h7FFFFFFF
+                result = hFFFFFFFE
+                zvn = b011
+            5: // Test 5: ALUFN=0x00, A=0x40000000, B=0x40000000, Expected=0x80000000, ZVN=011
+                alufn_test = h01
+                a_test = h00000000
+                b_test = h00000000
+                result = h00000000
+                zvn = b100
+            6: // Test 6: ALUFN=0x01, A=0x00000001, B=0x00000000, Expected=0x00000001, ZVN=000
+                alufn_test = h01
+                a_test = h00000001
+                b_test = h00000000
+                result = h00000001
+                zvn = b000
+            7: // Test 7: ALUFN=0x01, A=0x00000000, B=0x00000001, Expected=0xFFFFFFFF, ZVN=001
+                alufn_test = h01
+                a_test = h00000000
+                b_test = h00000001
+                result = hFFFFFFFF
+                zvn = b001
+            8: // Test 8: ALUFN=0x01, A=0x00000001, B=0x00000002, Expected=0xFFFFFFFF, ZVN=001
+                alufn_test = h01
+                a_test = h80000000
+                b_test = h7FFFFFFF
+                result = h00000001
+                zvn = b010 //changed
+            9: // Test 9: ALUFN=0x01, A=0x80000000, B=0x00000001, Expected=0x7FFFFFFF, ZVN=010
+                alufn_test = h01
+                a_test = h00000000
+                b_test = h7FFFFFFF
+                result = h80000001
+                zvn = b001
+            10: // Test 10: ALUFN=0x01, A=0x7FFFFFFF, B=0xFFFFFFFF, Expected=0x80000000, ZVN=011
+                alufn_test = h02
+                a_test = h00000000
+                b_test = h00000001
+                result = h00000000
+                zvn = b000//changed
+            11: // Test 11: ALUFN=0x02, A=0x00000001, B=0x00000000, Expected=0x00000000, ZVN=000
+                alufn_test = h02
+                a_test = h00000005
+                b_test = h00000001
+                result = h00000005
+                zvn = b000
+            12: // Test 12: ALUFN=0x02, A=0x00000005, B=0x00000001, Expected=0x00000005, ZVN=000
+                alufn_test = h02
+                a_test = h00000002
+                b_test = h00000003
+                result = h00000006
+                zvn = b000
+            13: // Test 13: ALUFN=0x02, A=0x00000003, B=0x00000005, Expected=0x0000000F, ZVN=000
+                alufn_test = h02
+                a_test = h40000000
+                b_test = h40000000
+                result = h00000000
+                zvn = b011
+            14: // Test 14: ALUFN=0x02, A=0x0000FFFF, B=0x0000FFFF, Expected=0x00000001, ZVN=??? (treated as 000)
+                alufn_test = h18
+                a_test = h0F0F0F0F
+                b_test = h0F0F0F0F
+                result = h0F0F0F0F
+                zvn = b000
+            15: // Test 15: ALUFN=0x18, A=0x00000001, B=0x00000001, Expected=0x00000001, ZVN=000
+                alufn_test = h18
+                a_test = h00000001
+                b_test = h00000001
+                result = h00000001
+                zvn = b000
+            16: // Test 16: ALUFN=0x18, A=0x00000001, B=0xFFFFFFFE, Expected=0x00000000, ZVN=001
+                alufn_test = h18
+                a_test = h0F0F0F0F
+                b_test = h00000000
+                result = h00000000
+                zvn = b000//c
+            17: // Test 17: ALUFN=0x1E, A=0x00000001, B=0x00000000, Expected=0x00000001, ZVN=000
+                alufn_test = h1E
+                a_test = h0F0F0F0F
+                b_test = h00000000
+                result = h0F0F0F0F
+                zvn = b000
+            18: // Test 18: ALUFN=0x1E, A=0x00000001, B=0xFFFFFFFF, Expected=0xFFFFFFFF, ZVN=001
+                alufn_test = h1E
+                a_test = h0F0F0F0F
+                b_test = hFFFFFFFF
+                result = hFFFFFFFF
+                zvn = b000
+            19: // Test 19: ALUFN=0x1E, A=0x00000001, B=0x00000001, Expected=0x00000001, ZVN=000
+                alufn_test = h1E
+                a_test = h0F0F0F0F
+                b_test = h0F0F0F0F
+                result = h0F0F0F0F
+                zvn = b000
+            20: // Test 20: ALUFN=0x16, A=0x00000001, B=0x00000000, Expected=0x00000001, ZVN=000
+                alufn_test = h16
+                a_test = h0F0F0F0F
+                b_test = h00000000
+                result = h0F0F0F0F
+                zvn = b000
+            21: // Test 21: ALUFN=0x16, A=0x00000001, B=0x00000001, Expected=0x00000000, ZVN=000
+                alufn_test = h16
+                a_test = h0F0F0F0F
+                b_test = h0F0F0F0F
+                result = h00000000
+                zvn = b000//-
+            22: // Test 22: 
+                alufn_test = h16
+                a_test = h0F0F0F0F
+                b_test = hFFFFFFF0
+                result = hF0F0F0FF
+                zvn = b000
+            23: // Test 23: 
+                alufn_test = h1A
+                a_test = h00000001
+                b_test = h00000000
+                result = h00000001
+                zvn = b000//
+            24: // Test 24: 
+                alufn_test = h20
+                a_test = h00000001
+                b_test = h00000000
+                result = h00000001
+                zvn = b000
+            25: // Test 25: 
+                alufn_test = h20
+                a_test = h80000000
+                b_test = h00000001
+                result = h00000000
+                zvn = b001//
+            26: // Test 26:
+                alufn_test = h20
+                a_test = hFFFFFFFF
+                b_test = h0000001F
+                result = h80000000
+                zvn = b000
+            27: // Test 27: 
+                alufn_test = h21
+                a_test = h00000001
+                b_test = h00000000
+                result = h00000001
+                zvn = b000
+            28: // Test 28: 
+                alufn_test = h21
+                a_test = h80000000
+                b_test = h0000001F
+                result = h00000001
+                zvn = b010//c
+            29: // Test 29: 
+                alufn_test = h21
+                a_test = hFFFFFFFF
+                b_test = h0000001F
+                result = h00000001
+                zvn = b001
+            30: // Test 30: 
+                alufn_test = h23
+                a_test = h40000000
+                b_test = h00000002
+                result = h10000000
+                zvn = b000
+            31: // Test 31: 
+                alufn_test = h23
+                a_test = h80000001
+                b_test = h00000003
+                result = hF0000000
+                zvn = b010//c
+            32: // Test 32:
+                alufn_test = h33
+                a_test = h00000001
+                b_test = h00000001//
+                result = h00000001//
+                zvn = b100
+            33: // Test 33: 
+                alufn_test = h33
+                a_test = h00000001
+                b_test = h00000002
+                result = h00000000
+                zvn = b001
+            34: // Test 34: 
+                alufn_test = h35
+                a_test = h00000001
+                b_test = h00000002
+                result = h00000001
+                zvn = b001
+            35: // Test 35:
+                alufn_test = h35
+                a_test = h00000002
+                b_test = h00000001
+                result = h00000000
+                zvn = b000
+            36: // Test 36:
+                alufn_test = h37
+                a_test = h00000001
+                b_test = h00000001
+                result = h00000001
+                zvn = b100
+            37: // Test 37: 
+                alufn_test = h37
+                a_test = h00000002
+                b_test = h00000001
+                result = h00000000
+                zvn = b000
+            38: // Test 38: 
+                alufn_test = h40
+                a_test = h00000004
+                b_test = h00000001
+                result = h00000003
+                zvn = b000
+            39: // Test 38: 
+                alufn_test = h40
+                a_test = h00000001
+                b_test = h00000004
+                result = h00000003
+                zvn = b000
+            40: // Test 38:
+                alufn_test = h40
+                a_test = h00000004
+                b_test = h00000004
+                result = h00000000
+                zvn = b000//c
+            default: 
+                alufn_test = 0
+                a_test = 0
+                b_test = 0
+                result = 0
+                zvn = b000
+        }
+    }
+}

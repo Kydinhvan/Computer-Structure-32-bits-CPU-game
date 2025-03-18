@@ -70,9 +70,11 @@ set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_verilog -library xil_defaultlib -sv {
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/abs.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/adder.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alu_manual_tester.sv}
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/bin_to_dec.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/bit_reverser.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/boolean.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/button_conditioner.sv}
@@ -91,6 +93,7 @@ read_verilog -library xil_defaultlib -sv {
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/reset_conditioner.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/seven_seg.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/shifter.sv}
+  {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/test_cases.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/x_bit_left_shifter.sv}
   {C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.srcs/sources_1/imports/source/alchitry_top.sv}
 }

@@ -7,17 +7,17 @@
 module alu (
         input wire [31:0] a,
         input wire [31:0] b,
-        input wire [5:0] alufn_signal,
+        input wire [7:0] alufn_signal,
         output reg [31:0] out,
         output reg z,
         output reg v,
         output reg n
     );
-    logic [31:0] R_5f07ac67_i;
-    logic [31:0] RR_5f07ac67_i;
-    logic [31:0] R_08d7e03b_i;
-    logic [31:0] RR_08d7e03b_i;
-    localparam _MP_SIZE_1442800526 = 6'h20;
+    logic [31:0] R_638d6ac9_i;
+    logic [31:0] RR_638d6ac9_i;
+    logic [31:0] R_36ab50a7_i;
+    logic [31:0] RR_36ab50a7_i;
+    localparam _MP_SIZE_2128990809 = 6'h20;
     logic [31:0] M_adder_a;
     logic [31:0] M_adder_b;
     logic [5:0] M_adder_alufn_signal;
@@ -27,7 +27,7 @@ module alu (
     logic M_adder_n;
     
     adder #(
-        .SIZE(_MP_SIZE_1442800526)
+        .SIZE(_MP_SIZE_2128990809)
     ) adder (
         .a(M_adder_a),
         .b(M_adder_b),
@@ -55,14 +55,14 @@ module alu (
     
     
     logic [31:0] cmp;
-    localparam _MP_SIZE_1293950779 = 6'h20;
+    localparam _MP_SIZE_1378666245 = 6'h20;
     logic [31:0] M_boolean_a;
     logic [31:0] M_boolean_b;
     logic [5:0] M_boolean_alufn_signal;
     logic [31:0] M_boolean_bool;
     
     boolean #(
-        .SIZE(_MP_SIZE_1293950779)
+        .SIZE(_MP_SIZE_1378666245)
     ) boolean (
         .a(M_boolean_a),
         .b(M_boolean_b),
@@ -95,37 +95,53 @@ module alu (
     );
     
     
-    logic [31:0] M_mux_2_s0;
-    logic [31:0][1:0] M_mux_2_in;
-    logic [31:0] M_mux_2_out;
+    localparam _MP_SIZE_1027981218 = 6'h20;
+    logic [31:0] M_abs_a;
+    logic [31:0] M_abs_b;
+    logic [31:0] M_abs_out;
     
-    genvar idx_0_1984035170;
+    abs #(
+        .SIZE(_MP_SIZE_1027981218)
+    ) abs (
+        .a(M_abs_a),
+        .b(M_abs_b),
+        .out(M_abs_out)
+    );
+    
+    
+    logic [31:0] M_mux_4a_s0;
+    logic [31:0] M_mux_4a_s1;
+    logic [31:0][3:0] M_mux_4a_in;
+    logic [31:0] M_mux_4a_out;
+    
+    genvar idx_0_1641433204;
     
     generate
-        for (idx_0_1984035170 = 0; idx_0_1984035170 < 32; idx_0_1984035170 = idx_0_1984035170 + 1) begin: forLoop_idx_0_1984035170
-            mux_2 mux_2 (
-                .s0(M_mux_2_s0[idx_0_1984035170]),
-                .in(M_mux_2_in[idx_0_1984035170]),
-                .out(M_mux_2_out[idx_0_1984035170])
+        for (idx_0_1641433204 = 0; idx_0_1641433204 < 32; idx_0_1641433204 = idx_0_1641433204 + 1) begin: forLoop_idx_0_1641433204
+            mux_4 mux_4a (
+                .s0(M_mux_4a_s0[idx_0_1641433204]),
+                .s1(M_mux_4a_s1[idx_0_1641433204]),
+                .in(M_mux_4a_in[idx_0_1641433204]),
+                .out(M_mux_4a_out[idx_0_1641433204])
             );
         end
     endgenerate
     
     
-    logic [31:0] M_mux_4_s0;
-    logic [31:0] M_mux_4_s1;
-    logic [31:0][3:0] M_mux_4_in;
-    logic [31:0] M_mux_4_out;
+    logic [31:0] M_mux_4b_s0;
+    logic [31:0] M_mux_4b_s1;
+    logic [31:0][3:0] M_mux_4b_in;
+    logic [31:0] M_mux_4b_out;
     
-    genvar idx_0_527755138;
+    genvar idx_0_70307047;
     
     generate
-        for (idx_0_527755138 = 0; idx_0_527755138 < 32; idx_0_527755138 = idx_0_527755138 + 1) begin: forLoop_idx_0_527755138
-            mux_4 mux_4 (
-                .s0(M_mux_4_s0[idx_0_527755138]),
-                .s1(M_mux_4_s1[idx_0_527755138]),
-                .in(M_mux_4_in[idx_0_527755138]),
-                .out(M_mux_4_out[idx_0_527755138])
+        for (idx_0_70307047 = 0; idx_0_70307047 < 32; idx_0_70307047 = idx_0_70307047 + 1) begin: forLoop_idx_0_70307047
+            mux_4 mux_4b (
+                .s0(M_mux_4b_s0[idx_0_70307047]),
+                .s1(M_mux_4b_s1[idx_0_70307047]),
+                .in(M_mux_4b_in[idx_0_70307047]),
+                .out(M_mux_4b_out[idx_0_70307047])
             );
         end
     endgenerate
@@ -151,21 +167,26 @@ module alu (
         M_shifter_alufn_signal = alufn_signal;
         M_multiplier_a = a;
         M_multiplier_b = b;
-        for (RR_5f07ac67_i = 0; RR_5f07ac67_i < 6'h20; RR_5f07ac67_i = RR_5f07ac67_i + 1) begin
-      R_5f07ac67_i = (1'h0) + RR_5f07ac67_i * (1'h1);
-            M_mux_2_in[R_5f07ac67_i][1'h0] = M_adder_out[R_5f07ac67_i];
-            M_mux_2_in[R_5f07ac67_i][1'h1] = M_multiplier_mul[R_5f07ac67_i];
-            M_mux_2_s0[R_5f07ac67_i] = alufn_signal[1'h1];
+        M_abs_a = a;
+        M_abs_b = b;
+        for (RR_638d6ac9_i = 0; RR_638d6ac9_i < 6'h20; RR_638d6ac9_i = RR_638d6ac9_i + 1) begin
+      R_638d6ac9_i = (1'h0) + RR_638d6ac9_i * (1'h1);
+            M_mux_4a_in[R_638d6ac9_i][1'h0] = M_adder_out[R_638d6ac9_i];
+            M_mux_4a_in[R_638d6ac9_i][1'h1] = M_multiplier_mul[R_638d6ac9_i];
+            M_mux_4a_in[R_638d6ac9_i][2'h2] = M_abs_out[R_638d6ac9_i];
+            M_mux_4a_in[R_638d6ac9_i][2'h3] = 1'h0;
+            M_mux_4a_s0[R_638d6ac9_i] = alufn_signal[1'h1];
+            M_mux_4a_s1[R_638d6ac9_i] = alufn_signal[3'h6];
         end
-        for (RR_08d7e03b_i = 0; RR_08d7e03b_i < 6'h20; RR_08d7e03b_i = RR_08d7e03b_i + 1) begin
-      R_08d7e03b_i = (1'h0) + RR_08d7e03b_i * (1'h1);
-            M_mux_4_in[R_08d7e03b_i][1'h0] = M_mux_2_out[R_08d7e03b_i];
-            M_mux_4_in[R_08d7e03b_i][1'h1] = M_boolean_bool[R_08d7e03b_i];
-            M_mux_4_in[R_08d7e03b_i][2'h2] = M_shifter_shift[R_08d7e03b_i];
-            M_mux_4_in[R_08d7e03b_i][2'h3] = cmp[R_08d7e03b_i];
-            M_mux_4_s0[R_08d7e03b_i] = alufn_signal[3'h4];
-            M_mux_4_s1[R_08d7e03b_i] = alufn_signal[3'h5];
-            out[R_08d7e03b_i] = M_mux_4_out[R_08d7e03b_i];
+        for (RR_36ab50a7_i = 0; RR_36ab50a7_i < 6'h20; RR_36ab50a7_i = RR_36ab50a7_i + 1) begin
+      R_36ab50a7_i = (1'h0) + RR_36ab50a7_i * (1'h1);
+            M_mux_4b_in[R_36ab50a7_i][1'h0] = M_mux_4a_out[R_36ab50a7_i];
+            M_mux_4b_in[R_36ab50a7_i][1'h1] = M_boolean_bool[R_36ab50a7_i];
+            M_mux_4b_in[R_36ab50a7_i][2'h2] = M_shifter_shift[R_36ab50a7_i];
+            M_mux_4b_in[R_36ab50a7_i][2'h3] = cmp[R_36ab50a7_i];
+            M_mux_4b_s0[R_36ab50a7_i] = alufn_signal[3'h4];
+            M_mux_4b_s1[R_36ab50a7_i] = alufn_signal[3'h5];
+            out[R_36ab50a7_i] = M_mux_4b_out[R_36ab50a7_i];
         end
     end
     

@@ -148,19 +148,31 @@
                     "type": "Component",
                     "path": "Miscellaneous/bin_to_dec.luc"
                 }
-            }
-        ],
-        "constraintFiles": [
+            },
             {
                 "file": {
-                    "type": "Component",
-                    "path": "Constraints/alchitry.acf"
+                    "type": "DiskFile",
+                    "path": "source/abs.luc"
                 }
             },
             {
                 "file": {
                     "type": "DiskFile",
+                    "path": "source/test_cases.luc"
+                }
+            }
+        ],
+        "constraintFiles": [
+            {
+                "file": {
+                    "type": "DiskFile",
                     "path": "constraint/io_v1_pulldown.acf"
+                }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "constraint/alchitry.acf"
                 }
             }
         ],

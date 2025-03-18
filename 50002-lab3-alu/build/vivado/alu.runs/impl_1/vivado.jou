@@ -3,8 +3,8 @@
 # SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
 # IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
 # SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
-# Start of session at: Tue Mar 18 13:01:46 2025
-# Process ID         : 18204
+# Start of session at: Wed Mar 19 07:25:08 2025
+# Process ID         : 29544
 # Current directory  : C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.runs/impl_1
 # Command line       : vivado.exe -log alchitry_top.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source alchitry_top.tcl -notrace
 # Log file           : C:/Users/flgoa/Desktop/SUTD/Term4/50.002 CompStruct/G32-CompStruct/50002-lab3-alu/build/vivado/alu.runs/impl_1/alchitry_top.vdi
@@ -19,6 +19,6 @@
 # Host memory        : 16539 MB
 # Swap memory        : 19327 MB
 # Total Virtual      : 35866 MB
-# Available Virtual  : 23936 MB
+# Available Virtual  : 17711 MB
 #-----------------------------------------------------------
 source alchitry_top.tcl -notrace
