@@ -49,24 +49,23 @@ module alu (
         // First mux in diagram. Modified to be 4-input mux to accomodate
         // for alufn_signal[6], which will give access to
         // additional function: abs.
-            repeat(i, 32, 0, 1) {
-                mux_4a.in[i][0] = adder.out[i];
-                mux_4a.in[i][1] = multiplier.mul[i];
-                mux_4a.in[i][2] = abs.out[i];
-                mux_4a.in[i][3] = 0;
-                mux_4a.s0[i] = alufn_signal[1];
-                mux_4a.s1[i] = alufn_signal[6];
-            }
+        repeat(i, 32, 0, 1) {
+            mux_4a.in[i][0] = adder.out[i];
+            mux_4a.in[i][1] = multiplier.mul[i];
+            mux_4a.in[i][2] = abs.out[i];
+            mux_4a.in[i][3] = 0;
+            mux_4a.s0[i] = alufn_signal[1];
+            mux_4a.s1[i] = alufn_signal[6];
+        }
         // second mux in diagram.
-            repeat(i, 32, 0, 1) {
-                mux_4b.in[i][0] = mux_4a.out[i];
-                mux_4b.in[i][1] = boolean.bool[i];
-                mux_4b.in[i][2] = shifter.shift[i];
-                mux_4b.in[i][3] = cmp[i];
-                mux_4b.s0[i] = alufn_signal[4];
-                mux_4b.s1[i] = alufn_signal[5];
-                out[i] = mux_4b.out[i];
-            }
+        repeat(i, 32, 0, 1) {
+            mux_4b.in[i][0] = mux_4a.out[i];
+            mux_4b.in[i][1] = boolean.bool[i];
+            mux_4b.in[i][2] = shifter.shift[i];
+            mux_4b.in[i][3] = cmp[i];
+            mux_4b.s0[i] = alufn_signal[4];
+            mux_4b.s1[i] = alufn_signal[5];
+            out[i] = mux_4b.out[i];
         }
     }
 }
