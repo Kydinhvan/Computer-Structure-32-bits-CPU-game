@@ -1,0 +1,18 @@
+module abs #(
+    SIZE = 32 : SIZE > 1
+)(
+    input a[SIZE],        // First input (A)
+    input b[SIZE],        // Second input (B)
+    output out[SIZE]      // Absolute result
+) {
+    sig diff[SIZE];  // Store (a - b), can be negative
+
+    always {
+        if(a>=b){
+            diff = a - b;
+        }else{
+            diff = b - a;
+        }
+        out = diff;
+    }
+}
