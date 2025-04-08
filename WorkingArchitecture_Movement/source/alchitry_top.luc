@@ -1,0 +1,76 @@
+module alchitry_top (
+    input clk,              // 100MHz clock
+    input rst_n,            // reset button (active low)
+    output led[8],          // 8 user controllable LEDs
+    input usb_rx,           // USB->Serial input
+    output usb_tx,          // USB->Serial output
+    output io_led[3][8],    // LEDs on IO Shield
+    output io_segment[8],   // 7-segment LEDs on IO Shield
+    output io_select[4],    // Digit select on IO Shield
+    input io_button[5],     // 5 buttons on IO Shield
+    input io_dip[3][8],      // DIP switches on IO Shield
+    output data
+) {
+
+    sig rst                 // reset signal
+    const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 for sim, 10000000 otherwise in hardware
+    .clk(clk) {
+        // The reset conditioner is used to synchronize the reset signal to the FPGA
+        // clock. This ensures the entire FPGA comes out of reset at the same time.
+        edge_detector edge_dt_btn_left (#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_right(#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_shoot(#RISE(1), #FALL(0))
+//        edge_detector edge_dt_btn_redshoot (#RISE(1), #FALL(0))
+//        edge_detector edge_dt_btn_greenshoot(#RISE(1), #FALL(0))
+//        edge_detector edge_dt_btn_blueshoot(#RISE(1), #FALL(0))
+
+        
+        button_conditioner btn_cond_left(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_right(#CLK_FREQ(CLK_FREQ)) 
+        button_conditioner btn_cond_shoot(#CLK_FREQ(CLK_FREQ)) 
+//        button_conditioner btn_cond_redshoot(#CLK_FREQ(CLK_FREQ))
+//        button_conditioner btn_cond_greenshoot(#CLK_FREQ(CLK_FREQ)) 
+//        button_conditioner btn_cond_blueshoot(#CLK_FREQ(CLK_FREQ))
+        reset_conditioner reset_cond
+        
+        .rst(rst){
+
+            //player_mode player_mode(.io_button(io_button), .io_dip(io_dip), 
+            game_data_path game_data_path
+            //game_regfile game_regfile
+        }
+    }
+
+    always {
+        reset_cond.in = ~rst_n  // input raw inverted reset signal
+        rst = reset_cond.out    // conditioned reset
+
+        led = 8h00              // turn LEDs off
+
+        usb_tx = usb_rx;         // echo the serial data
+
+        io_segment = 8hF
+        io_select = 4hF
+        led = 8h00
+        data = 0
+        io_led = 3x{{8h00}}
+        
+        btn_cond_left.in = io_button[3]
+        btn_cond_right.in = io_button[4]
+        btn_cond_shoot.in = io_button[1]
+        edge_dt_btn_left.in = btn_cond_left.out
+        edge_dt_btn_right.in = btn_cond_right.out
+        edge_dt_btn_shoot.in = btn_cond_shoot.out
+        
+        game_data_path.left_btn = edge_dt_btn_left.out
+        game_data_path.right_btn = edge_dt_btn_right.out
+        game_data_path.shoot_btn = edge_dt_btn_shoot.out
+        
+        io_segment = game_data_path.io_segment
+        io_select = game_data_path.io_select
+        data = game_data_path.data_out
+        led = game_data_path.led
+        io_led = game_data_path.io_led 
+        
+    }
+}
