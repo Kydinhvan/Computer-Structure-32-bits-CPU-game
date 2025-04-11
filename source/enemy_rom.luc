@@ -21,13 +21,13 @@ module enemy_rom #(
         // Wave 1
         {4d2, 4d5, 4d9},
         // Wave 0
-        {4d3, 4d6, 4d9}
+        {4d3, 4d8, 4d13}
     }
     
     const ENEMY_WAVES_Y = {
         {4d2, 4d2, 4d2},
         {4d3, 4d3, 4d3},
-        {4d4, 4d4, 4d4}
+        {4d3, 4d7, 4d3}
     }
     
     const ENEMY_COLOR = {

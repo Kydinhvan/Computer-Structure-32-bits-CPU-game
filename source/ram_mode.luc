@@ -17,14 +17,16 @@ module ram_mode #(
     
     input player_pos_x_out[32],
     input player_pos_y_out[32],
+    
+    input bullet_colour_out[32],
     input player_bullet_x_out[32],
     input player_bullet_y_out[32],
     input bullet_active_out,
+    input bullet_slow_clk_out,
+    
     input enemy_A_active_out,
     input enemy_B_active_out,
     input enemy_C_active_out,
-    
-    input bullet_slow_clk_out,
     
     input enemy_A_x_out[32],
     input enemy_A_y_out[32],
@@ -40,9 +42,9 @@ module ram_mode #(
     
     output data
 ) {
-    const ENCODING_AMOUNT = 4 
-    // blue (011), DIM greem (010), DIM RED (001), OFF(000)
-    const LEDCOLOR = {24h030000, 24h000003, 24h000300, 24h000000}
+    const ENCODING_AMOUNT = 5 
+    // white(100), blue (011), DIM green (010), DIM RED (001), OFF(000)
+    const LEDCOLOR = {24h0F0F0F, 24h030000, 24h000003, 24h000300, 24h000000}
     index_reverser index_reverser(#COLUMN_DIMENSION(COLUMN_DIMENSION), #SIZE($clog2(PIXEL_COUNT)))
     enum States {
         START_STATE,
@@ -116,24 +118,27 @@ module ram_mode #(
         // connect player location to RAM
         ram.player_x_pos = player_pos_x_out
         ram.player_y_pos = player_pos_y_out
+        
+        // connect bullet properties to RAM
         ram.bullet_x = player_bullet_x_out
         ram.bullet_y = player_bullet_y_out
         ram.bullet_active = bullet_active_out
+        ram.bullet_colour_out = bullet_colour_out
         
         // connect enemy location to RAM
         ram.enemy_A_x = enemy_A_x_out
         ram.enemy_A_y = enemy_A_y_out
-        ram.enemy_A_color = enemy_A_color_out[1:0] // only 2-bit encoding for color
+        ram.enemy_A_color = enemy_A_color_out[2:0] // only 2-bit encoding for color
         ram.enemy_A_active_out = enemy_A_active_out
         
         ram.enemy_B_x = enemy_B_x_out
         ram.enemy_B_y = enemy_B_y_out
-        ram.enemy_B_color = enemy_B_color_out[1:0] // only 2-bit encoding
+        ram.enemy_B_color = enemy_B_color_out[2:0] // only 2-bit encoding
         ram.enemy_B_active_out = enemy_B_active_out
         
         ram.enemy_C_x = enemy_C_x_out
         ram.enemy_C_y = enemy_C_y_out
-        ram.enemy_C_color = enemy_C_color_out[1:0] // only 2-bit encoding
+        ram.enemy_C_color = enemy_C_color_out[2:0] // only 2-bit encoding
         ram.enemy_C_active_out = enemy_C_active_out
         
         // connect reverser to led_strip 

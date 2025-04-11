@@ -219,7 +219,7 @@ module game_regfile #(
         enemy_C_active_out = enemy_C_active.q
         
         io_led[0] = player_x_pos.q// player position 
-        io_led[1] = enemy_A_x.q
+        io_led[1] = bullet_y.q
         io_led[2] = enemy_A_y.q
         
     }

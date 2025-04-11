@@ -18,6 +18,7 @@ module data_ram #(
     
     input player_x_pos[$clog2(COLUMN_DIMENSION)],
     input player_y_pos[$clog2(ROW_DIMENSION)],
+    input bullet_colour_out[3],
     input bullet_x[$clog2(COLUMN_DIMENSION)],
     input bullet_y[$clog2(ROW_DIMENSION)],
     input bullet_active,
@@ -26,20 +27,20 @@ module data_ram #(
     //enemy stuffs
     input enemy_A_x[$clog2(COLUMN_DIMENSION)],
     input enemy_A_y[$clog2(ROW_DIMENSION)],
-    input enemy_A_color[2],
+    input enemy_A_color[3],
     input enemy_A_active_out,
     
     input enemy_B_x[$clog2(COLUMN_DIMENSION)],
     input enemy_B_y[$clog2(ROW_DIMENSION)],
-    input enemy_B_color[2],
+    input enemy_B_color[3],
     input enemy_B_active_out,
     
     input enemy_C_x[$clog2(COLUMN_DIMENSION)],
     input enemy_C_y[$clog2(ROW_DIMENSION)],
-    input enemy_C_color[2],    
+    input enemy_C_color[3],    
     input enemy_C_active_out,
     
-    output out_encoding[2],
+    output out_encoding[3],
     output ready,
     output debug_address_pointer[$clog2($resize(ROW_DIMENSION*COLUMN_DIMENSION, 16))],
     output debug_data[3]
@@ -98,9 +99,9 @@ module data_ram #(
     dff enemy_C_writer_pointer[$clog2(DEPTH)](.clk(clk), .rst(rst), #INIT(0))
     
     const BACKGROUND_COLOR = b00
-    const PLAYER_COLOR = b11
-    const BULLET_COLOR = b10
-    const ENEMY_COLOR = b01
+    const PLAYER_COLOR = b100
+    const BULLET_COLOR = b010
+    const ENEMY_COLOR = b001
     
     simple_dual_port_ram ram(.rclk(clk), .wclk(clk), #ENTRIES(DEPTH), #WIDTH($clog2(ENCODING_AMOUNT)))
     
@@ -313,7 +314,7 @@ module data_ram #(
             States.WRITE_BULLET:
                 ram.write_enable = b1
                 ram.waddr = bullet_writer_pointer.q
-                ram.write_data = BULLET_COLOR
+                ram.write_data = bullet_colour_out
                 bullet_written.d = 1
                 bullet_last_addr.d = bullet_writer_pointer.q
                 fsm.d = States.IDLE

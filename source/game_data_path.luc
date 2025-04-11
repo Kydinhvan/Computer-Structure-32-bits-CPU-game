@@ -6,20 +6,17 @@ module game_data_path #(
     BULLET_SLOW_CLK_DIV ~ 24 : BULLET_SLOW_CLK_DIV > 0
 ) (
     // Player controls
-    //input red_bullet_btn,
-    //input green_bullet_btn,
-    //input blue_bullet_btn,
+    input redshoot_btn,
+    input greenshoot_btn,
+    //input blueshoot_btn,
     input left_btn,
     input right_btn,
-    input shoot_btn,
+    //input shoot_btn,
     input start_btn,
     
     //input start_button,
     input clk,  // clock
     input rst,  // reset
-    
-    //TEST
-    //input io_button[5],
     
     // Outputs
     output led[8],
@@ -39,12 +36,12 @@ module game_data_path #(
     
     game_cu game_cu(
         //.io_button(io_button),
-        //.red_bullet_btn(red_bullet_btn),
-        //.green_bullet_btn(green_bullet_btn),
-        //.blue_bullet_btn(blue_bullet_btn),
         .left_btn(left_btn),
         .right_btn(right_btn),
-        .shoot_btn(shoot_btn),
+        //.shoot_btn(shoot_btn),
+        .redshoot_btn(redshoot_btn),
+        .greenshoot_btn(greenshoot_btn),
+        //.blueshoot_btn(blueshoot_btn),
         .bullet_slow_clk_out(bullet_slow_clk.value),
         .start_btn(start_btn),
         .rst(rst),
@@ -75,6 +72,7 @@ module game_data_path #(
         .start_btn(start_btn),
         .player_pos_x_out(game_regfile.player_pos_x_out),
         .player_pos_y_out(game_regfile.player_pos_y_out),
+        .bullet_colour_out(game_regfile.bullet_color_out),
         .player_bullet_x_out(game_regfile.player_bullet_x_out),
         .player_bullet_y_out(game_regfile.player_bullet_y_out),
         .bullet_active_out(game_regfile.bullet_active_out),
@@ -120,6 +118,7 @@ module game_data_path #(
             b010 : input_alu_b = 14
             b011 : input_alu_b = 2
             b100 : input_alu_b = 0
+            b101 : input_alu_b = 3
             default: input_alu_b = 0
         }
         

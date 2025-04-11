@@ -14,7 +14,10 @@ module game_cu #(
     //    input blue_bullet_btn,
     input left_btn,
     input right_btn,
-    input shoot_btn,
+    //input shoot_btn,
+    input redshoot_btn,
+    input greenshoot_btn,
+    //input blueshoot_btn,
     input start_btn,
     
     output alufn_signal[6],
@@ -47,6 +50,9 @@ module game_cu #(
         CHECK_LEFT_BOUND,
         MOVE_RIGHT,
         MOVE_LEFT,
+        SET_RED_BULLET_COLOR,
+        SET_GREEN_BULLET_COLOR,
+        SET_BLUE_BULLET_COLOR,
         BULLET_ACTIVE,
         BULLET_X_POS,
         CHECK_BULLET_BOUNDARY,
@@ -181,12 +187,24 @@ module game_cu #(
                     else if(left_btn){
                         game_fsm.d = GameStates.CHECK_LEFT_BOUND 
                     }
-                    else if(shoot_btn){
+                    else if(redshoot_btn){ // check the button color
                         regfile_ra2 = d13
                         if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
-                            game_fsm.d = GameStates.BULLET_ACTIVE
+                            game_fsm.d = GameStates.SET_RED_BULLET_COLOR
                         }
                     }
+                    else if(greenshoot_btn){ // check the button color
+                        regfile_ra2 = d13
+                        if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
+                            game_fsm.d = GameStates.SET_GREEN_BULLET_COLOR
+                        }
+                    }
+                    //else if(blueshoot_btn){ // check the button color
+                    //    regfile_ra2 = d13
+                    //    if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
+                    //        game_fsm.d = GameStates.SET_BLUE_BULLET_COLOR
+                    //    }
+                    //} 
                     else{
                         regfile_ra2 = d13
                         if(regfile_rd2[0] & bullet_slow_clk_edge.out){ // bullet is active and edge high
@@ -244,6 +262,29 @@ module game_cu #(
                     else{
                         game_fsm.d = GameStates.IDLE
                     }
+                GameStates.SET_RED_BULLET_COLOR:
+                    alufn_signal = b000000        // ADD
+                    bsel = b001                     // constant 1
+                    asel = b001                     // constant 0            
+                    regfile_we = 1
+                    regfile_wa = d6                 // write bullet color
+                    game_fsm.d = GameStates.BULLET_ACTIVE
+                
+                GameStates.SET_GREEN_BULLET_COLOR:
+                    alufn_signal = b000000        // ADD
+                    bsel = b011                     // constant 2
+                    asel = b001                     // constant 0             
+                    regfile_we = 1
+                    regfile_wa = d6                 // write bullet color
+                    game_fsm.d = GameStates.BULLET_ACTIVE
+                
+                GameStates.SET_BLUE_BULLET_COLOR:
+                    alufn_signal = b000000        // ADD
+                    bsel = b101                     // constant 3
+                    asel = b001                     // constant 0             
+                    regfile_we = 1
+                    regfile_wa = d6                 // write bullet color
+                    game_fsm.d = GameStates.BULLET_ACTIVE
                 
                 GameStates.BULLET_ACTIVE:
                     alufn_signal = b000000        //ADD
@@ -261,6 +302,7 @@ module game_cu #(
                     regfile_we = 1
                     regfile_wa = d7               // bullet_x
                     game_fsm.d = GameStates.IDLE
+
                 
                 GameStates.CHECK_BULLET_BOUNDARY:
                     alufn_signal = b110101        //CMPLT

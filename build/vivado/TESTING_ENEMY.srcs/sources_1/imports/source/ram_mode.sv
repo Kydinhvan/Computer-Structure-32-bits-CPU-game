@@ -21,13 +21,14 @@ module ram_mode #(
         input wire start_btn,
         input wire [31:0] player_pos_x_out,
         input wire [31:0] player_pos_y_out,
+        input wire [31:0] bullet_colour_out,
         input wire [31:0] player_bullet_x_out,
         input wire [31:0] player_bullet_y_out,
         input wire bullet_active_out,
+        input wire bullet_slow_clk_out,
         input wire enemy_A_active_out,
         input wire enemy_B_active_out,
         input wire enemy_C_active_out,
-        input wire bullet_slow_clk_out,
         input wire [31:0] enemy_A_x_out,
         input wire [31:0] enemy_A_y_out,
         input wire [31:0] enemy_A_color_out,
@@ -39,16 +40,16 @@ module ram_mode #(
         input wire [31:0] enemy_C_color_out,
         output reg data
     );
-    localparam ENCODING_AMOUNT = 3'h4;
-    localparam logic [3:0][23:0] LEDCOLOR = {{24'h30000, 24'h3, 24'h300, 24'h0}};
-    localparam _MP_SIZE_1378584268 = $clog2(PIXEL_COUNT);
-    localparam _MP_COLUMN_DIMENSION_1378584268 = COLUMN_DIMENSION;
-    logic [(_MP_SIZE_1378584268)-1:0] M_index_reverser_input_address;
-    logic [(_MP_SIZE_1378584268)-1:0] M_index_reverser_output_address;
+    localparam ENCODING_AMOUNT = 3'h5;
+    localparam logic [4:0][23:0] LEDCOLOR = {{24'hf0f0f, 24'h30000, 24'h3, 24'h300, 24'h0}};
+    localparam _MP_SIZE_1277190561 = $clog2(PIXEL_COUNT);
+    localparam _MP_COLUMN_DIMENSION_1277190561 = COLUMN_DIMENSION;
+    logic [(_MP_SIZE_1277190561)-1:0] M_index_reverser_input_address;
+    logic [(_MP_SIZE_1277190561)-1:0] M_index_reverser_output_address;
     
     index_reverser #(
-        .SIZE(_MP_SIZE_1378584268),
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1378584268)
+        .SIZE(_MP_SIZE_1277190561),
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1277190561)
     ) index_reverser (
         .input_address(M_index_reverser_input_address),
         .output_address(M_index_reverser_output_address)
@@ -57,14 +58,14 @@ module ram_mode #(
     
     localparam E_States_START_STATE = 1'h0;
     localparam E_States_GAME_STATE = 1'h1;
-    localparam _MP_RISE_500575542 = 1'h1;
-    localparam _MP_FALL_500575542 = 1'h0;
+    localparam _MP_RISE_1374438199 = 1'h1;
+    localparam _MP_FALL_1374438199 = 1'h0;
     logic M_bullet_slow_clk_edge_in;
     logic M_bullet_slow_clk_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_500575542),
-        .FALL(_MP_FALL_500575542)
+        .RISE(_MP_RISE_1374438199),
+        .FALL(_MP_FALL_1374438199)
     ) bullet_slow_clk_edge (
         .clk(clk),
         .in(M_bullet_slow_clk_edge_in),
@@ -72,14 +73,14 @@ module ram_mode #(
     );
     
     
-    localparam _MP_RISE_1308259485 = 1'h1;
-    localparam _MP_FALL_1308259485 = 1'h0;
+    localparam _MP_RISE_1135882612 = 1'h1;
+    localparam _MP_FALL_1135882612 = 1'h0;
     logic M_enemy_A_active_edge_in;
     logic M_enemy_A_active_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_1308259485),
-        .FALL(_MP_FALL_1308259485)
+        .RISE(_MP_RISE_1135882612),
+        .FALL(_MP_FALL_1135882612)
     ) enemy_A_active_edge (
         .clk(clk),
         .in(M_enemy_A_active_edge_in),
@@ -87,14 +88,14 @@ module ram_mode #(
     );
     
     
-    localparam _MP_RISE_1907796200 = 1'h1;
-    localparam _MP_FALL_1907796200 = 1'h0;
+    localparam _MP_RISE_531175840 = 1'h1;
+    localparam _MP_FALL_531175840 = 1'h0;
     logic M_enemy_B_active_edge_in;
     logic M_enemy_B_active_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_1907796200),
-        .FALL(_MP_FALL_1907796200)
+        .RISE(_MP_RISE_531175840),
+        .FALL(_MP_FALL_531175840)
     ) enemy_B_active_edge (
         .clk(clk),
         .in(M_enemy_B_active_edge_in),
@@ -102,14 +103,14 @@ module ram_mode #(
     );
     
     
-    localparam _MP_RISE_441201268 = 1'h1;
-    localparam _MP_FALL_441201268 = 1'h0;
+    localparam _MP_RISE_202087518 = 1'h1;
+    localparam _MP_FALL_202087518 = 1'h0;
     logic M_enemy_C_active_edge_in;
     logic M_enemy_C_active_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_441201268),
-        .FALL(_MP_FALL_441201268)
+        .RISE(_MP_RISE_202087518),
+        .FALL(_MP_FALL_202087518)
     ) enemy_C_active_edge (
         .clk(clk),
         .in(M_enemy_C_active_edge_in),
@@ -117,40 +118,41 @@ module ram_mode #(
     );
     
     
-    localparam _MP_ROW_DIMENSION_157653024 = ROW_DIMENSION;
-    localparam _MP_COLUMN_DIMENSION_157653024 = COLUMN_DIMENSION;
-    localparam _MP_ENCODING_AMOUNT_157653024 = 3'h4;
+    localparam _MP_ROW_DIMENSION_132895639 = ROW_DIMENSION;
+    localparam _MP_COLUMN_DIMENSION_132895639 = COLUMN_DIMENSION;
+    localparam _MP_ENCODING_AMOUNT_132895639 = 3'h5;
     logic M_ram_update;
     logic M_ram_enemy_A_update;
     logic M_ram_enemy_B_update;
     logic M_ram_enemy_C_update;
-    logic [($clog2(_MP_COLUMN_DIMENSION_157653024))-1:0] M_ram_player_x_pos;
-    logic [($clog2(_MP_ROW_DIMENSION_157653024))-1:0] M_ram_player_y_pos;
-    logic [($clog2(_MP_COLUMN_DIMENSION_157653024))-1:0] M_ram_bullet_x;
-    logic [($clog2(_MP_ROW_DIMENSION_157653024))-1:0] M_ram_bullet_y;
+    logic [($clog2(_MP_COLUMN_DIMENSION_132895639))-1:0] M_ram_player_x_pos;
+    logic [($clog2(_MP_ROW_DIMENSION_132895639))-1:0] M_ram_player_y_pos;
+    logic [2:0] M_ram_bullet_colour_out;
+    logic [($clog2(_MP_COLUMN_DIMENSION_132895639))-1:0] M_ram_bullet_x;
+    logic [($clog2(_MP_ROW_DIMENSION_132895639))-1:0] M_ram_bullet_y;
     logic M_ram_bullet_active;
-    logic [($clog2((5'h10)'(_MP_ROW_DIMENSION_157653024 * _MP_COLUMN_DIMENSION_157653024)))-1:0] M_ram_address;
-    logic [($clog2(_MP_COLUMN_DIMENSION_157653024))-1:0] M_ram_enemy_A_x;
-    logic [($clog2(_MP_ROW_DIMENSION_157653024))-1:0] M_ram_enemy_A_y;
-    logic [1:0] M_ram_enemy_A_color;
+    logic [($clog2((5'h10)'(_MP_ROW_DIMENSION_132895639 * _MP_COLUMN_DIMENSION_132895639)))-1:0] M_ram_address;
+    logic [($clog2(_MP_COLUMN_DIMENSION_132895639))-1:0] M_ram_enemy_A_x;
+    logic [($clog2(_MP_ROW_DIMENSION_132895639))-1:0] M_ram_enemy_A_y;
+    logic [2:0] M_ram_enemy_A_color;
     logic M_ram_enemy_A_active_out;
-    logic [($clog2(_MP_COLUMN_DIMENSION_157653024))-1:0] M_ram_enemy_B_x;
-    logic [($clog2(_MP_ROW_DIMENSION_157653024))-1:0] M_ram_enemy_B_y;
-    logic [1:0] M_ram_enemy_B_color;
+    logic [($clog2(_MP_COLUMN_DIMENSION_132895639))-1:0] M_ram_enemy_B_x;
+    logic [($clog2(_MP_ROW_DIMENSION_132895639))-1:0] M_ram_enemy_B_y;
+    logic [2:0] M_ram_enemy_B_color;
     logic M_ram_enemy_B_active_out;
-    logic [($clog2(_MP_COLUMN_DIMENSION_157653024))-1:0] M_ram_enemy_C_x;
-    logic [($clog2(_MP_ROW_DIMENSION_157653024))-1:0] M_ram_enemy_C_y;
-    logic [1:0] M_ram_enemy_C_color;
+    logic [($clog2(_MP_COLUMN_DIMENSION_132895639))-1:0] M_ram_enemy_C_x;
+    logic [($clog2(_MP_ROW_DIMENSION_132895639))-1:0] M_ram_enemy_C_y;
+    logic [2:0] M_ram_enemy_C_color;
     logic M_ram_enemy_C_active_out;
-    logic [1:0] M_ram_out_encoding;
+    logic [2:0] M_ram_out_encoding;
     logic M_ram_ready;
-    logic [($clog2((5'h10)'(_MP_ROW_DIMENSION_157653024 * _MP_COLUMN_DIMENSION_157653024)))-1:0] M_ram_debug_address_pointer;
+    logic [($clog2((5'h10)'(_MP_ROW_DIMENSION_132895639 * _MP_COLUMN_DIMENSION_132895639)))-1:0] M_ram_debug_address_pointer;
     logic [2:0] M_ram_debug_data;
     
     data_ram #(
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_157653024),
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_157653024),
-        .ENCODING_AMOUNT(_MP_ENCODING_AMOUNT_157653024)
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_132895639),
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_132895639),
+        .ENCODING_AMOUNT(_MP_ENCODING_AMOUNT_132895639)
     ) ram (
         .clk(clk),
         .rst(rst),
@@ -160,6 +162,7 @@ module ram_mode #(
         .enemy_C_update(M_ram_enemy_C_update),
         .player_x_pos(M_ram_player_x_pos),
         .player_y_pos(M_ram_player_y_pos),
+        .bullet_colour_out(M_ram_bullet_colour_out),
         .bullet_x(M_ram_bullet_x),
         .bullet_y(M_ram_bullet_y),
         .bullet_active(M_ram_bullet_active),
@@ -183,18 +186,18 @@ module ram_mode #(
     );
     
     
-    localparam _MP_PIXEL_COUNT_1290905774 = PIXEL_COUNT;
+    localparam _MP_PIXEL_COUNT_1192989061 = PIXEL_COUNT;
     logic M_driver_update;
     logic [23:0] M_driver_color;
     logic M_driver_clear;
-    logic [($clog2(_MP_PIXEL_COUNT_1290905774))-1:0] M_driver_pixel_address;
+    logic [($clog2(_MP_PIXEL_COUNT_1192989061))-1:0] M_driver_pixel_address;
     logic M_driver_data;
     logic M_driver_next_pixel;
     logic M_driver_reset;
     logic M_driver_done;
     
     ws2812b_driver #(
-        .PIXEL_COUNT(_MP_PIXEL_COUNT_1290905774)
+        .PIXEL_COUNT(_MP_PIXEL_COUNT_1192989061)
     ) driver (
         .clk(clk),
         .rst(rst),
@@ -260,17 +263,18 @@ module ram_mode #(
         M_ram_bullet_x = player_bullet_x_out;
         M_ram_bullet_y = player_bullet_y_out;
         M_ram_bullet_active = bullet_active_out;
+        M_ram_bullet_colour_out = bullet_colour_out;
         M_ram_enemy_A_x = enemy_A_x_out;
         M_ram_enemy_A_y = enemy_A_y_out;
-        M_ram_enemy_A_color = enemy_A_color_out[1'h1:1'h0];
+        M_ram_enemy_A_color = enemy_A_color_out[2'h2:1'h0];
         M_ram_enemy_A_active_out = enemy_A_active_out;
         M_ram_enemy_B_x = enemy_B_x_out;
         M_ram_enemy_B_y = enemy_B_y_out;
-        M_ram_enemy_B_color = enemy_B_color_out[1'h1:1'h0];
+        M_ram_enemy_B_color = enemy_B_color_out[2'h2:1'h0];
         M_ram_enemy_B_active_out = enemy_B_active_out;
         M_ram_enemy_C_x = enemy_C_x_out;
         M_ram_enemy_C_y = enemy_C_y_out;
-        M_ram_enemy_C_color = enemy_C_color_out[1'h1:1'h0];
+        M_ram_enemy_C_color = enemy_C_color_out[2'h2:1'h0];
         M_ram_enemy_C_active_out = enemy_C_active_out;
         M_index_reverser_input_address = M_driver_pixel_address;
         M_driver_update = 1'h1;

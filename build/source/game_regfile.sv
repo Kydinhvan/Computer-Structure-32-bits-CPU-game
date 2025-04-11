@@ -367,7 +367,7 @@ module game_regfile #(
         enemy_C_color_out = D_enemy_C_color_q;
         enemy_C_active_out = D_enemy_C_active_q;
         io_led[1'h0] = D_player_x_pos_q;
-        io_led[1'h1] = D_enemy_A_x_q;
+        io_led[1'h1] = D_bullet_y_q;
         io_led[2'h2] = D_enemy_A_y_q;
     end
     

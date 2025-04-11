@@ -19,8 +19,8 @@ module enemy_rom #(
         output reg [31:0] enemy_C_y_rom_out,
         output reg [31:0] enemy_C_color_rom_out
     );
-    localparam logic [2:0][2:0][3:0] ENEMY_WAVES_X = {{{{4'h4, 4'h6, 4'h8}}, {{4'h2, 4'h5, 4'h9}}, {{4'h3, 4'h6, 4'h9}}}};
-    localparam logic [2:0][2:0][3:0] ENEMY_WAVES_Y = {{{{4'h2, 4'h2, 4'h2}}, {{4'h3, 4'h3, 4'h3}}, {{4'h4, 4'h4, 4'h4}}}};
+    localparam logic [2:0][2:0][3:0] ENEMY_WAVES_X = {{{{4'h4, 4'h6, 4'h8}}, {{4'h2, 4'h5, 4'h9}}, {{4'h3, 4'h8, 4'hd}}}};
+    localparam logic [2:0][2:0][3:0] ENEMY_WAVES_Y = {{{{4'h2, 4'h2, 4'h2}}, {{4'h3, 4'h3, 4'h3}}, {{4'h3, 4'h7, 4'h3}}}};
     localparam logic [2:0][2:0][1:0] ENEMY_COLOR = {{{{2'h1, 2'h2, 2'h3}}, {{2'h2, 2'h1, 2'h2}}, {{2'h3, 2'h2, 2'h1}}}};
     always @* begin
         enemy_A_x_rom_out = ENEMY_WAVES_X[enemy_stage_pointer_out][1'h0];

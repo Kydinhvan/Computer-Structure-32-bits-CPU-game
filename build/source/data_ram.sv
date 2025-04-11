@@ -17,23 +17,24 @@ module data_ram #(
         input wire enemy_C_update,
         input wire [($clog2(COLUMN_DIMENSION))-1:0] player_x_pos,
         input wire [($clog2(ROW_DIMENSION))-1:0] player_y_pos,
+        input wire [2:0] bullet_colour_out,
         input wire [($clog2(COLUMN_DIMENSION))-1:0] bullet_x,
         input wire [($clog2(ROW_DIMENSION))-1:0] bullet_y,
         input wire bullet_active,
         input wire [($clog2((5'h10)'(ROW_DIMENSION * COLUMN_DIMENSION)))-1:0] address,
         input wire [($clog2(COLUMN_DIMENSION))-1:0] enemy_A_x,
         input wire [($clog2(ROW_DIMENSION))-1:0] enemy_A_y,
-        input wire [1:0] enemy_A_color,
+        input wire [2:0] enemy_A_color,
         input wire enemy_A_active_out,
         input wire [($clog2(COLUMN_DIMENSION))-1:0] enemy_B_x,
         input wire [($clog2(ROW_DIMENSION))-1:0] enemy_B_y,
-        input wire [1:0] enemy_B_color,
+        input wire [2:0] enemy_B_color,
         input wire enemy_B_active_out,
         input wire [($clog2(COLUMN_DIMENSION))-1:0] enemy_C_x,
         input wire [($clog2(ROW_DIMENSION))-1:0] enemy_C_y,
-        input wire [1:0] enemy_C_color,
+        input wire [2:0] enemy_C_color,
         input wire enemy_C_active_out,
-        output reg [1:0] out_encoding,
+        output reg [2:0] out_encoding,
         output reg ready,
         output reg [($clog2((5'h10)'(ROW_DIMENSION * COLUMN_DIMENSION)))-1:0] debug_address_pointer,
         output reg [2:0] debug_data
@@ -82,20 +83,20 @@ module data_ram #(
     logic [($clog2(DEPTH))-1:0] D_enemy_B_writer_pointer_d, D_enemy_B_writer_pointer_q = 1'h0;
     logic [($clog2(DEPTH))-1:0] D_enemy_C_writer_pointer_d, D_enemy_C_writer_pointer_q = 1'h0;
     localparam BACKGROUND_COLOR = 2'h0;
-    localparam PLAYER_COLOR = 2'h3;
-    localparam BULLET_COLOR = 2'h2;
-    localparam ENEMY_COLOR = 2'h1;
-    localparam _MP_WIDTH_1933953633 = $clog2(ENCODING_AMOUNT);
-    localparam _MP_ENTRIES_1933953633 = DEPTH;
-    logic [((($clog2(_MP_ENTRIES_1933953633)-1) - (0) + 1))-1:0] M_ram_waddr;
-    logic [(((_MP_WIDTH_1933953633-1) - (0) + 1))-1:0] M_ram_write_data;
+    localparam PLAYER_COLOR = 3'h4;
+    localparam BULLET_COLOR = 3'h2;
+    localparam ENEMY_COLOR = 3'h1;
+    localparam _MP_WIDTH_1627187325 = $clog2(ENCODING_AMOUNT);
+    localparam _MP_ENTRIES_1627187325 = DEPTH;
+    logic [((($clog2(_MP_ENTRIES_1627187325)-1) - (0) + 1))-1:0] M_ram_waddr;
+    logic [(((_MP_WIDTH_1627187325-1) - (0) + 1))-1:0] M_ram_write_data;
     logic M_ram_write_enable;
-    logic [((($clog2(_MP_ENTRIES_1933953633)-1) - (0) + 1))-1:0] M_ram_raddr;
-    logic [(((_MP_WIDTH_1933953633-1) - (0) + 1))-1:0] M_ram_read_data;
+    logic [((($clog2(_MP_ENTRIES_1627187325)-1) - (0) + 1))-1:0] M_ram_raddr;
+    logic [(((_MP_WIDTH_1627187325-1) - (0) + 1))-1:0] M_ram_read_data;
     
     simple_dual_port_ram #(
-        .WIDTH(_MP_WIDTH_1933953633),
-        .ENTRIES(_MP_ENTRIES_1933953633)
+        .WIDTH(_MP_WIDTH_1627187325),
+        .ENTRIES(_MP_ENTRIES_1627187325)
     ) ram (
         .rclk(clk),
         .wclk(clk),
@@ -168,27 +169,27 @@ module data_ram #(
             5'h1: begin
                 M_ram_write_enable = 1'h1;
                 M_ram_waddr = D_player_writer_pointer_q;
-                M_ram_write_data = 2'h3;
+                M_ram_write_data = 3'h4;
                 D_fsm_d = 5'h3;
                 debug_data = 2'h2;
             end
             5'h3: begin
                 M_ram_write_enable = 1'h1;
                 M_ram_waddr = D_player_writer_pointer_q + COLUMN_DIMENSION;
-                M_ram_write_data = 2'h3;
+                M_ram_write_data = 3'h4;
                 D_fsm_d = 5'h4;
                 debug_data = 2'h2;
             end
             5'h4: begin
                 M_ram_write_enable = 1'h1;
                 M_ram_waddr = D_player_writer_pointer_q + 1'h1 + COLUMN_DIMENSION;
-                M_ram_write_data = 2'h3;
+                M_ram_write_data = 3'h4;
                 D_fsm_d = 5'h2;
             end
             5'h2: begin
                 M_ram_write_enable = 1'h1;
                 M_ram_waddr = D_player_writer_pointer_q + COLUMN_DIMENSION - 1'h1;
-                M_ram_write_data = 2'h3;
+                M_ram_write_data = 3'h4;
                 if (bullet_active && D_bullet_written_q) begin
                     D_bullet_writer_pointer_d = D_bullet_last_addr_q;
                     D_fsm_d = 5'ha;
@@ -324,7 +325,7 @@ module data_ram #(
             5'h9: begin
                 M_ram_write_enable = 1'h1;
                 M_ram_waddr = D_bullet_writer_pointer_q;
-                M_ram_write_data = 2'h2;
+                M_ram_write_data = bullet_colour_out;
                 D_bullet_written_d = 1'h1;
                 D_bullet_last_addr_d = D_bullet_writer_pointer_q;
                 D_fsm_d = 5'h1d;

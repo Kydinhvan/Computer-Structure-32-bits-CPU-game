@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
-| Date             : Fri Apr 11 19:37:30 2025
+| Date             : Fri Apr 11 20:42:00 2025
 | Host             : Freddie running 64-bit major release  (build 9200)
 | Command          : report_power -file alchitry_top_power_routed.rpt -pb alchitry_top_power_summary_routed.pb -rpx alchitry_top_power_routed.rpx
 | Design           : alchitry_top
@@ -30,7 +30,7 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.072        |
+| Total On-Chip Power (W)  | 0.073        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
 | Dynamic (W)              | 0.001        |
@@ -53,17 +53,17 @@ Table of Contents
 | On-Chip                  | Power (W) | Used     | Available | Utilization (%) |
 +--------------------------+-----------+----------+-----------+-----------------+
 | Clocks                   |    <0.001 |        3 |       --- |             --- |
-| Slice Logic              |    <0.001 |     1210 |       --- |             --- |
-|   LUT as Logic           |    <0.001 |      697 |     20800 |            3.35 |
+| Slice Logic              |    <0.001 |     1281 |       --- |             --- |
+|   LUT as Logic           |    <0.001 |      644 |     20800 |            3.10 |
+|   CARRY4                 |    <0.001 |       32 |      8150 |            0.39 |
 |   LUT as Distributed RAM |    <0.001 |       16 |      9600 |            0.17 |
-|   CARRY4                 |    <0.001 |       28 |      8150 |            0.34 |
-|   Register               |    <0.001 |      321 |     41600 |            0.77 |
-|   F7/F8 Muxes            |    <0.001 |       16 |     32600 |            0.05 |
-|   Others                 |     0.000 |       47 |       --- |             --- |
-| Signals                  |    <0.001 |     1040 |       --- |             --- |
-| I/O                      |    <0.001 |       53 |       170 |           31.18 |
+|   Register               |    <0.001 |      345 |     41600 |            0.83 |
+|   F7/F8 Muxes            |    <0.001 |       15 |     32600 |            0.05 |
+|   Others                 |     0.000 |       53 |       --- |             --- |
+| Signals                  |    <0.001 |     1098 |       --- |             --- |
+| I/O                      |    <0.001 |       54 |       170 |           31.76 |
 | Static Power             |     0.072 |          |           |                 |
-| Total                    |     0.072 |          |           |                 |
+| Total                    |     0.073 |          |           |                 |
 +--------------------------+-----------+----------+-----------+-----------------+
 
 

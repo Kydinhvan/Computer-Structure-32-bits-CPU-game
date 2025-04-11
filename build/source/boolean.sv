@@ -19,15 +19,15 @@ module boolean #(
     logic [31:0][3:0] M_mux_4_32_in;
     logic [31:0] M_mux_4_32_out;
     
-    genvar idx_0_1912184926;
+    genvar idx_0_517179598;
     
     generate
-        for (idx_0_1912184926 = 0; idx_0_1912184926 < 32; idx_0_1912184926 = idx_0_1912184926 + 1) begin: forLoop_idx_0_1912184926
+        for (idx_0_517179598 = 0; idx_0_517179598 < 32; idx_0_517179598 = idx_0_517179598 + 1) begin: forLoop_idx_0_517179598
             mux_4 mux_4_32 (
-                .s0(M_mux_4_32_s0[idx_0_1912184926]),
-                .s1(M_mux_4_32_s1[idx_0_1912184926]),
-                .in(M_mux_4_32_in[idx_0_1912184926]),
-                .out(M_mux_4_32_out[idx_0_1912184926])
+                .s0(M_mux_4_32_s0[idx_0_517179598]),
+                .s1(M_mux_4_32_s1[idx_0_517179598]),
+                .in(M_mux_4_32_in[idx_0_517179598]),
+                .out(M_mux_4_32_out[idx_0_517179598])
             );
         end
     endgenerate
