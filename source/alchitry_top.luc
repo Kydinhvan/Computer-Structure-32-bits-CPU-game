@@ -8,57 +8,99 @@ module alchitry_top (
     output io_segment[8],   // 7-segment LEDs on IO Shield
     output io_select[4],    // Digit select on IO Shield
     input io_button[5],     // 5 buttons on IO Shield
-    input io_dip[3][8],      // DIP switches on IO Shield
+    input io_dip[3][8],     // DIP switches on IO Shield
+    input left_btn,
+    input right_btn,
+    input red_btn,
+    input green_btn,
+    input blue_btn,
     output data
+    
 ) {
     
     sig rst                 // reset signal
-    
-    const COLUMN_DIMENSION = 5d16 // how many "columns"? 
-    const ROW_DIMENSION = 5d16 // how many "rows"?
-    const PIXEL_COUNT = 10d256 // how many LEDs in total? 
+    const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 for sim, 10000000 otherwise in hardware
+    const BULLET_SLOW_CLK_DIV = $is_sim() ? 9 : 22 //
     
     .clk(clk) {
         // The reset conditioner is used to synchronize the reset signal to the FPGA
         // clock. This ensures the entire FPGA comes out of reset at the same time.
+        edge_detector edge_dt_btn_left (#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_right(#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_red_shoot (#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_green_shoot(#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_blue_shoot(#RISE(0), #FALL(1))
+        
+        
+        button_conditioner btn_cond_left(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_right(#CLK_FREQ(CLK_FREQ)) 
+        button_conditioner btn_cond_red_shoot(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_green_shoot(#CLK_FREQ(CLK_FREQ)) 
+        button_conditioner btn_cond_blue_shoot(#CLK_FREQ(CLK_FREQ))
+        
         reset_conditioner reset_cond
+        
         .rst(rst){
-            
-            player_mode player_mode(.io_button(io_button), .io_dip(io_dip), 
-                #COLUMN_DIMENSION(COLUMN_DIMENSION), #ROW_DIMENSION(ROW_DIMENSION),
-                #PIXEL_COUNT(PIXEL_COUNT))
+            game_data_path game_data_path (#BULLET_SLOW_CLK_DIV(BULLET_SLOW_CLK_DIV))
         }
     }
-    const CLK_FREQ = $is_sim() ? 1000 : 100000000 // put 1000 for sim, 10000000 otherwise in hardware
-    
-    alu_manual_tester alu_manual(.clk(clk), .rst(rst), .io_button(io_button), .io_dip(io_dip), #CLK_FREQ(CLK_FREQ)) 
     
     always {
         reset_cond.in = ~rst_n  // input raw inverted reset signal
         rst = reset_cond.out    // conditioned reset
         
-        usb_tx = usb_rx         // loop serial port
+        led = 8h00              // turn LEDs off
+        
+        usb_tx = usb_rx         // echo the serial data
+        
         io_segment = 8hF
         io_select = 4hF
         led = 8h00
         data = 0
         io_led = 3x{{8h00}}
         
-        case (io_dip[2][2:0]){
-            b000:
-                io_segment = alu_manual.io_segment
-                io_select = alu_manual.io_select         
-                io_led = alu_manual.io_led
-                led = alu_manual.led
-            b010:
-                io_segment = player_mode.io_segment
-                io_select = player_mode.io_select
-                data = player_mode.data
-                led = player_mode.led
-                io_led = player_mode.io_led 
-
-        }
         
+        //btn_cond_left.in = io_button[4]
+        //btn_cond_right.in = io_button[3]
+        //btn_cond_red_shoot.in = io_button[0]
+        //btn_cond_green_shoot.in = io_button[1]
+        //btn_cond_blue_shoot.in = io_button[2]
+        
+        btn_cond_left.in = left_btn
+        btn_cond_right.in = right_btn
+        btn_cond_red_shoot.in = red_btn
+        btn_cond_green_shoot.in = green_btn
+        btn_cond_blue_shoot.in = blue_btn
+        
+        edge_dt_btn_left.in = btn_cond_left.out
+        edge_dt_btn_right.in = btn_cond_right.out
+        edge_dt_btn_red_shoot.in = btn_cond_red_shoot.out
+        edge_dt_btn_blue_shoot.in = btn_cond_blue_shoot.out
+        edge_dt_btn_green_shoot.in = btn_cond_green_shoot.out
+        
+        game_data_path.left_btn = edge_dt_btn_left.out
+        game_data_path.right_btn = edge_dt_btn_right.out
+        game_data_path.red_btn = edge_dt_btn_red_shoot.out
+        game_data_path.green_btn = edge_dt_btn_green_shoot.out
+        game_data_path.blue_btn = edge_dt_btn_blue_shoot.out
+        
+        io_segment = game_data_path.io_segment
+        io_select = game_data_path.io_select
+        data = game_data_path.data_out
+        led = game_data_path.led
+        io_led = game_data_path.io_led 
+        
+        io_led[0][0] = left_btn            // Raw button signal
+        io_led[0][1] = ~left_btn           // Inverted raw signal
+        io_led[0][2] = btn_cond_left.out   // Conditioned button signal
+        io_led[0][3] = edge_dt_btn_left.out // Edge detected signal
+        
+        // Also monitor right button
+        io_led[0][4] = right_btn           // Raw right button signal
+        io_led[0][5] = ~right_btn          // Inverted right button signal
+        io_led[0][6] = btn_cond_right.out  // Conditioned right button signal
+        io_led[0][7] = edge_dt_btn_right.out
+        io_led[2] = game_data_path.player_pos_x_out
         
     }
 }

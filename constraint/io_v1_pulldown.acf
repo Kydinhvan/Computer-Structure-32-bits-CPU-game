@@ -72,4 +72,9 @@ PINOUT(V1), STANDARD(LVCMOS33) {
     pin io_segment[7] A49
     
     pin data C40
+    pin left_btn C27// flipped
+    pin right_btn C30
+    pin red_btn C23
+    pin green_btn C24
+    pin blue_btn C21
 }

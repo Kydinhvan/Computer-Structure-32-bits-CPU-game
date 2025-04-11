@@ -1,7 +1,7 @@
 module alu (
     input a[32],
     input b[32],
-    input alufn_signal[7],
+    input alufn_signal[6],
     output out[32],
     output z,
     output v,
@@ -13,9 +13,8 @@ module alu (
     boolean boolean;
     compact_shifter shifter;
     multiplier multiplier;
-    abs abs;
-    mux_4 mux_4a[32];
-    mux_4 mux_4b[32];
+    mux_2 mux_2[32];
+    mux_4 mux_4[32];
 
     always {
         // Default ALU operations
@@ -43,27 +42,24 @@ module alu (
         multiplier.a = a;
         multiplier.b = b;   
         
-        abs.a = a;
-        abs.b = b;
+     
         
             repeat(i, 32, 0, 1) {
-                mux_4a.in[i][0] = adder.out[i];
-                mux_4a.in[i][1] = multiplier.mul[i];
-                mux_4a.in[i][2] = abs.out[i];
-                mux_4a.in[i][3] = 0;
-                mux_4a.s0[i] = alufn_signal[1];
-                mux_4a.s1[i] = alufn_signal[6];
+                mux_2.in[i][0] = adder.out[i];
+                mux_2.in[i][1] = multiplier.mul[i];
+                mux_2.s0[i] = alufn_signal[1];
             }
 
             repeat(i, 32, 0, 1) {
-                mux_4b.in[i][0] = mux_4a.out[i];
-                mux_4b.in[i][1] = boolean.bool[i];
-                mux_4b.in[i][2] = shifter.shift[i];
-                mux_4b.in[i][3] = cmp[i];
-                mux_4b.s0[i] = alufn_signal[4];
-                mux_4b.s1[i] = alufn_signal[5];
-                out[i] = mux_4b.out[i];
+                mux_4.in[i][0] = mux_2.out[i];
+                mux_4.in[i][1] = boolean.bool[i];
+                mux_4.in[i][2] = shifter.shift[i];
+                mux_4.in[i][3] = cmp[i];
+                mux_4.s0[i] = alufn_signal[4];
+                mux_4.s1[i] = alufn_signal[5];
+                out[i] = mux_4.out[i];
             }
+                
         }
     }
 

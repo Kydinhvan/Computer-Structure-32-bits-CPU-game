@@ -1,0 +1,111 @@
+module ram_mode #(
+    COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
+    ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0,
+    PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
+    BUFFER_SIZE = 1024 : BUFFER_SIZE > 0 // ensure this value is larger than PIXEL_COUNT * $clog2(COLOR_ENCODING)
+) (
+    input clk,              // 100MHz clock
+    input rst,            // reset button (active low)
+    output led[8],          // 8 user controllable LEDs
+    output io_led[3][8],    // LEDs on IO Shield
+    output io_segment[8],   // 7-segment LEDs on IO Shield
+    output io_select[4],    // Digit select on IO Shield
+    input left_btn,
+    input right_btn,
+    input red_btn,
+    input blue_btn,
+    input green_btn,
+    //input io_dip[3][8],      // DIP switches on IO Shield
+    
+    input player_pos_x_out[32],
+    input player_pos_y_out[32],
+    input player_bullet_x_out[32],
+    input player_bullet_y_out[32],
+    input bullet_active_out,
+    input check_boundary_out,
+    input bullet_slow_clk_out,
+    input bullet_color_out[32], 
+    output data
+) {
+    const ENCODING_AMOUNT = 4 
+    // OFF WHITE (11), DIM BLUE (10), DIM RED (01), OFF(00)
+    const LEDCOLOR = {24h0F0F0F, 24h030000, 24h000300, 24h000000}
+    
+    // RED (11), GREEN (10), BLUE (01), OFF(00)
+    const BULLETCOLOR = {24h030000, 24h000300, 24h000003, 24h000000}
+    index_reverser index_reverser(#COLUMN_DIMENSION(COLUMN_DIMENSION), #SIZE($clog2(PIXEL_COUNT)))
+    
+    
+    .clk(clk){
+        edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
+        edge_detector left_btn_edge(#RISE(0),#FALL(1))
+        edge_detector right_btn_edge(#RISE(0),#FALL(1))
+        
+        .rst(rst){
+            data_ram ram(#ROW_DIMENSION(ROW_DIMENSION), #ENCODING_AMOUNT(ENCODING_AMOUNT), #COLUMN_DIMENSION(COLUMN_DIMENSION))
+            ws2812b_driver driver(#PIXEL_COUNT(PIXEL_COUNT)) 
+            
+        }
+    }
+    
+    
+    always {
+        led = 8h00            
+        io_segment = 8hff
+        io_select = 4hf
+        data = 0
+        
+        ram.address = 0        // address 0 selected by default
+        ram.update = 0         // do not update ram  by default
+        driver.update = 0 // do not refresh by default
+        driver.clear = 0 // do not clear by default
+        
+        left_btn_edge.in = left_btn
+        right_btn_edge.in = right_btn
+        bullet_slow_clk_edge.in = bullet_slow_clk_out
+        
+        // the matrix we use has top RIGHT as 0,0
+        bullet_slow_clk_edge.in = bullet_slow_clk_out
+        // update the ram whenever player moves or io_button[0] is pressed
+        if (left_btn_edge.out | right_btn_edge.out | (bullet_active_out & bullet_slow_clk_edge.out)){
+            ram.update = 1
+        } 
+        
+        // connect player location to RAM, set update as 0 initially
+        ram.player_x_pos = player_pos_x_out
+        ram.player_y_pos = player_pos_y_out
+        ram.bullet_x = player_bullet_x_out
+        ram.bullet_y = player_bullet_y_out
+        ram.bullet_active = bullet_active_out
+        ram.bullet_color = bullet_color_out[1:0]
+        
+        // connect reverser to led_strip 
+        index_reverser.input_address = driver.pixel_address
+        
+        // always read from ram, pass to driver 
+        driver.update = 1
+        // safe to do even though ram read is sequential (+1 clock cycle)
+        // because driver always asks for address 0 data by default 
+        // and driver will ask for next address only when it is in the last cycle of the current pixel push 
+        // it gives time for RAM to load the read data 
+        ram.address = index_reverser.output_address
+        // driver.color = LEDCOLOR[ram.out_encoding] 
+        
+        if (ram.is_bullet) {
+            driver.color = BULLETCOLOR[ram.bullet_color_out]
+        } else {
+            driver.color = LEDCOLOR[ram.out_encoding]
+        }
+        
+        data = driver.data
+        
+        // debug 
+        io_led[0] = bullet_color_out[1:0] // player position 
+        io_led[1] = player_bullet_y_out
+        io_led[2][0] = bullet_active_out
+        io_led[2][1] = check_boundary_out
+        io_led[2][7:2] = 0
+        
+        led[7:5] = ram.debug_data
+    }
+}

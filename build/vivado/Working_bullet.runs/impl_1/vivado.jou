@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Fri Apr 11 16:12:27 2025
+# Process ID: 24816
+# Current directory: C:/Users/natasha/Desktop/1d-project-ci03-group-2-team-32-working-architecture/build/vivado/Working_bullet.runs/impl_1
+# Command line: vivado.exe -log alchitry_top.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source alchitry_top.tcl -notrace
+# Log file: C:/Users/natasha/Desktop/1d-project-ci03-group-2-team-32-working-architecture/build/vivado/Working_bullet.runs/impl_1/alchitry_top.vdi
+# Journal file: C:/Users/natasha/Desktop/1d-project-ci03-group-2-team-32-working-architecture/build/vivado/Working_bullet.runs/impl_1\vivado.jou
+# Running On: LAPTOP-5T5HCTG3, OS: Windows, CPU Frequency: 2611 MHz, CPU Physical cores: 12, Host memory: 34016 MB
+#-----------------------------------------------------------
+source alchitry_top.tcl -notrace
