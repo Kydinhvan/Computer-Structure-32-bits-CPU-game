@@ -1,0 +1,187 @@
+module game_regfile #(
+    COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
+    ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0
+) (
+    input clk,
+    input rst,
+    
+    input wa[5],          // write address
+    input we,             // write enable
+    input regfile_data[32],       // data input
+    
+    input ra1[5],         // read address 1
+    input ra2[5],         // read address 2
+    
+    output rd1[32],       // read data 1
+    output rd2[32],       // read data 2
+    
+    output player_pos_x_out[32],
+    output player_pos_y_out[32],
+    output enemy_A_active_out[32],
+    output timer_out[32],
+    output score_out[32],
+    output enemy_B_active_out[32],
+    output bullet_color_out[32],
+    output player_bullet_x_out[32],
+    output player_bullet_y_out[32],
+    output enemy_C_active_out[32],
+    output stage_counter_out[32],
+    output check_boundary_out[32],
+    output bullet_active_out[32],
+    output enemy_stage_pointer_out[32],
+    
+    output enemy_A_x_out[32],
+    output enemy_A_y_out[32],
+    output enemy_A_color_out[32],
+    
+    output enemy_B_x_out[32],
+    output enemy_B_y_out[32],
+    output enemy_B_color_out[32],
+    
+    output enemy_C_x_out[32],
+    output enemy_C_y_out[32],
+    output enemy_C_color_out[32],
+    
+    output led[8],
+    output io_led[3][8],
+    output io_segment[8],
+    output io_select[4]
+) {                 
+    .clk(clk) {
+        .rst(rst) {
+            dff enemy_C_active[32](#INIT(0))
+            dff timer[32](#INIT(0))
+            dff score[32](#INIT(0))
+            dff enemy_A_active[32](#INIT(0))
+            dff bullet_color[32](#INIT(0))
+            dff enemy_B_active[32](#INIT(0))
+            dff stage_counter[32](#INIT(0))
+            dff check_boundary[32](#INIT(0))
+            dff enemy_stage_pointer[32](#INIT(0))
+            dff bullet_timer[32](#INIT(0))
+            dff bullet_active[32](#INIT(0))
+            
+            dff player_x_pos[$clog2(COLUMN_DIMENSION)](#INIT(7))
+            dff player_y_pos[$clog2(ROW_DIMENSION)](#INIT(14))
+            dff bullet_x[$clog2(COLUMN_DIMENSION)](#INIT(0))
+            dff bullet_y[$clog2(ROW_DIMENSION)](#INIT(13))
+            
+            dff enemy_A_data[32](#INIT(0))
+            dff enemy_B_data[32](#INIT(0))
+            dff enemy_C_data[32](#INIT(0))
+
+            
+        }
+    }    
+    
+    always {
+        // Default UI
+        led = 8h00
+        io_led = 3x{{8h00}}
+        io_segment = 8hff
+        io_select = 4hf
+        // Write logic
+        if (we) {
+            case (wa) {
+                d0: player_x_pos.d = regfile_data
+                d1: player_y_pos.d = regfile_data
+                d2: timer.d = regfile_data 
+                d3: score.d = regfile_data
+                d4: enemy_A_active.d = regfile_data
+                d5: enemy_B_active.d = regfile_data 
+                d6: bullet_color.d = regfile_data
+                d7: bullet_x.d = regfile_data
+                d8: bullet_y.d = regfile_data
+                d9: enemy_C_active.d = regfile_data 
+                d10: stage_counter.d = regfile_data // not used
+                d11: check_boundary.d = regfile_data
+                d12: bullet_timer.d = regfile_data
+                d13: bullet_active.d = regfile_data
+                d14: enemy_stage_pointer.d = regfile_data
+                d15: enemy_A_data.d = regfile_data           
+                d16: enemy_B_data.d = regfile_data
+                d17: enemy_C_data.d = regfile_data
+            }
+        }
+        
+        // Read logic
+        case (ra1) {
+            d0: rd1 = player_x_pos.q
+            d1: rd1 = player_y_pos.q
+            d2: rd1 = timer.q
+            d3: rd1 = score.q
+            d4: rd1 = enemy_A_active.q
+            d5: rd1 = enemy_B_active.q
+            d6: rd1 = bullet_color.q
+            d7: rd1 = bullet_x.q
+            d8: rd1 = bullet_y.q
+            d9: rd1 = enemy_C_active.q
+            d10: rd1 = stage_counter.q
+            d11: rd1 = check_boundary.q
+            d12: rd1 = bullet_timer.q
+            d13: rd1 = bullet_active.q
+            d14: rd1 = enemy_stage_pointer.q
+            d15: rd1 = enemy_A_data.q
+            d16: rd1 = enemy_B_data.q
+            d17: rd1 = enemy_C_data.q
+            
+            default: rd1 = 0
+        }
+        
+        case (ra2) {
+            d0: rd2 = player_x_pos.q
+            d1: rd2 = player_y_pos.q
+            d2: rd2 = timer.q
+            d3: rd2 = score.q
+            d4: rd2 = enemy_A_active.q
+            d5: rd2 = enemy_B_active.q
+            d6: rd2 = bullet_color.q
+            d7: rd2 = bullet_x.q
+            d8: rd2 = bullet_y.q
+            d9: rd2 = enemy_C_active.q
+            d10: rd2 = stage_counter.q
+            d11: rd2 = check_boundary.q
+            d12: rd2 = bullet_timer.q
+            d13: rd2 = bullet_active.q
+            d14: rd2 = enemy_stage_pointer.q
+            d15: rd2 = enemy_A_data.q
+            d16: rd2 = enemy_B_data.q
+            d17: rd2 = enemy_C_data.q
+            default: rd2 = 0
+        }
+        // Output to game logic
+        player_pos_x_out = player_x_pos.q
+        player_pos_y_out = player_y_pos.q
+        timer_out = timer.q
+        score_out = score.q
+        bullet_color_out = bullet_color.q
+        player_bullet_x_out = bullet_x.q
+        player_bullet_y_out = bullet_y.q
+        stage_counter_out = stage_counter.q
+        check_boundary_out = check_boundary.q
+        
+        enemy_stage_pointer_out = enemy_stage_pointer.q
+        
+        bullet_active_out = bullet_active.q
+        
+        enemy_A_x_out = enemy_A_data.q[23:16]
+        enemy_A_y_out = enemy_A_data.q[15:8]
+        enemy_A_color_out = enemy_A_data.q[7:0]
+        enemy_A_active_out = enemy_A_active.q
+        
+        enemy_B_x_out = enemy_B_data.q[23:16]
+        enemy_B_y_out = enemy_B_data.q[15:8]
+        enemy_B_color_out = enemy_B_data.q[7:0]
+        enemy_B_active_out = enemy_B_active.q
+        
+        enemy_C_x_out = enemy_C_data.q[23:16]
+        enemy_C_y_out = enemy_C_data.q[15:8]
+        enemy_C_color_out = enemy_C_data.q[7:0]
+        enemy_C_active_out = enemy_C_active.q
+        
+        io_led[0] = enemy_A_data.q[23:16]
+        io_led[1] = enemy_A_data.q[15:8]
+        io_led[2] = enemy_A_data.q[7:0]
+        
+    }
+}

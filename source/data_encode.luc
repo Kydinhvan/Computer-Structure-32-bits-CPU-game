@@ -1,0 +1,27 @@
+module data_encode #(
+    // This is our additional function module: concatenate
+    // It concatenates least significant 16 bits of A and B into a 32 bit output.
+    // Format: out[31:16] -> A[15:0], out[15:0] -> B[15:0]
+    // Purpose: encoding data to shorten FSM logic
+    // eg: concat position x and y of enemy and bullet so that game_cu can use CMPEQ in 1 state.
+    SIZE = 32 : SIZE > 0
+)(
+    input a[SIZE],
+    input b[SIZE],
+    output out[SIZE]
+) {
+    shifter shifter
+    adder adder
+    
+    always {
+        shifter.a = a
+        shifter.b = b1000
+        shifter.pad = 0
+        
+        adder.a = shifter.shift
+        adder.b = b
+        adder.alufn_signal = b000000
+        
+        out = adder.out
+    }
+}

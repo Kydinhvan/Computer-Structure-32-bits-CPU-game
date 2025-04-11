@@ -1,7 +1,7 @@
 module compact_shifter (
     input a[32],
     input b[5],
-    input alufn_signal[7],
+    input alufn_signal[6],
     output shift[32]
 ) {
     shifter left_shifter // 32-bit left shifter

@@ -1,0 +1,161 @@
+module ram_mode #(
+    COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
+    ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0,
+    PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
+    BUFFER_SIZE = 1024 : BUFFER_SIZE > 0 // ensure this value is larger than PIXEL_COUNT * $clog2(COLOR_ENCODING)
+) (
+    input clk,              // 100MHz clock
+    input rst,            // reset button (active low)
+    output led[8],          // 8 user controllable LEDs
+    output io_led[3][8],    // LEDs on IO Shield
+    output io_segment[8],   // 7-segment LEDs on IO Shield
+    output io_select[4],    // Digit select on IO Shield
+    input left_btn,
+    input right_btn,
+    input start_btn,
+    //input io_dip[3][8],      // DIP switches on IO Shield
+    
+    input player_pos_x_out[32],
+    input player_pos_y_out[32],
+    
+    input bullet_colour_out[32],
+    input player_bullet_x_out[32],
+    input player_bullet_y_out[32],
+    input bullet_active_out,
+    input bullet_slow_clk_out,
+    
+    input enemy_A_active_out,
+    input enemy_B_active_out,
+    input enemy_C_active_out,
+    
+    input enemy_A_x_out[8],
+    input enemy_A_y_out[8],
+    input enemy_A_color_out[8],
+    
+    input enemy_B_x_out[8],
+    input enemy_B_y_out[8],
+    input enemy_B_color_out[8],
+    
+    input enemy_C_x_out[8],
+    input enemy_C_y_out[8],
+    input enemy_C_color_out[8],
+    
+    output data
+) {
+    const ENCODING_AMOUNT = 5 
+    // white(100), blue (011), DIM green (010), DIM RED (001), OFF(000)
+    const LEDCOLOR = {24h0F0F0F, 24h030000, 24h000003, 24h000300, 24h000000}
+    index_reverser index_reverser(#COLUMN_DIMENSION(COLUMN_DIMENSION), #SIZE($clog2(PIXEL_COUNT)))
+    enum States {
+        START_STATE,
+        GAME_STATE
+        // GAME_END_STATE
+    }
+    .clk(clk){
+        edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
+        edge_detector enemy_A_active_edge(#RISE(1),#FALL(0))
+        edge_detector enemy_B_active_edge(#RISE(1),#FALL(0))
+        edge_detector enemy_C_active_edge(#RISE(1),#FALL(0))
+        
+        
+        .rst(rst){
+            data_ram ram(#ROW_DIMENSION(ROW_DIMENSION), #ENCODING_AMOUNT(ENCODING_AMOUNT), #COLUMN_DIMENSION(COLUMN_DIMENSION))
+            ws2812b_driver driver(#PIXEL_COUNT(PIXEL_COUNT)) 
+            dff fsm[$width(States)](#INIT(States.START_STATE))
+        }
+    }
+    
+    always {
+        led = 8h00            
+        io_segment = 8hff
+        io_select = 4hf
+        data = 0
+        
+        ram.address = 0        // address 0 selected by default
+        ram.update = 0         // do not update ram  by default
+        ram.enemy_A_update = 0
+        ram.enemy_B_update = 0
+        ram.enemy_C_update = 0
+        
+        driver.update = 0 // do not refresh by default
+        driver.clear = 0 // do not clear by default
+        
+        fsm.d = fsm.q
+        // the matrix we use has top RIGHT as 0,0
+        bullet_slow_clk_edge.in = bullet_slow_clk_out
+        enemy_A_active_edge.in = enemy_A_active_out
+        enemy_B_active_edge.in = enemy_B_active_out
+        enemy_C_active_edge.in = enemy_C_active_out
+        
+        // update the ram whenever player moves or io_button[0] is pressed
+        
+        case(fsm.q){
+            States.START_STATE:
+                if (start_btn){
+                    fsm.d = States.GAME_STATE
+                }
+                else{
+                    fsm.d = States.START_STATE
+                }
+                driver.clear = 1
+            
+            States.GAME_STATE:
+                if (left_btn| right_btn | (bullet_active_out & bullet_slow_clk_edge.out)){
+                    ram.update = 1
+                }
+                if (enemy_A_active_edge.out){
+                    ram.enemy_A_update = 1
+                }
+                if (enemy_B_active_edge.out ){
+                    ram.enemy_B_update = 1
+                }
+                if (enemy_C_active_edge.out){
+                    ram.enemy_C_update = 1
+                }
+                fsm.d = States.GAME_STATE
+        }
+        
+        // connect player location to RAM
+        ram.player_x_pos = player_pos_x_out
+        ram.player_y_pos = player_pos_y_out
+        
+        // connect bullet properties to RAM
+        ram.bullet_x = player_bullet_x_out
+        ram.bullet_y = player_bullet_y_out
+        ram.bullet_active = bullet_active_out
+        ram.bullet_colour_out = bullet_colour_out
+        
+        // connect enemy location to RAM
+        ram.enemy_A_x = enemy_A_x_out
+        ram.enemy_A_y = enemy_A_y_out
+        ram.enemy_A_color = enemy_A_color_out[2:0] // only 2-bit encoding for color
+        ram.enemy_A_active_out = enemy_A_active_out
+        
+        ram.enemy_B_x = enemy_B_x_out
+        ram.enemy_B_y = enemy_B_y_out
+        ram.enemy_B_color = enemy_B_color_out[2:0] // only 2-bit encoding
+        ram.enemy_B_active_out = enemy_B_active_out
+        
+        ram.enemy_C_x = enemy_C_x_out
+        ram.enemy_C_y = enemy_C_y_out
+        ram.enemy_C_color = enemy_C_color_out[2:0] // only 2-bit encoding
+        ram.enemy_C_active_out = enemy_C_active_out
+        
+        // connect reverser to led_strip 
+        index_reverser.input_address = driver.pixel_address
+        
+        // always read from ram, pass to driver 
+        driver.update = 1
+        ram.address = index_reverser.output_address
+        driver.color = LEDCOLOR[ram.out_encoding] 
+        data = driver.data
+        
+        // debug 
+        io_led[0] = player_pos_x_out // player position 
+        io_led[1] = enemy_A_y_out
+        io_led[2] = enemy_A_x_out
+        //io_led[2][1] = check_boundary_out
+        //io_led[2][7:2] = 0
+        led[7:5] = ram.debug_data
+    }
+}

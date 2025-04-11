@@ -1,0 +1,309 @@
+module game_cu #(
+    COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
+    ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0,
+    PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
+    BUFFER_SIZE = 1024 : BUFFER_SIZE > 0
+) (
+    input clk,  // clock
+    input rst,  // reset
+    input regfile_rd2[32],
+    input bullet_slow_clk_out,
+    
+    //    input red_bullet_btn,
+    //    input green_bullet_btn,
+    //    input blue_bullet_btn,
+    input left_btn,
+    input right_btn,
+    //input shoot_btn,
+    input redshoot_btn,
+    input greenshoot_btn,
+    //input blueshoot_btn,
+    input start_btn,
+    
+    output alufn_signal[6],
+    output asel[3],
+    output bsel[3],
+    output wdsel[2],
+    output regfile_wa[5],
+    output regfile_ra1[5],
+    output regfile_ra2[5],
+    output regfile_we,
+    output debug[4]
+) {
+    enum GameStates {
+        START,
+        SET_ENEMY_A,
+        SET_ENEMY_A_Y,
+        SET_ENEMY_A_COLOR,
+        SET_ENEMY_A_ACTIVE,
+        SET_ENEMY_B,
+        SET_ENEMY_B_Y,
+        SET_ENEMY_B_COLOR,
+        SET_ENEMY_B_ACTIVE,
+        SET_ENEMY_C,
+        SET_ENEMY_C_Y,
+        SET_ENEMY_C_COLOR,
+        SET_ENEMY_C_ACTIVE,
+        INCRE_ENEMY_WAVE,
+        IDLE,
+        CHECK_RIGHT_BOUND,
+        CHECK_LEFT_BOUND,
+        MOVE_RIGHT,
+        MOVE_LEFT,
+        SET_RED_BULLET_COLOR,
+        SET_GREEN_BULLET_COLOR,
+        SET_BLUE_BULLET_COLOR,
+        BULLET_ACTIVE,
+        BULLET_X_POS,
+        CHECK_BULLET_BOUNDARY,
+        BULLET_MOVE, 
+        BULLET_INACTIVE
+        
+    }
+    // User input
+    //const CLK_FREQ = $is_sim() ? 1000 : 100000000
+    //button_conditioner movement_button[5](.clk(5x{{clk}}), #CLK_FREQ(5x{{CLK_FREQ}}))
+    //edge_detector movement_button_edge[5](.clk(5x{{clk}}), #RISE(5x{{1}}), #FALL(5x{{0}}))
+    .clk(clk){
+        edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
+        .rst(rst){
+            dff game_fsm[$width(GameStates)](#INIT(GameStates.START))
+        }
+    }
+    
+    
+    always {
+        bullet_slow_clk_edge.in = bullet_slow_clk_out
+        
+        // standard setting unless otherwise overwritten by each case 
+        alufn_signal = 0
+        asel = 0 
+        bsel = 0
+        regfile_we = 0
+        regfile_wa = d6 
+        regfile_ra1 = d0
+        regfile_ra2 = d0
+        wdsel = 0
+        
+        debug = b0000
+        
+        if (rst){
+            game_fsm.d = GameStates.IDLE
+        }
+        else{
+            
+            case(game_fsm.q){ 
+                GameStates.START:
+                    if (start_btn){
+                        game_fsm.d = GameStates.SET_ENEMY_A
+                    }
+                    else{
+                        game_fsm.d = GameStates.START
+                    } 
+                
+                GameStates.SET_ENEMY_A:
+                    wdsel = b01  // Write Enemy A's X position
+                    regfile_we = 1
+                    regfile_wa = d15  // Address for Enemy A's X
+                    game_fsm.d = GameStates.SET_ENEMY_A_ACTIVE
+                
+                GameStates.SET_ENEMY_A_ACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b001                    // 1
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d4               // enemyA_active
+                    game_fsm.d = GameStates.SET_ENEMY_B
+                
+                GameStates.SET_ENEMY_B:
+                    wdsel = b10  // Write Enemy A's X position
+                    regfile_we = 1
+                    regfile_wa = d16  // Address for Enemy B's X
+                    game_fsm.d = GameStates.SET_ENEMY_B_ACTIVE
+               
+                GameStates.SET_ENEMY_B_ACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b001                    // 1
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d5               // enemyB_active
+                    game_fsm.d = GameStates.SET_ENEMY_C
+                
+                GameStates.SET_ENEMY_C:
+                    wdsel = b11  // Write Enemy C's X position
+                    regfile_we = 1
+                    regfile_wa = d17  // Address for Enemy C's X
+                    game_fsm.d = GameStates.SET_ENEMY_C_ACTIVE
+                
+                GameStates.SET_ENEMY_C_ACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b001                    // 1
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d9               // enemyC_active
+                    game_fsm.d = GameStates.IDLE
+                
+                // when enemy die, change color to background, set pos to 0,0 incre score, set inactive 
+                GameStates.IDLE: 
+                    if (right_btn){     // check movement update x right
+                        game_fsm.d = GameStates.CHECK_RIGHT_BOUND
+                    }
+                    else if(left_btn){
+                        game_fsm.d = GameStates.CHECK_LEFT_BOUND 
+                    }
+                    else if(redshoot_btn){ // check the button color
+                        regfile_ra2 = d13
+                        if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
+                            game_fsm.d = GameStates.SET_RED_BULLET_COLOR
+                        }
+                    }
+                    else if(greenshoot_btn){ // check the button color
+                        regfile_ra2 = d13
+                        if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
+                            game_fsm.d = GameStates.SET_GREEN_BULLET_COLOR
+                        }
+                    }
+                    //else if(blueshoot_btn){ // check the button color
+                    //    regfile_ra2 = d13
+                    //    if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
+                    //        game_fsm.d = GameStates.SET_BLUE_BULLET_COLOR
+                    //    }
+                    //} 
+                    else{
+                        regfile_ra2 = d13
+                        if(regfile_rd2[0] & bullet_slow_clk_edge.out){ // bullet is active and edge high
+                            game_fsm.d = GameStates.CHECK_BULLET_BOUNDARY
+                        }
+                        else{
+                            game_fsm.d =  GameStates.IDLE
+                        }
+                    }
+                
+                GameStates.CHECK_RIGHT_BOUND:
+                    alufn_signal = b110101        //CMPLT
+                    regfile_ra1 = d0              
+                    bsel = b010                    //constant 14 (16-2) 
+                    asel = b000                                  
+                    regfile_we = 1
+                    regfile_wa = d11               // temp check right bound
+                    game_fsm.d = GameStates.MOVE_RIGHT
+                
+                GameStates.CHECK_LEFT_BOUND:
+                    alufn_signal = b110101        //CMPLT
+                    regfile_ra1 = d0              
+                    bsel = b011                    //constant 2 
+                    asel = b000                                  
+                    regfile_we = 1
+                    regfile_wa = d11               // temp check bound
+                    game_fsm.d = GameStates.MOVE_LEFT
+                
+                GameStates.MOVE_RIGHT:
+                    regfile_ra2 = d11
+                    if (regfile_rd2[0]){
+                        alufn_signal = b000000         //ADD
+                        regfile_ra1 = d0              
+                        bsel = b001                    //1
+                        asel = b000                                  
+                        regfile_we = 1
+                        regfile_wa = d0               // player x
+                        game_fsm.d = GameStates.IDLE
+                    }
+                    else{
+                        game_fsm.d = GameStates.IDLE
+                    }
+                
+                GameStates.MOVE_LEFT:
+                    regfile_ra2 = d11
+                    if (~regfile_rd2[0]){
+                        alufn_signal = b000001         //SUB
+                        regfile_ra1 = d0              
+                        bsel = b001                    //1
+                        asel = b000                                  
+                        regfile_we = 1
+                        regfile_wa = d0               // player x
+                        game_fsm.d = GameStates.IDLE
+                    }
+                    else{
+                        game_fsm.d = GameStates.IDLE
+                    }
+                GameStates.SET_RED_BULLET_COLOR:
+                    alufn_signal = b000000        // ADD
+                    bsel = b001                     // constant 1
+                    asel = b001                     // constant 0            
+                    regfile_we = 1
+                    regfile_wa = d6                 // write bullet color
+                    game_fsm.d = GameStates.BULLET_ACTIVE
+                
+                GameStates.SET_GREEN_BULLET_COLOR:
+                    alufn_signal = b000000        // ADD
+                    bsel = b011                     // constant 2
+                    asel = b001                     // constant 0             
+                    regfile_we = 1
+                    regfile_wa = d6                 // write bullet color
+                    game_fsm.d = GameStates.BULLET_ACTIVE
+                
+                GameStates.SET_BLUE_BULLET_COLOR:
+                    alufn_signal = b000000        // ADD
+                    bsel = b101                     // constant 3
+                    asel = b001                     // constant 0             
+                    regfile_we = 1
+                    regfile_wa = d6                 // write bullet color
+                    game_fsm.d = GameStates.BULLET_ACTIVE
+                
+                GameStates.BULLET_ACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b001                    // 1
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d13               // bul_active
+                    game_fsm.d = GameStates.BULLET_X_POS
+                
+                GameStates.BULLET_X_POS:
+                    alufn_signal = b000010        //MUL 
+                    regfile_ra1 = d0              
+                    bsel = b001                    //constant 1
+                    asel = b000                                  
+                    regfile_we = 1
+                    regfile_wa = d7               // bullet_x
+                    game_fsm.d = GameStates.IDLE
+
+                
+                GameStates.CHECK_BULLET_BOUNDARY:
+                    alufn_signal = b110101        //CMPLT
+                    regfile_ra1 = d8              // bullet_y
+                    bsel = b001                   //constant 1
+                    asel = b000                                  
+                    regfile_we = 1
+                    regfile_wa = d11               // check boundary
+                    game_fsm.d = GameStates.BULLET_MOVE
+                
+                GameStates.BULLET_MOVE:
+                    regfile_ra2 = d11
+                    if (~regfile_rd2[0]){// if bullet y > 1
+                        alufn_signal = b000001        //SUB
+                        regfile_ra1 = d8              
+                        bsel = b001                    //constant 1
+                        asel = b000                                  
+                        regfile_we = 1
+                        regfile_wa = d8               // bullet_y
+                        game_fsm.d = GameStates.IDLE
+                    }
+                    else{             //reset bullet _y pos       
+                        alufn_signal = b000010        //MUL
+                        bsel = b001                    //constant 1 
+                        asel = b010                     //constant 13             
+                        regfile_we = 1
+                        regfile_wa = d8               // bullet_y
+                        game_fsm.d = GameStates.BULLET_INACTIVE
+                    }
+                GameStates.BULLET_INACTIVE:
+                    alufn_signal = b000010        //MUL
+                    bsel = b001                    
+                    asel = b001                     //constant 0             
+                    regfile_we = 1
+                    regfile_wa = d13               // bul_active
+                    game_fsm.d = GameStates.IDLE
+            }
+        }
+    }
+}

@@ -3,7 +3,7 @@ module adder #(
 )(
     input a[SIZE], // A input
     input b[SIZE], // B input
-    input alufn_signal[7], // ALUFN input
+    input alufn_signal[6], // ALUFN input
     output out[SIZE], // Sum output (s in notes)
     output z, // Zero bit output
     output v, // Overflow bit output

@@ -3,11 +3,9 @@ module boolean #(
 )(
     input a[SIZE],
     input b[SIZE],
-    input alufn_signal[8],
+    input alufn_signal[6],
     output bool[SIZE]
 ) {
-    sig diff[SIZE];
-    sig abs_result[SIZE];
     mux_4 mux_4_32[32];
     
     always {

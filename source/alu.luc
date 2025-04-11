@@ -1,69 +1,70 @@
 module alu (
     input a[32],
     input b[32],
-    input alufn_signal[7],
+    input alufn_signal[6],
     output out[32],
     output z,
     output v,
     output n
 ) {
-    adder adder(#SIZE(32));
-    compare compare;
-    sig cmp[32];
-    boolean boolean;
-    compact_shifter shifter;
-    multiplier multiplier;
-    abs abs;
-    mux_4 mux_4a[32];
-    mux_4 mux_4b[32];
-
+    adder adder(#SIZE(32))
+    compare compare
+    sig cmp[32]
+    boolean boolean
+    compact_shifter shifter
+    multiplier multiplier
+    data_encode data_encode
+    mux_2 mux_2[32]
+    mux_4 mux_4[32]
+    
     always {
         // Default ALU operations
-        adder.a = a;
-        adder.b = b;
-        adder.alufn_signal = alufn_signal;
-        z = adder.z;
-        v = adder.v;
-        n = adder.n;
-
-        compare.z = adder.z;
-        compare.v = adder.v;
-        compare.n = adder.n;
-        compare.alufn_signal = alufn_signal;
-        cmp = c{31x{b0}, compare.cmp};
-
-        boolean.a = a;
-        boolean.b = b;
-        boolean.alufn_signal = alufn_signal;
-
-        shifter.a = a;
-        shifter.b = b[4:0];
-        shifter.alufn_signal = alufn_signal;
-
-        multiplier.a = a;
-        multiplier.b = b;   
+        adder.a = a
+        adder.b = b
+        adder.alufn_signal = alufn_signal
+        z = adder.z
+        v = adder.v
+        n = adder.n
         
-        abs.a = a;
-        abs.b = b;
+        compare.z = adder.z
+        compare.v = adder.v
+        compare.n = adder.n
+        compare.alufn_signal = alufn_signal
+        cmp = c{31x{b0}, compare.cmp}
         
-            repeat(i, 32, 0, 1) {
-                mux_4a.in[i][0] = adder.out[i];
-                mux_4a.in[i][1] = multiplier.mul[i];
-                mux_4a.in[i][2] = abs.out[i];
-                mux_4a.in[i][3] = 0;
-                mux_4a.s0[i] = alufn_signal[1];
-                mux_4a.s1[i] = alufn_signal[6];
-            }
-
-            repeat(i, 32, 0, 1) {
-                mux_4b.in[i][0] = mux_4a.out[i];
-                mux_4b.in[i][1] = boolean.bool[i];
-                mux_4b.in[i][2] = shifter.shift[i];
-                mux_4b.in[i][3] = cmp[i];
-                mux_4b.s0[i] = alufn_signal[4];
-                mux_4b.s1[i] = alufn_signal[5];
-                out[i] = mux_4b.out[i];
-            }
+        boolean.a = a
+        boolean.b = b
+        boolean.alufn_signal = alufn_signal
+        
+        shifter.a = a
+        shifter.b = b[4:0]
+        shifter.alufn_signal = alufn_signal
+        
+        multiplier.a = a
+        multiplier.b = b   
+        
+        data_encode.a = a
+        data_encode.b = b
+        
+        repeat(i, 32, 0, 1) {
+            mux_2.in[i][0] = adder.out[i]
+            mux_2.in[i][1] = multiplier.mul[i]
+            mux_2.s0[i] = alufn_signal[1]
+        }
+        
+        repeat(i, 32, 0, 1) {
+            mux_4.in[i][0] = mux_2.out[i]
+            mux_4.in[i][1] = boolean.bool[i]
+            mux_4.in[i][2] = shifter.shift[i]
+            mux_4.in[i][3] = cmp[i]
+            mux_4.s0[i] = alufn_signal[4]
+            mux_4.s1[i] = alufn_signal[5]
+            out[i] = mux_4.out[i]
+        }
+        
+        if (alufn_signal == 6b111111) {
+            out = data_encode.out
         }
     }
+}
 

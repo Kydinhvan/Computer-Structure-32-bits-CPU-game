@@ -2,7 +2,7 @@ module compare (
     input z,
     input v,
     input n,
-    input alufn_signal[7],
+    input alufn_signal[6],
     output cmp
 ) {
     mux_4 mux_4;
