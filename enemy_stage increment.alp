@@ -1,7 +1,7 @@
 {
     "project": {
         "type": "V1.3",
-        "projectName": "ENEMY_DIED",
+        "projectName": "enemy_stage increment",
         "board": "Alchitry Au",
         "sourceFiles": [
             {

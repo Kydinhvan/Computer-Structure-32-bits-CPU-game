@@ -195,8 +195,8 @@ module game_regfile #(
         enemy_C_active_out = enemy_C_active.q
         
         io_led[0] = score.q[7:0]
-        io_led[1] = enemy_A_data.q[15:8]
-        io_led[2] = enemy_A_data.q[7:0]
+        io_led[1] = enemy_stage_pointer.q[7:0]
+        io_led[2] = enemy_C_active.q[7:0]
         led = player_x_pos.q
     }
 }

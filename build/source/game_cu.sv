@@ -69,14 +69,15 @@ module game_cu #(
     localparam E_GameStates_ADD_ENEMY_ACTIVE_ABC = 6'h25;
     localparam E_GameStates_CHECK_ALL_ENEMY_DEAD = 6'h26;
     localparam E_GameStates_INCR_WAVE = 6'h27;
-    localparam _MP_RISE_182596855 = 1'h1;
-    localparam _MP_FALL_182596855 = 1'h0;
+    localparam E_GameStates_CLEAR_ENEMY_POS = 6'h28;
+    localparam _MP_RISE_1963387741 = 1'h1;
+    localparam _MP_FALL_1963387741 = 1'h0;
     logic M_bullet_slow_clk_edge_in;
     logic M_bullet_slow_clk_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_182596855),
-        .FALL(_MP_FALL_182596855)
+        .RISE(_MP_RISE_1963387741),
+        .FALL(_MP_FALL_1963387741)
     ) bullet_slow_clk_edge (
         .clk(clk),
         .in(M_bullet_slow_clk_edge_in),

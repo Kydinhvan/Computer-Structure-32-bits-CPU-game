@@ -47,17 +47,17 @@ module game_data_path #(
     );
     
     
-    localparam _MP_SIZE_2064333637 = 1'h1;
-    localparam _MP_DIV_2064333637 = BULLET_SLOW_CLK_DIV;
-    localparam _MP_TOP_2064333637 = 1'h0;
-    localparam _MP_UP_2064333637 = 1'h1;
+    localparam _MP_SIZE_1431791380 = 1'h1;
+    localparam _MP_DIV_1431791380 = BULLET_SLOW_CLK_DIV;
+    localparam _MP_TOP_1431791380 = 1'h0;
+    localparam _MP_UP_1431791380 = 1'h1;
     logic [0:0] M_bullet_slow_clk_value;
     
     counter #(
-        .SIZE(_MP_SIZE_2064333637),
-        .DIV(_MP_DIV_2064333637),
-        .TOP(_MP_TOP_2064333637),
-        .UP(_MP_UP_2064333637)
+        .SIZE(_MP_SIZE_1431791380),
+        .DIV(_MP_DIV_1431791380),
+        .TOP(_MP_TOP_1431791380),
+        .UP(_MP_UP_1431791380)
     ) bullet_slow_clk (
         .rst(rst),
         .clk(clk),
@@ -65,17 +65,17 @@ module game_data_path #(
     );
     
     
-    localparam _MP_SIZE_26351917 = 1'h1;
-    localparam _MP_DIV_26351917 = FAST_CLOCK_DIV;
-    localparam _MP_TOP_26351917 = 1'h0;
-    localparam _MP_UP_26351917 = 1'h1;
+    localparam _MP_SIZE_1612713399 = 1'h1;
+    localparam _MP_DIV_1612713399 = FAST_CLOCK_DIV;
+    localparam _MP_TOP_1612713399 = 1'h0;
+    localparam _MP_UP_1612713399 = 1'h1;
     logic [0:0] M_fast_clk_value;
     
     counter #(
-        .SIZE(_MP_SIZE_26351917),
-        .DIV(_MP_DIV_26351917),
-        .TOP(_MP_TOP_26351917),
-        .UP(_MP_UP_26351917)
+        .SIZE(_MP_SIZE_1612713399),
+        .DIV(_MP_DIV_1612713399),
+        .TOP(_MP_TOP_1612713399),
+        .UP(_MP_UP_1612713399)
     ) fast_clk (
         .rst(rst),
         .clk(clk),
@@ -83,10 +83,10 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_1717203354 = 16'h10;
-    localparam _MP_ROW_DIMENSION_1717203354 = 16'h10;
-    localparam _MP_PIXEL_COUNT_1717203354 = 16'h100;
-    localparam _MP_BUFFER_SIZE_1717203354 = 11'h400;
+    localparam _MP_COLUMN_DIMENSION_1223655353 = 16'h10;
+    localparam _MP_ROW_DIMENSION_1223655353 = 16'h10;
+    localparam _MP_PIXEL_COUNT_1223655353 = 16'h100;
+    localparam _MP_BUFFER_SIZE_1223655353 = 11'h400;
     logic [31:0] M_game_cu_regfile_rd2;
     logic [5:0] M_game_cu_alufn_signal;
     logic [2:0] M_game_cu_asel;
@@ -99,10 +99,10 @@ module game_data_path #(
     logic [3:0] M_game_cu_debug;
     
     game_cu #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1717203354),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_1717203354),
-        .PIXEL_COUNT(_MP_PIXEL_COUNT_1717203354),
-        .BUFFER_SIZE(_MP_BUFFER_SIZE_1717203354)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1223655353),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_1223655353),
+        .PIXEL_COUNT(_MP_PIXEL_COUNT_1223655353),
+        .BUFFER_SIZE(_MP_BUFFER_SIZE_1223655353)
     ) game_cu (
         .left_btn(left_btn),
         .right_btn(right_btn),
@@ -125,8 +125,8 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_1488108785 = 16'h10;
-    localparam _MP_ROW_DIMENSION_1488108785 = 16'h10;
+    localparam _MP_COLUMN_DIMENSION_1047218181 = 16'h10;
+    localparam _MP_ROW_DIMENSION_1047218181 = 16'h10;
     logic [31:0] M_game_regfile_regfile_data;
     logic [31:0] M_game_regfile_rd1;
     logic [31:0] M_game_regfile_rd2;
@@ -159,8 +159,8 @@ module game_data_path #(
     logic [3:0] M_game_regfile_io_select;
     
     game_regfile #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1488108785),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_1488108785)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1047218181),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_1047218181)
     ) game_regfile (
         .we(M_game_cu_regfile_we),
         .wa(M_game_cu_regfile_wa),
@@ -201,15 +201,15 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_891459788 = 16'h10;
-    localparam _MP_ROW_DIMENSION_891459788 = 16'h10;
+    localparam _MP_COLUMN_DIMENSION_350206711 = 16'h10;
+    localparam _MP_ROW_DIMENSION_350206711 = 16'h10;
     logic [31:0] M_rom_enemy_A_romdata_out;
     logic [31:0] M_rom_enemy_B_romdata_out;
     logic [31:0] M_rom_enemy_C_romdata_out;
     
     enemy_rom #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_891459788),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_891459788)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_350206711),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_350206711)
     ) rom (
         .enemy_stage_pointer_out(M_game_regfile_enemy_stage_pointer_out),
         .enemy_A_romdata_out(M_rom_enemy_A_romdata_out),
@@ -218,10 +218,10 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_458347872 = 16'h10;
-    localparam _MP_ROW_DIMENSION_458347872 = 16'h10;
-    localparam _MP_PIXEL_COUNT_458347872 = 16'h100;
-    localparam _MP_BUFFER_SIZE_458347872 = 11'h400;
+    localparam _MP_COLUMN_DIMENSION_2062512831 = 16'h10;
+    localparam _MP_ROW_DIMENSION_2062512831 = 16'h10;
+    localparam _MP_PIXEL_COUNT_2062512831 = 16'h100;
+    localparam _MP_BUFFER_SIZE_2062512831 = 11'h400;
     logic [7:0] M_ram_mode_led;
     logic [2:0][7:0] M_ram_mode_io_led;
     logic [7:0] M_ram_mode_io_segment;
@@ -229,14 +229,11 @@ module game_data_path #(
     logic M_ram_mode_data;
     
     ram_mode #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_458347872),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_458347872),
-        .PIXEL_COUNT(_MP_PIXEL_COUNT_458347872),
-        .BUFFER_SIZE(_MP_BUFFER_SIZE_458347872)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_2062512831),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_2062512831),
+        .PIXEL_COUNT(_MP_PIXEL_COUNT_2062512831),
+        .BUFFER_SIZE(_MP_BUFFER_SIZE_2062512831)
     ) ram_mode (
-        .enemy_A_active_out(M_game_regfile_enemy_A_active_out),
-        .enemy_B_active_out(M_game_regfile_enemy_B_active_out),
-        .enemy_C_active_out(M_game_regfile_enemy_C_active_out),
         .left_btn(left_btn),
         .right_btn(right_btn),
         .start_btn(start_btn),

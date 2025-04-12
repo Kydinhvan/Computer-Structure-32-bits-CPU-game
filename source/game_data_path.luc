@@ -67,9 +67,6 @@ module game_data_path #(
     ) 
     
     ram_mode ram_mode(
-        .enemy_A_active_out(game_regfile.enemy_A_active_out),
-        .enemy_B_active_out(game_regfile.enemy_B_active_out),
-        .enemy_C_active_out(game_regfile.enemy_C_active_out),
         .left_btn(left_btn),
         .right_btn(right_btn),
         .start_btn(start_btn),

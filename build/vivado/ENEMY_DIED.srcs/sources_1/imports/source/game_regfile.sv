@@ -334,8 +334,8 @@ module game_regfile #(
         enemy_C_color_out = D_enemy_C_data_q[3'h7:1'h0];
         enemy_C_active_out = D_enemy_C_active_q;
         io_led[1'h0] = D_score_q[3'h7:1'h0];
-        io_led[1'h1] = D_enemy_A_data_q[4'hf:4'h8];
-        io_led[2'h2] = D_enemy_A_data_q[3'h7:1'h0];
+        io_led[1'h1] = D_enemy_stage_pointer_q[3'h7:1'h0];
+        io_led[2'h2] = D_enemy_C_active_q[3'h7:1'h0];
         led = D_player_x_pos_q;
     end
     

@@ -25,10 +25,6 @@ module ram_mode #(
     input bullet_slow_clk_out,
     input fast_clk_out,
     
-    input enemy_A_active_out,
-    input enemy_B_active_out,
-    input enemy_C_active_out,
-    
     input enemy_A_x_out[8],
     input enemy_A_y_out[8],
     input enemy_A_color_out[8],
@@ -54,16 +50,7 @@ module ram_mode #(
     }
     .clk(clk){
         edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
-        edge_detector fast_clk_edge(#RISE(1),#FALL(0))
-        
-        edge_detector enemy_A_active_edge(#RISE(1),#FALL(0))
-        edge_detector enemy_B_active_edge(#RISE(1),#FALL(0))
-        edge_detector enemy_C_active_edge(#RISE(1),#FALL(0))
-        edge_detector enemy_A_inactive_edge(#RISE(0),#FALL(1))
-        edge_detector enemy_B_inactive_edge(#RISE(0),#FALL(1))
-        edge_detector enemy_C_inactive_edge(#RISE(0),#FALL(1))
-        
-        
+        edge_detector fast_clk_edge(#RISE(1),#FALL(0))        
         .rst(rst){
             data_ram ram(#ROW_DIMENSION(ROW_DIMENSION), #ENCODING_AMOUNT(ENCODING_AMOUNT), #COLUMN_DIMENSION(COLUMN_DIMENSION))
             ws2812b_driver driver(#PIXEL_COUNT(PIXEL_COUNT)) 
@@ -79,9 +66,6 @@ module ram_mode #(
         
         ram.address = 0        // address 0 selected by default
         ram.update = 0         // do not update ram  by default
-        ram.enemy_A_update = 0
-        ram.enemy_B_update = 0
-        ram.enemy_C_update = 0
         
         driver.update = 0 // do not refresh by default
         driver.clear = 0 // do not clear by default
@@ -90,14 +74,6 @@ module ram_mode #(
         // the matrix we use has top RIGHT as 0,0
         bullet_slow_clk_edge.in = bullet_slow_clk_out
         fast_clk_edge.in = fast_clk_out
-        
-        enemy_A_active_edge.in = enemy_A_active_out
-        enemy_B_active_edge.in = enemy_B_active_out
-        enemy_C_active_edge.in = enemy_C_active_out
-        
-        enemy_A_inactive_edge.in = enemy_A_active_out
-        enemy_B_inactive_edge.in = enemy_B_active_out
-        enemy_C_inactive_edge.in = enemy_C_active_out
         
         // update the ram whenever player moves or io_button[0] is pressed
         
@@ -132,17 +108,14 @@ module ram_mode #(
         ram.enemy_A_x = enemy_A_x_out
         ram.enemy_A_y = enemy_A_y_out
         ram.enemy_A_color = enemy_A_color_out[2:0] // only 2-bit encoding for color
-        ram.enemy_A_active_out = enemy_A_active_out
         
         ram.enemy_B_x = enemy_B_x_out
         ram.enemy_B_y = enemy_B_y_out
         ram.enemy_B_color = enemy_B_color_out[2:0] // only 2-bit encoding
-        ram.enemy_B_active_out = enemy_B_active_out
         
         ram.enemy_C_x = enemy_C_x_out
         ram.enemy_C_y = enemy_C_y_out
         ram.enemy_C_color = enemy_C_color_out[2:0] // only 2-bit encoding
-        ram.enemy_C_active_out = enemy_C_active_out
         
         // connect reverser to led_strip 
         index_reverser.input_address = driver.pixel_address
