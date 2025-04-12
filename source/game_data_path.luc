@@ -101,10 +101,10 @@ module game_data_path #(
         io_segment = 8hff
         io_select = 4hf
         led = 8b0
-        io_led[0] = ram_mode.io_led[0]
-        io_led[1] = ram_mode.io_led[1]
-        io_led[2] = ram_mode.io_led[2]
-        led = ram_mode.led
+        io_led[0] = game_regfile.io_led[0]
+        io_led[1] = game_regfile.io_led[1]
+        io_led[2] = game_regfile.io_led[2]
+        led = game_regfile.led
         // ASEL mux
         case (game_cu.asel) {
             b000 : input_alu_a = game_regfile.rd1

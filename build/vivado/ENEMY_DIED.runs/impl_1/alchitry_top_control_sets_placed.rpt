@@ -1,0 +1,116 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Sat Apr 12 20:27:58 2025
+| Host         : DESKTOP-9K3T8HM running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file alchitry_top_control_sets_placed.rpt
+| Design       : alchitry_top
+| Device       : xc7a35t
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |    38 |
+|    Minimum number of control sets                        |    38 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |    56 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |    38 |
+| >= 0 to < 4        |     0 |
+| >= 4 to < 6        |    10 |
+| >= 6 to < 8        |     2 |
+| >= 8 to < 10       |     3 |
+| >= 10 to < 12      |     0 |
+| >= 12 to < 14      |     1 |
+| >= 14 to < 16      |     5 |
+| >= 16              |    17 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |              20 |            9 |
+| No           | No                    | Yes                    |               4 |            2 |
+| No           | Yes                   | No                     |              67 |           25 |
+| Yes          | No                    | No                     |               0 |            0 |
+| Yes          | No                    | Yes                    |               0 |            0 |
+| Yes          | Yes                   | No                     |             629 |          295 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++----------------+-------------------------------------------------------------------+--------------------------------------------+------------------+----------------+--------------+
+|  Clock Signal  |                           Enable Signal                           |              Set/Reset Signal              | Slice Load Count | Bel Load Count | Bels / Slice |
++----------------+-------------------------------------------------------------------+--------------------------------------------+------------------+----------------+--------------+
+|  clk_IBUF_BUFG |                                                                   | reset_cond/M_reset_cond_in                 |                2 |              4 |         2.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/ram/mem_reg_0_63_0_2_i_4_n_0          |                                            |                1 |              4 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/ram/mem_reg_64_127_0_2_i_1_n_0        |                                            |                1 |              4 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/ram/mem_reg_128_191_0_2_i_1_n_0       |                                            |                1 |              4 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/ram/mem_reg_192_255_0_2_i_1_n_0       |                                            |                1 |              4 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_24[0]                     | reset_cond/Q[0]                            |                2 |              4 |         2.00 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_25[0]                     | reset_cond/Q[0]                            |                1 |              4 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/D_fsm_q[4]_i_1_n_0                    | reset_cond/Q[0]                            |                2 |              5 |         2.50 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/D_player_writer_pointer_q[6]_i_1_n_0  | reset_cond/Q[0]                            |                4 |              5 |         1.25 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/driver/D_bit_ctr_d                        | reset_cond/Q[0]                            |                2 |              5 |         2.50 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_26[0]                     | reset_cond/Q[0]                            |                2 |              6 |         3.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/driver/D_ctr_d                            | reset_cond/Q[0]                            |                3 |              7 |         2.33 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/ram/E[0]                              | reset_cond/Q[0]                            |                2 |              8 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/D_bullet_writer_pointer_q[7]_i_1_n_0  | reset_cond/Q[0]                            |                2 |              8 |         4.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/driver/D_pixel_address_ctr_d              | reset_cond/Q[0]                            |                4 |              8 |         2.00 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/driver/D_rst_ctr_d                        | reset_cond/Q[0]                            |                4 |             13 |         3.25 |
+|  clk_IBUF_BUFG | btn_cond_redshoot/D_ctr_q[0]_i_2__1_n_0                           | btn_cond_redshoot/sync/D_pipe_q_reg[1]_0   |                4 |             14 |         3.50 |
+|  clk_IBUF_BUFG | btn_cond_start_btn/D_ctr_q[0]_i_2__5_n_0                          | btn_cond_start_btn/sync/D_pipe_q_reg[1]_0  |                4 |             14 |         3.50 |
+|  clk_IBUF_BUFG | btn_cond_right/D_ctr_q_reg[10]_0                                  | btn_cond_right/sync/D_pipe_q_reg[1]_0      |                4 |             14 |         3.50 |
+|  clk_IBUF_BUFG | btn_cond_greenshoot/D_ctr_q[0]_i_2__2_n_0                         | btn_cond_greenshoot/sync/D_pipe_q_reg[1]_0 |                4 |             14 |         3.50 |
+|  clk_IBUF_BUFG | btn_cond_left/sel                                                 | btn_cond_left/sync/clear                   |                4 |             14 |         3.50 |
+|  clk_IBUF_BUFG |                                                                   |                                            |                9 |             20 |         2.22 |
+|  clk_IBUF_BUFG | game_data_path/ram_mode/ram/D_enemy_A_writer_pointer_q[7]_i_1_n_0 | reset_cond/Q[0]                            |                8 |             24 |         3.00 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_game_fsm_q_reg[3]_1[0]                   | reset_cond/Q[0]                            |               20 |             32 |         1.60 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_17[0]                     | reset_cond/Q[0]                            |               19 |             32 |         1.68 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_13[0]                     | reset_cond/Q[0]                            |               19 |             32 |         1.68 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_27[0]                     | reset_cond/Q[0]                            |               17 |             32 |         1.88 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_28[0]                     | reset_cond/Q[0]                            |               22 |             32 |         1.45 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_14[0]                     | reset_cond/Q[0]                            |               20 |             32 |         1.60 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_18[0]                     | reset_cond/Q[0]                            |               13 |             32 |         2.46 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_22[0]                     | reset_cond/Q[0]                            |               15 |             32 |         2.13 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_16[0]                     | reset_cond/Q[0]                            |               15 |             32 |         2.13 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/E[0]                                       | reset_cond/Q[0]                            |               12 |             32 |         2.67 |
+|  clk_IBUF_BUFG | reset_cond/D_bullet_encode_d                                      | reset_cond/Q[0]                            |               17 |             32 |         1.88 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_19[0]                     | reset_cond/Q[0]                            |               11 |             32 |         2.91 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_23[0]                     | reset_cond/Q[0]                            |               18 |             34 |         1.89 |
+|  clk_IBUF_BUFG | game_data_path/game_cu/D_stage_q_reg[3]_15[0]                     | reset_cond/Q[0]                            |               21 |             44 |         2.10 |
+|  clk_IBUF_BUFG |                                                                   | reset_cond/Q[0]                            |               25 |             67 |         2.68 |
++----------------+-------------------------------------------------------------------+--------------------------------------------+------------------+----------------+--------------+
+
+

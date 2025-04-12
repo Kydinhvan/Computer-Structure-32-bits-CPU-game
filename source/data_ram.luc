@@ -255,6 +255,7 @@ module data_ram #(
                 ram.waddr = enemy_B_writer_pointer.q + COLUMN_DIMENSION - 1
                 ram.write_data = enemy_B_color
                 fsm.d = States.WRITE_ENEMY_C_PIXEL1
+                enemy_B_writer_pointer.d = enemy_B_writer_pointer.q
             
             States.WRITE_ENEMY_C_PIXEL1:
                 ram.write_enable = b1
@@ -290,6 +291,7 @@ module data_ram #(
                 ram.write_enable = b1
                 ram.waddr = enemy_C_writer_pointer.q + COLUMN_DIMENSION - 1
                 ram.write_data = enemy_C_color
+                enemy_C_writer_pointer.d = enemy_C_writer_pointer.q
                 if (bullet_active && bullet_written.q) {
                     bullet_writer_pointer.d = bullet_last_addr.q
                     fsm.d = States.ERASE_BULLET
@@ -302,7 +304,7 @@ module data_ram #(
                 } else {
                     fsm.d = States.IDLE
                 }
-                        
+            
             States.ERASE_BULLET:
                 ram.write_enable = b1
                 ram.waddr = bullet_writer_pointer.q

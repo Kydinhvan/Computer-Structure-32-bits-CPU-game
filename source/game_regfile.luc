@@ -70,7 +70,9 @@ module game_regfile #(
             dff enemy_B_data[32](#INIT(0))
             dff enemy_C_data[32](#INIT(0))
             dff check_enemy[32](#INIT(0))
-            
+            dff temp_reg1[32](#INIT(0))
+            dff temp_reg2[32](#INIT(0))
+            dff temp_reg3[32](#INIT(0))
             
         }
     }    
@@ -103,6 +105,9 @@ module game_regfile #(
                 d16: enemy_B_data.d = regfile_data
                 d17: enemy_C_data.d = regfile_data
                 d18: check_enemy.d = regfile_data
+                d19: temp_reg1.d = regfile_data
+                d20: temp_reg2.d = regfile_data
+                d21: temp_reg3.d = regfile_data
                 
             }
         }
@@ -128,6 +133,9 @@ module game_regfile #(
             d16: rd1 = enemy_B_data.q
             d17: rd1 = enemy_C_data.q
             d18: rd1 = check_enemy.q
+            d19: rd1 = temp_reg1.q
+            d20: rd1 = temp_reg2.q
+            d21: rd1 = temp_reg3.q
             default: rd1 = 0
         }
         
@@ -151,7 +159,9 @@ module game_regfile #(
             d16: rd2 = enemy_B_data.q
             d17: rd2 = enemy_C_data.q
             d18: rd2 = check_enemy.q
-            
+            d19: rd2 = temp_reg1.q
+            d20: rd2 = temp_reg2.q
+            d21: rd2 = temp_reg3.q
             default: rd2 = 0
         }
         
@@ -184,7 +194,7 @@ module game_regfile #(
         enemy_C_color_out = enemy_C_data.q[7:0]
         enemy_C_active_out = enemy_C_active.q
         
-        io_led[0] = enemy_A_data.q[23:16]
+        io_led[0] = score.q[7:0]
         io_led[1] = enemy_A_data.q[15:8]
         io_led[2] = enemy_A_data.q[7:0]
         led = player_x_pos.q

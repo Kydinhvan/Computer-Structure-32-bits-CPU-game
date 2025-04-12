@@ -10,7 +10,6 @@ module alchitry_top (
     input io_button[5],     // 5 buttons on IO Shield
     output data
 ) {
-    
     sig rst                 // reset signal
     const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 for sim, 10000000 otherwise in hardware
     const BULLET_SLOW_CLK_DIV = $is_sim() ? 9 : 22 //

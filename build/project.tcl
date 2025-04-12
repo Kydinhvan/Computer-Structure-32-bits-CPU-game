@@ -1,5 +1,5 @@
 set projDir "./vivado"
-set projName "profnat_amazingALU"
+set projName "ENEMY_DIED"
 set topName top
 set device xc7a35tftg256-1
 if {[file exists "$projDir"]} { file delete -force "$projDir" }

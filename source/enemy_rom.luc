@@ -25,9 +25,9 @@ module enemy_rom #(
     }
     
     const ENEMY_COLOR = {
-        {b01, b10, b11},  
+        {b01, b10, b01},  
         {b10, b01, b10},
-        {b11, b10, b01}
+        {b10, b10, b01}
     }
     
     always{

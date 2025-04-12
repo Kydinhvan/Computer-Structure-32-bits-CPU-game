@@ -31,37 +31,27 @@ module game_cu #(
     output debug[4]
 ) {
     enum GameStates {
+        // Init Game
         START,
-        SET_ENEMY_A,
-        SET_ENEMY_A_ACTIVE,
-        SET_ENEMY_B,
-        SET_ENEMY_B_ACTIVE,
-        SET_ENEMY_C,
-        SET_ENEMY_C_ACTIVE,
-        INCRE_ENEMY_WAVE,
+        SET_ENEMY_A, SET_ENEMY_A_ACTIVE, SET_ENEMY_B, SET_ENEMY_B_ACTIVE, SET_ENEMY_C, SET_ENEMY_C_ACTIVE,
+        
+        // Player's Input
         IDLE,
-        CHECK_RIGHT_BOUND,
-        CHECK_LEFT_BOUND,
-        MOVE_RIGHT,
-        MOVE_LEFT,
-        SET_RED_BULLET_COLOR,
-        SET_GREEN_BULLET_COLOR,
-        SET_BLUE_BULLET_COLOR,
-        BULLET_ACTIVE,
-        BULLET_X_POS,
-        BULLET_ENCODING_X,
-        BULLET_ENCODING_X_SHIFT,
-        BULLET_ENCODING_Y_SHIFT,
-        BULLET_ENCODING_COLOR,
-        CHECK_BULLET_BOUNDARY,
-        BULLET_MOVE, 
-        BULLET_ENCODING_Y,
-        CHECK_ENEMY_A_HIT,
-        ENEMY_A_COLLIDED,
-        ENEMY_A_DIED,
-        SET_ENEMY_A_INACTIVE,
-        BULLET_RESET_Y,
-        BULLET_INACTIVE
+        CHECK_RIGHT_BOUND, CHECK_LEFT_BOUND,MOVE_RIGHT, MOVE_LEFT,
+        SET_RED_BULLET_COLOR, SET_GREEN_BULLET_COLOR, SET_BLUE_BULLET_COLOR,
+        BULLET_ACTIVE, BULLET_X_POS, BULLET_ENCODING_XYCOLOR, // 4 stages saved
+        
+        // Bullet Moving and Checking Hit Logic
+        CHECK_BULLET_BOUNDARY, BULLET_MOVE, BULLET_ENCODING_Y,
+        CHECK_ENEMY_A_HIT, ENEMY_A_COLLIDED, ENEMY_A_DIED, SET_ENEMY_A_INACTIVE,
+        CHECK_ENEMY_B_HIT, ENEMY_B_COLLIDED, ENEMY_B_DIED, SET_ENEMY_B_INACTIVE,
+        CHECK_ENEMY_C_HIT, ENEMY_C_COLLIDED, ENEMY_C_DIED, SET_ENEMY_C_INACTIVE,
+        
+        // Reset Bullet Once Hit
+        BULLET_RESET_Y, BULLET_INACTIVE,
+        
+        // Next Enemy Wave
+        INCR_SCORE, ADD_ENEMY_ACTIVE_AB, ADD_ENEMY_ACTIVE_ABC, CHECK_ALL_ENEMY_DEAD, INCR_WAVE
     }
     // User input
     //const CLK_FREQ = $is_sim() ? 1000 : 100000000
@@ -73,7 +63,6 @@ module game_cu #(
             dff game_fsm[$width(GameStates)](#INIT(GameStates.START))
         }
     }
-    
     
     always {
         bullet_slow_clk_edge.in = bullet_slow_clk_out
@@ -269,40 +258,13 @@ module game_cu #(
                     asel = b000                                  
                     regfile_we = 1
                     regfile_wa = d7               // bullet_x
-                    game_fsm.d = GameStates.BULLET_ENCODING_X
+                    game_fsm.d = GameStates.BULLET_ENCODING_XYCOLOR
                 
-                GameStates.BULLET_ENCODING_X:
-                    alufn_signal = b000000        // ADD
+                GameStates.BULLET_ENCODING_XYCOLOR:
+                    alufn_signal = b111110        // bullet_encoding
                     regfile_ra1 = d7              // bullet_x
-                    bsel = b100                   // const 0
-                    asel = b000                   // read from regfile               
-                    regfile_we = 1
-                    regfile_wa = d10               // bullet encoding
-                    game_fsm.d = GameStates.BULLET_ENCODING_X_SHIFT
-                
-                GameStates.BULLET_ENCODING_X_SHIFT:
-                    alufn_signal = b100000        // shift left
-                    regfile_ra1 = d10              // bullet encoding
-                    bsel = b110                   // const 8
-                    asel = b000                   // read from regfile               
-                    regfile_we = 1
-                    regfile_wa = d10               // bullet encoding
-                    game_fsm.d = GameStates.BULLET_ENCODING_Y_SHIFT
-                
-                GameStates.BULLET_ENCODING_Y_SHIFT:
-                    alufn_signal = b100000        // shift left
-                    regfile_ra1 = d10              // bullet encoding
-                    bsel = b110                   // const 8
-                    asel = b000                   // read from regfile               
-                    regfile_we = 1
-                    regfile_wa = d10               // bullet encoding
-                    game_fsm.d = GameStates.BULLET_ENCODING_COLOR
-                
-                GameStates.BULLET_ENCODING_COLOR:
-                    alufn_signal = b000000        // ADD
-                    regfile_ra1 = d6              // bullet_color
-                    regfile_ra2 = d10              // bullet encoding
-                    bsel = b000                   // const 0
+                    regfile_ra2 = d6              // bullet_color
+                    bsel = b000                   // read from regfile
                     asel = b000                   // read from regfile               
                     regfile_we = 1
                     regfile_wa = d10               // bullet encoding
@@ -362,7 +324,7 @@ module game_cu #(
                         game_fsm.d = GameStates.ENEMY_A_DIED 
                     } 
                     else{
-                        game_fsm.d = GameStates.IDLE 
+                        game_fsm.d = GameStates.CHECK_ENEMY_B_HIT 
                     }
                 
                 GameStates.ENEMY_A_DIED: // set enemy info to color to 0
@@ -380,10 +342,90 @@ module game_cu #(
                     asel = b001                     // 0             
                     regfile_we = 1
                     regfile_wa = d4               // enemyA_active
-                    game_fsm.d = GameStates.BULLET_RESET_Y
+                    game_fsm.d = GameStates.INCR_SCORE
+                
+                GameStates.CHECK_ENEMY_B_HIT: // return hit flag
+                    alufn_signal = b110011        // CMPEQ
+                    regfile_ra1 = d10              // bullet_encode
+                    regfile_ra2 = d16              // enemy_A_encode
+                    bsel = b000                   // read from regfile 
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d18               // check enemy condition
+                    game_fsm.d = GameStates.ENEMY_B_COLLIDED  // go to idle then
+                
+                GameStates.ENEMY_B_COLLIDED:
+                    regfile_ra2 = d18
+                    if (regfile_rd2[0]){              // XYCOLOR HIT
+                        game_fsm.d = GameStates.ENEMY_B_DIED 
+                    } 
+                    else{
+                        game_fsm.d = GameStates.CHECK_ENEMY_C_HIT 
+                    }
+                
+                GameStates.ENEMY_B_DIED: // set enemy info to xycolor to 0
+                    alufn_signal = b111101        // color encode
+                    regfile_ra1 = d16              // enemy B                                       
+                    bsel = b100                   // 0
+                    asel = b000                   // regfile
+                    regfile_we = 1 
+                    regfile_wa = d16  // Address for Enemy B's 
+                    game_fsm.d = GameStates.SET_ENEMY_B_INACTIVE
+                
+                GameStates.SET_ENEMY_B_INACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b100                    // 0
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d5               // enemyB_active
+                    game_fsm.d = GameStates.INCR_SCORE
+                
+                GameStates.CHECK_ENEMY_C_HIT: // return hit flag
+                    alufn_signal = b110011        // CMPEQ
+                    regfile_ra1 = d10              // bullet_encode
+                    regfile_ra2 = d17              // enemy_C_encode
+                    bsel = b000                   // read from regfile 
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d18               // check enemy condition
+                    game_fsm.d = GameStates.ENEMY_C_COLLIDED  // go to idle then
+                
+                GameStates.ENEMY_C_COLLIDED:
+                    regfile_ra2 = d18
+                    if (regfile_rd2[0]){              // XYCOLOR HIT
+                        game_fsm.d = GameStates.ENEMY_C_DIED 
+                    } 
+                    else{
+                        game_fsm.d = GameStates.IDLE 
+                    }
+                GameStates.ENEMY_C_DIED: // set enemy info to xycolor to 0
+                    alufn_signal = b111101        // enemy_color_encode
+                    regfile_ra1 = d17              // enemy C                                       
+                    bsel = b100                   // 0
+                    asel = b000                   // regfile
+                    regfile_we = 1 
+                    regfile_wa = d17  // Address for Enemy C's 
+                    game_fsm.d = GameStates.SET_ENEMY_C_INACTIVE
+                
+                GameStates.SET_ENEMY_C_INACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b100                    // 0
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d9               // enemyC_active
+                    game_fsm.d = GameStates.INCR_SCORE
+                
+                GameStates.INCR_SCORE:
+                    alufn_signal = b000000        // ADD
+                    regfile_ra1 = d3              // score
+                    bsel = b001                   // constant 1
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d3               
+                    game_fsm.d = GameStates.BULLET_RESET_Y  
                 
                 GameStates.BULLET_RESET_Y:
-                    alufn_signal = b000010        //MUL
+                    alufn_signal = b000010         //MUL
                     bsel = b001                    //constant 1 
                     asel = b010                     //constant 13             
                     regfile_we = 1
@@ -396,7 +438,50 @@ module game_cu #(
                     asel = b001                     //constant 0             
                     regfile_we = 1
                     regfile_wa = d13               // bul_active
-                    game_fsm.d = GameStates.IDLE
+                    game_fsm.d = GameStates.ADD_ENEMY_ACTIVE_AB
+                
+                GameStates.ADD_ENEMY_ACTIVE_AB:
+                    alufn_signal = b000000        // ADD
+                    regfile_ra1 = d4              // enemy_A_active
+                    regfile_ra2 = d5              // enemy_A_active
+                    bsel = b000                    // regfile
+                    asel = b000                     // regfile             
+                    regfile_we = 1
+                    regfile_wa = d19               // temp_reg1
+                    game_fsm.d = GameStates.ADD_ENEMY_ACTIVE_ABC
+                
+                GameStates.ADD_ENEMY_ACTIVE_ABC:
+                    alufn_signal = b000000        // ADD
+                    regfile_ra1 = d19              // temp_reg1
+                    regfile_ra2 = d9              // enemy_C_active
+                    bsel = b000                    // regfile
+                    asel = b000                     // regfile             
+                    regfile_we = 1
+                    regfile_wa = d19               // temp_reg1
+                    game_fsm.d = GameStates.CHECK_ALL_ENEMY_DEAD
+                
+                GameStates.CHECK_ALL_ENEMY_DEAD:
+                    alufn_signal = b110011        // CMPEQ
+                    regfile_ra1 = d19              // temp_reg
+                    bsel = b100                    // 0
+                    asel = b000                     // regfile             
+                    regfile_we = 1
+                    regfile_wa = d19               // temp_reg
+                    game_fsm.d = GameStates.INCR_WAVE
+                
+                GameStates.INCR_WAVE:
+                    regfile_ra2 = d19
+                    if (regfile_rd2[0]) {
+                        alufn_signal = b000000        // ADD
+                        regfile_ra1 = d14              // enemy_stage_pointer
+                        bsel = b001                    // 1
+                        asel = b000                     // regfile             
+                        regfile_we = 1
+                        regfile_wa = d14               // enemy_stage_pointer
+                        game_fsm.d = GameStates.SET_ENEMY_A                        
+                    } else{
+                        game_fsm.d = GameStates.IDLE
+                    }
             }
         }
     }
