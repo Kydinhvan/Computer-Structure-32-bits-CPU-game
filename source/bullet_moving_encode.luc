@@ -1,0 +1,9 @@
+module bullet_moving_encode (
+    input a[32],
+    input b[32],
+    output out[32]
+) {
+    always {
+        out = c{b00000000,a[23:16],b[7:0],a[7:0]}
+    }
+}

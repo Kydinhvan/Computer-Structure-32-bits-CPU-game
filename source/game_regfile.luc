@@ -25,10 +25,10 @@ module game_regfile #(
     output player_bullet_x_out[32],
     output player_bullet_y_out[32],
     output enemy_C_active_out[32],
-    output stage_counter_out[32],
     output check_boundary_out[32],
     output bullet_active_out[32],
     output enemy_stage_pointer_out[32],
+    output bullet_encode_out[32],
     
     output enemy_A_x_out[32],
     output enemy_A_y_out[32],
@@ -55,32 +55,22 @@ module game_regfile #(
             dff enemy_A_active[32](#INIT(0))
             dff bullet_color[32](#INIT(0))
             dff enemy_B_active[32](#INIT(0))
-            dff stage_counter[32](#INIT(0))
+            dff bullet_encode[32](#INIT(0))
             dff check_boundary[32](#INIT(0))
             dff enemy_stage_pointer[32](#INIT(0))
             dff bullet_timer[32](#INIT(0))
             dff bullet_active[32](#INIT(0))
-            dff temp_reg[32](#INIT(0))
             
             dff player_x_pos[$clog2(COLUMN_DIMENSION)](#INIT(7))
             dff player_y_pos[$clog2(ROW_DIMENSION)](#INIT(14))
             dff bullet_x[$clog2(COLUMN_DIMENSION)](#INIT(0))
             dff bullet_y[$clog2(ROW_DIMENSION)](#INIT(13))
             
-            // Enemy A registers
-            dff enemy_A_x[$clog2(COLUMN_DIMENSION)](#INIT(0))
-            dff enemy_A_y[$clog2(ROW_DIMENSION)](#INIT(0))
-            dff enemy_A_color[32](#INIT(0))
+            dff enemy_A_data[32](#INIT(0))
+            dff enemy_B_data[32](#INIT(0))
+            dff enemy_C_data[32](#INIT(0))
+            dff check_enemy[32](#INIT(0))
             
-            // Enemy B registers
-            dff enemy_B_x[$clog2(COLUMN_DIMENSION)](#INIT(0))
-            dff enemy_B_y[$clog2(ROW_DIMENSION)](#INIT(0))
-            dff enemy_B_color[32](#INIT(0))
-            
-            // Enemy C registers
-            dff enemy_C_x[$clog2(COLUMN_DIMENSION)](#INIT(0))
-            dff enemy_C_y[$clog2(ROW_DIMENSION)](#INIT(0))
-            dff enemy_C_color[32](#INIT(0))
             
         }
     }    
@@ -104,27 +94,15 @@ module game_regfile #(
                 d7: bullet_x.d = regfile_data
                 d8: bullet_y.d = regfile_data
                 d9: enemy_C_active.d = regfile_data 
-                d10: stage_counter.d = regfile_data // not used
+                d10: bullet_encode.d = regfile_data 
                 d11: check_boundary.d = regfile_data
                 d12: bullet_timer.d = regfile_data
                 d13: bullet_active.d = regfile_data
                 d14: enemy_stage_pointer.d = regfile_data
-                d15: temp_reg.d = regfile_data
-                
-                // Enemy A
-                d16: enemy_A_x.d = regfile_data  
-                d17: enemy_A_y.d = regfile_data  
-                d18: enemy_A_color.d = regfile_data
-                // Enemy B
-                d19: enemy_B_x.d = regfile_data  
-                d20: enemy_B_y.d = regfile_data  
-                d21: enemy_B_color.d = regfile_data 
-                
-                // Enemy C
-                d22: enemy_C_x.d = regfile_data 
-                d23: enemy_C_y.d = regfile_data 
-                d24: enemy_C_color.d = regfile_data 
-                
+                d15: enemy_A_data.d = regfile_data           
+                d16: enemy_B_data.d = regfile_data
+                d17: enemy_C_data.d = regfile_data
+                d18: check_enemy.d = regfile_data
                 
             }
         }
@@ -141,21 +119,15 @@ module game_regfile #(
             d7: rd1 = bullet_x.q
             d8: rd1 = bullet_y.q
             d9: rd1 = enemy_C_active.q
-            d10: rd1 = stage_counter.q
+            d10: rd1 = bullet_encode.q
             d11: rd1 = check_boundary.q
             d12: rd1 = bullet_timer.q
             d13: rd1 = bullet_active.q
             d14: rd1 = enemy_stage_pointer.q
-            d15: rd1 = temp_reg.q
-            d16: rd1 = enemy_A_x.q
-            d17: rd1 = enemy_A_y.q
-            d18: rd1 = enemy_A_color.q
-            d19: rd1 = enemy_B_x.q
-            d20: rd1 = enemy_B_y.q
-            d21: rd1 = enemy_B_color.q
-            d22: rd1 = enemy_C_x.q
-            d23: rd1 = enemy_C_y.q
-            d24: rd1 = enemy_C_color.q
+            d15: rd1 = enemy_A_data.q
+            d16: rd1 = enemy_B_data.q
+            d17: rd1 = enemy_C_data.q
+            d18: rd1 = check_enemy.q
             default: rd1 = 0
         }
         
@@ -170,23 +142,19 @@ module game_regfile #(
             d7: rd2 = bullet_x.q
             d8: rd2 = bullet_y.q
             d9: rd2 = enemy_C_active.q
-            d10: rd2 = stage_counter.q
+            d10: rd2 = bullet_encode.q
             d11: rd2 = check_boundary.q
             d12: rd2 = bullet_timer.q
             d13: rd2 = bullet_active.q
             d14: rd2 = enemy_stage_pointer.q
-            d15: rd2 = temp_reg.q
-            d16: rd2 = enemy_A_x.q
-            d17: rd2 = enemy_A_y.q
-            d18: rd2 = enemy_A_color.q
-            d19: rd2 = enemy_B_x.q
-            d20: rd2 = enemy_B_y.q
-            d21: rd2 = enemy_B_color.q
-            d22: rd2 = enemy_C_x.q
-            d23: rd2 = enemy_C_y.q
-            d24: rd2 = enemy_C_color.q
+            d15: rd2 = enemy_A_data.q
+            d16: rd2 = enemy_B_data.q
+            d17: rd2 = enemy_C_data.q
+            d18: rd2 = check_enemy.q
+            
             default: rd2 = 0
         }
+        
         // Output to game logic
         player_pos_x_out = player_x_pos.q
         player_pos_y_out = player_y_pos.q
@@ -195,32 +163,30 @@ module game_regfile #(
         bullet_color_out = bullet_color.q
         player_bullet_x_out = bullet_x.q
         player_bullet_y_out = bullet_y.q
-        stage_counter_out = stage_counter.q
         check_boundary_out = check_boundary.q
-        
+        bullet_encode_out = bullet_encode.q
         enemy_stage_pointer_out = enemy_stage_pointer.q
         
         bullet_active_out = bullet_active.q
         
-        //enemy out 
-        enemy_A_x_out = enemy_A_x.q
-        enemy_A_y_out = enemy_A_y.q
-        enemy_A_color_out = enemy_A_color.q
+        enemy_A_x_out = enemy_A_data.q[23:16]
+        enemy_A_y_out = enemy_A_data.q[15:8]
+        enemy_A_color_out = enemy_A_data.q[7:0]
         enemy_A_active_out = enemy_A_active.q
         
-        enemy_B_x_out = enemy_B_x.q
-        enemy_B_y_out = enemy_B_y.q
-        enemy_B_color_out = enemy_B_color.q
+        enemy_B_x_out = enemy_B_data.q[23:16]
+        enemy_B_y_out = enemy_B_data.q[15:8]
+        enemy_B_color_out = enemy_B_data.q[7:0]
         enemy_B_active_out = enemy_B_active.q
         
-        enemy_C_x_out = enemy_C_x.q
-        enemy_C_y_out = enemy_C_y.q
-        enemy_C_color_out = enemy_C_color.q
+        enemy_C_x_out = enemy_C_data.q[23:16]
+        enemy_C_y_out = enemy_C_data.q[15:8]
+        enemy_C_color_out = enemy_C_data.q[7:0]
         enemy_C_active_out = enemy_C_active.q
         
-        io_led[0] = player_x_pos.q// player position 
-        io_led[1] = bullet_y.q
-        io_led[2] = enemy_A_y.q
-        
+        io_led[0] = enemy_A_data.q[23:16]
+        io_led[1] = enemy_A_data.q[15:8]
+        io_led[2] = enemy_A_data.q[7:0]
+        led = player_x_pos.q
     }
 }

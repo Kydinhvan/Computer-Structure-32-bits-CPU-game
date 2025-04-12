@@ -1,0 +1,11 @@
+module bullet_encode (
+    input a[32],
+    input b[32],
+    output out[32]
+) {
+    always {
+        
+        out = (a << 5d16) + b
+
+    }
+}

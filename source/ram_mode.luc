@@ -23,22 +23,23 @@ module ram_mode #(
     input player_bullet_y_out[32],
     input bullet_active_out,
     input bullet_slow_clk_out,
+    input fast_clk_out,
     
     input enemy_A_active_out,
     input enemy_B_active_out,
     input enemy_C_active_out,
     
-    input enemy_A_x_out[32],
-    input enemy_A_y_out[32],
-    input enemy_A_color_out[32],
+    input enemy_A_x_out[8],
+    input enemy_A_y_out[8],
+    input enemy_A_color_out[8],
     
-    input enemy_B_x_out[32],
-    input enemy_B_y_out[32],
-    input enemy_B_color_out[32],
+    input enemy_B_x_out[8],
+    input enemy_B_y_out[8],
+    input enemy_B_color_out[8],
     
-    input enemy_C_x_out[32],
-    input enemy_C_y_out[32],
-    input enemy_C_color_out[32],
+    input enemy_C_x_out[8],
+    input enemy_C_y_out[8],
+    input enemy_C_color_out[8],
     
     output data
 ) {
@@ -53,9 +54,14 @@ module ram_mode #(
     }
     .clk(clk){
         edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
+        edge_detector fast_clk_edge(#RISE(1),#FALL(0))
+        
         edge_detector enemy_A_active_edge(#RISE(1),#FALL(0))
         edge_detector enemy_B_active_edge(#RISE(1),#FALL(0))
         edge_detector enemy_C_active_edge(#RISE(1),#FALL(0))
+        edge_detector enemy_A_inactive_edge(#RISE(0),#FALL(1))
+        edge_detector enemy_B_inactive_edge(#RISE(0),#FALL(1))
+        edge_detector enemy_C_inactive_edge(#RISE(0),#FALL(1))
         
         
         .rst(rst){
@@ -83,9 +89,15 @@ module ram_mode #(
         fsm.d = fsm.q
         // the matrix we use has top RIGHT as 0,0
         bullet_slow_clk_edge.in = bullet_slow_clk_out
+        fast_clk_edge.in = fast_clk_out
+        
         enemy_A_active_edge.in = enemy_A_active_out
         enemy_B_active_edge.in = enemy_B_active_out
         enemy_C_active_edge.in = enemy_C_active_out
+        
+        enemy_A_inactive_edge.in = enemy_A_active_out
+        enemy_B_inactive_edge.in = enemy_B_active_out
+        enemy_C_inactive_edge.in = enemy_C_active_out
         
         // update the ram whenever player moves or io_button[0] is pressed
         
@@ -100,17 +112,8 @@ module ram_mode #(
                 driver.clear = 1
             
             States.GAME_STATE:
-                if (left_btn| right_btn | (bullet_active_out & bullet_slow_clk_edge.out)){
+                if (left_btn| right_btn | (bullet_active_out & bullet_slow_clk_edge.out) |fast_clk_edge.out){
                     ram.update = 1
-                }
-                if (enemy_A_active_edge.out){
-                    ram.enemy_A_update = 1
-                }
-                if (enemy_B_active_edge.out ){
-                    ram.enemy_B_update = 1
-                }
-                if (enemy_C_active_edge.out){
-                    ram.enemy_C_update = 1
                 }
                 fsm.d = States.GAME_STATE
         }
@@ -151,11 +154,10 @@ module ram_mode #(
         data = driver.data
         
         // debug 
-        io_led[0] = player_pos_x_out // player position 
+        io_led[0] = enemy_A_color_out // player position 
         io_led[1] = enemy_A_y_out
-        io_led[2] = enemy_A_x_out
+        io_led[2] = ram.debug_data
         //io_led[2][1] = check_boundary_out
         //io_led[2][7:2] = 0
-        led[7:5] = ram.debug_data
     }
 }

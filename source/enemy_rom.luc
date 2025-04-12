@@ -3,15 +3,9 @@ module enemy_rom #(
     ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0
 )(
     input enemy_stage_pointer_out[3],
-    output enemy_A_x_rom_out[32],
-    output enemy_A_y_rom_out[32],
-    output enemy_A_color_rom_out[32],
-    output enemy_B_x_rom_out[32],
-    output enemy_B_y_rom_out[32],
-    output enemy_B_color_rom_out[32],
-    output enemy_C_x_rom_out[32],
-    output enemy_C_y_rom_out[32],
-    output enemy_C_color_rom_out[32]
+    output enemy_A_romdata_out[32],
+    output enemy_B_romdata_out[32],
+    output enemy_C_romdata_out[32]
 ){
     
     // Each wave: list of x,y positions and colors (2-bit)
@@ -35,21 +29,28 @@ module enemy_rom #(
         {b10, b01, b10},
         {b11, b10, b01}
     }
+    
     always{
-        enemy_A_x_rom_out = ENEMY_WAVES_X[enemy_stage_pointer_out][0]
-        enemy_A_y_rom_out = ENEMY_WAVES_Y[enemy_stage_pointer_out][0]
-        enemy_A_color_rom_out = ENEMY_COLOR[enemy_stage_pointer_out][0]
         
-        //enemy_A_x_rom_out = 4d8
-        //enemy_A_y_rom_out = 4d2
-        // Assign values for Enemy B
-        enemy_B_x_rom_out = ENEMY_WAVES_X[enemy_stage_pointer_out][1]
-        enemy_B_y_rom_out = ENEMY_WAVES_Y[enemy_stage_pointer_out][1]
-        enemy_B_color_rom_out = ENEMY_COLOR[enemy_stage_pointer_out][1]
+        enemy_A_romdata_out = c{
+            b00000000, // Padding upper 8 bits
+            $resize(ENEMY_WAVES_X[enemy_stage_pointer_out][0], 8),
+            $resize(ENEMY_WAVES_Y[enemy_stage_pointer_out][0], 8),
+            $resize(ENEMY_COLOR[enemy_stage_pointer_out][0], 8)
+        }
         
-        // Assign values for Enemy C
-        enemy_C_x_rom_out = ENEMY_WAVES_X[enemy_stage_pointer_out][2]
-        enemy_C_y_rom_out = ENEMY_WAVES_Y[enemy_stage_pointer_out][2]
-        enemy_C_color_rom_out = ENEMY_COLOR[enemy_stage_pointer_out][2]
+        enemy_B_romdata_out = c{
+            8h00, // Padding upper 8 bits
+            $resize(ENEMY_WAVES_X[enemy_stage_pointer_out][1], 8),
+            $resize(ENEMY_WAVES_Y[enemy_stage_pointer_out][1], 8),
+            $resize(ENEMY_COLOR[enemy_stage_pointer_out][1], 8)
+        }
+        
+        enemy_C_romdata_out = c{
+            8h00, // Padding upper 8 bits
+            $resize(ENEMY_WAVES_X[enemy_stage_pointer_out][2], 8),
+            $resize(ENEMY_WAVES_Y[enemy_stage_pointer_out][2], 8),
+            $resize(ENEMY_COLOR[enemy_stage_pointer_out][2], 8)
+        }
     }
 }

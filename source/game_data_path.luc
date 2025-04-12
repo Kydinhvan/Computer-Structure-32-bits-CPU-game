@@ -3,7 +3,9 @@ module game_data_path #(
     ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0,
     PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
     BUFFER_SIZE = 1024 : BUFFER_SIZE > 0,
-    BULLET_SLOW_CLK_DIV ~ 24 : BULLET_SLOW_CLK_DIV > 0
+    BULLET_SLOW_CLK_DIV ~ 24 : BULLET_SLOW_CLK_DIV > 0,
+    FAST_CLOCK_DIV ~ 21 : FAST_CLOCK_DIV > 0
+    
 ) (
     // Player controls
     input redshoot_btn,
@@ -33,6 +35,7 @@ module game_data_path #(
     
     // Clock modules
     counter bullet_slow_clk(#SIZE(1), #DIV(BULLET_SLOW_CLK_DIV), .rst(rst),.clk(clk))
+    counter fast_clk(#SIZE(1), #DIV(FAST_CLOCK_DIV), .rst(rst),.clk(clk))
     
     game_cu game_cu(
         //.io_button(io_button),
@@ -77,6 +80,7 @@ module game_data_path #(
         .player_bullet_y_out(game_regfile.player_bullet_y_out),
         .bullet_active_out(game_regfile.bullet_active_out),
         .bullet_slow_clk_out(bullet_slow_clk.value),
+        .fast_clk_out(fast_clk.value),
         .enemy_A_x_out(game_regfile.enemy_A_x_out),
         .enemy_A_y_out(game_regfile.enemy_A_y_out),
         .enemy_A_color_out(game_regfile.enemy_A_color_out),
@@ -90,8 +94,6 @@ module game_data_path #(
         .clk(clk)
     )
     
-    
-    
     always {
         // bootstrap rd2 output to CU for convenient branching conditions
         game_cu.regfile_rd2 = game_regfile.rd2
@@ -99,15 +101,16 @@ module game_data_path #(
         io_segment = 8hff
         io_select = 4hf
         led = 8b0
-        io_led[0] = game_regfile.io_led[0]
-        io_led[1] = game_regfile.io_led[1]
-        io_led[2] = game_regfile.io_led[2]
-        led = game_regfile.led
+        io_led[0] = ram_mode.io_led[0]
+        io_led[1] = ram_mode.io_led[1]
+        io_led[2] = ram_mode.io_led[2]
+        led = ram_mode.led
         // ASEL mux
         case (game_cu.asel) {
             b000 : input_alu_a = game_regfile.rd1
             b001 : input_alu_a = 0
             b010 : input_alu_a = 13
+            b011 : input_alu_a = 32h30F
             default : input_alu_a = 0
         }
         
@@ -119,28 +122,20 @@ module game_data_path #(
             b011 : input_alu_b = 2
             b100 : input_alu_b = 0
             b101 : input_alu_b = 3
+            b110 : input_alu_b = 8
             default: input_alu_b = 0
         }
         
         game_alu.a = input_alu_a
         game_alu.b = input_alu_b
-        game_alu.alufn_signal = game_cu.alufn_signal
+        game_alu.alufn = game_cu.alufn_signal
+        
         // WDSEL mux for writing back to REGFILE
         case (game_cu.wdsel) {
-            b0000 : game_regfile.regfile_data = game_alu.out
-            b0001 : game_regfile.regfile_data = rom.enemy_A_x_rom_out  // Write Enemy A's X position from ROM
-            b0010 : game_regfile.regfile_data = rom.enemy_A_y_rom_out  // Write Enemy A's Y position from ROM
-            b0011 : game_regfile.regfile_data = rom.enemy_A_color_rom_out  // Write Enemy A's color from ROM
-            
-            // Write Enemy B's data
-            b0100 : game_regfile.regfile_data = rom.enemy_B_x_rom_out  // Write Enemy B's X position from ROM
-            b0101 : game_regfile.regfile_data = rom.enemy_B_y_rom_out  // Write Enemy B's Y position from ROM
-            b0110 : game_regfile.regfile_data = rom.enemy_B_color_rom_out  // Write Enemy B's color from ROM
-            
-            // Write Enemy C's data
-            b0111 : game_regfile.regfile_data = rom.enemy_C_x_rom_out  // Write Enemy C's X position from ROM
-            b1000 : game_regfile.regfile_data = rom.enemy_C_y_rom_out  // Write Enemy C's Y position from ROM
-            b1001 : game_regfile.regfile_data = rom.enemy_C_color_rom_out  // Write Enemy C's color from ROM
+            b00 : game_regfile.regfile_data = game_alu.out
+            b01 : game_regfile.regfile_data = rom.enemy_A_romdata_out  // Write Enemy A ROM
+            b10 : game_regfile.regfile_data = rom.enemy_B_romdata_out  // Write Enemy B from ROM       
+            b11 : game_regfile.regfile_data = rom.enemy_C_romdata_out  // Write Enemy C from ROM
             
             default : game_regfile.regfile_data = game_alu.out
         }

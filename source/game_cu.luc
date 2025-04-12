@@ -23,7 +23,7 @@ module game_cu #(
     output alufn_signal[6],
     output asel[3],
     output bsel[3],
-    output wdsel[4],
+    output wdsel[2],
     output regfile_wa[5],
     output regfile_ra1[5],
     output regfile_ra2[5],
@@ -32,17 +32,11 @@ module game_cu #(
 ) {
     enum GameStates {
         START,
-        SPAWN_ENEMY_A_X,
-        SPAWN_ENEMY_A_Y,
-        SPAWN_ENEMY_A_COLOR,
+        SET_ENEMY_A,
         SET_ENEMY_A_ACTIVE,
-        SPAWN_ENEMY_B_X,
-        SPAWN_ENEMY_B_Y,
-        SPAWN_ENEMY_B_COLOR,
+        SET_ENEMY_B,
         SET_ENEMY_B_ACTIVE,
-        SPAWN_ENEMY_C_X,
-        SPAWN_ENEMY_C_Y,
-        SPAWN_ENEMY_C_COLOR,
+        SET_ENEMY_C,
         SET_ENEMY_C_ACTIVE,
         INCRE_ENEMY_WAVE,
         IDLE,
@@ -55,10 +49,19 @@ module game_cu #(
         SET_BLUE_BULLET_COLOR,
         BULLET_ACTIVE,
         BULLET_X_POS,
+        BULLET_ENCODING_X,
+        BULLET_ENCODING_X_SHIFT,
+        BULLET_ENCODING_Y_SHIFT,
+        BULLET_ENCODING_COLOR,
         CHECK_BULLET_BOUNDARY,
         BULLET_MOVE, 
+        BULLET_ENCODING_Y,
+        CHECK_ENEMY_A_HIT,
+        ENEMY_A_COLLIDED,
+        ENEMY_A_DIED,
+        SET_ENEMY_A_INACTIVE,
+        BULLET_RESET_Y,
         BULLET_INACTIVE
-        
     }
     // User input
     //const CLK_FREQ = $is_sim() ? 1000 : 100000000
@@ -95,28 +98,16 @@ module game_cu #(
             case(game_fsm.q){ 
                 GameStates.START:
                     if (start_btn){
-                        game_fsm.d = GameStates.SPAWN_ENEMY_A_X
+                        game_fsm.d = GameStates.SET_ENEMY_A
                     }
                     else{
                         game_fsm.d = GameStates.START
                     } 
                 
-                GameStates.SPAWN_ENEMY_A_X:
-                    wdsel = b0001  // Write Enemy A's X position
+                GameStates.SET_ENEMY_A:
+                    wdsel = b01  // Write Enemy A's X position
                     regfile_we = 1
-                    regfile_wa = d16  // Address for Enemy A's X
-                    game_fsm.d = GameStates.SPAWN_ENEMY_A_Y
-                
-                GameStates.SPAWN_ENEMY_A_Y:
-                    wdsel = b0010  // Write Enemy A's Y position
-                    regfile_we = 1
-                    regfile_wa = d17  // Address for Enemy A's Y
-                    game_fsm.d = GameStates.SPAWN_ENEMY_A_COLOR
-                
-                GameStates.SPAWN_ENEMY_A_COLOR:
-                    wdsel = b0011  // Write Enemy A's Y position
-                    regfile_we = 1
-                    regfile_wa = d18  // Address for Enemy A's Y
+                    regfile_wa = d15  // Address for Enemy A's 
                     game_fsm.d = GameStates.SET_ENEMY_A_ACTIVE
                 
                 GameStates.SET_ENEMY_A_ACTIVE:
@@ -125,24 +116,12 @@ module game_cu #(
                     asel = b001                     // 0             
                     regfile_we = 1
                     regfile_wa = d4               // enemyA_active
-                    game_fsm.d = GameStates.SPAWN_ENEMY_B_X
+                    game_fsm.d = GameStates.SET_ENEMY_B
                 
-                GameStates.SPAWN_ENEMY_B_X:
-                    wdsel = b0100  // Write Enemy A's X position
+                GameStates.SET_ENEMY_B:
+                    wdsel = b10  // Write Enemy A's X position
                     regfile_we = 1
-                    regfile_wa = d19  // Address for Enemy B's X
-                    game_fsm.d = GameStates.SPAWN_ENEMY_B_Y
-                
-                GameStates.SPAWN_ENEMY_B_Y:
-                    wdsel = b0101  // Write Enemy A's Y position
-                    regfile_we = 1
-                    regfile_wa = d20  // Address for Enemy B's Y
-                    game_fsm.d = GameStates.SPAWN_ENEMY_B_COLOR
-                
-                GameStates.SPAWN_ENEMY_B_COLOR:
-                    wdsel = b0110  // Write Enemy A's Y position
-                    regfile_we = 1
-                    regfile_wa = d21  // Address for Enemy A's Y
+                    regfile_wa = d16  // Address for Enemy B's X
                     game_fsm.d = GameStates.SET_ENEMY_B_ACTIVE
                 
                 GameStates.SET_ENEMY_B_ACTIVE:
@@ -151,24 +130,12 @@ module game_cu #(
                     asel = b001                     // 0             
                     regfile_we = 1
                     regfile_wa = d5               // enemyB_active
-                    game_fsm.d = GameStates.SPAWN_ENEMY_C_X
+                    game_fsm.d = GameStates.SET_ENEMY_C
                 
-                GameStates.SPAWN_ENEMY_C_X:
-                    wdsel = b0111  // Write Enemy C's X position
+                GameStates.SET_ENEMY_C:
+                    wdsel = b11  // Write Enemy C's X position
                     regfile_we = 1
-                    regfile_wa = d22  // Address for Enemy C's X
-                    game_fsm.d = GameStates.SPAWN_ENEMY_C_Y
-                
-                GameStates.SPAWN_ENEMY_C_Y:
-                    wdsel = b1000  // Write Enemy C's Y position
-                    regfile_we = 1
-                    regfile_wa = d23  // Address for Enemy C's Y
-                    game_fsm.d = GameStates.SPAWN_ENEMY_C_COLOR
-                
-                GameStates.SPAWN_ENEMY_C_COLOR:
-                    wdsel = b1001  // Write Enemy A's Y position
-                    regfile_we = 1
-                    regfile_wa = d24  // Address for Enemy A's Y
+                    regfile_wa = d17  // Address for Enemy C's X
                     game_fsm.d = GameStates.SET_ENEMY_C_ACTIVE
                 
                 GameStates.SET_ENEMY_C_ACTIVE:
@@ -262,6 +229,7 @@ module game_cu #(
                     else{
                         game_fsm.d = GameStates.IDLE
                     }
+                
                 GameStates.SET_RED_BULLET_COLOR:
                     alufn_signal = b000000        // ADD
                     bsel = b001                     // constant 1
@@ -301,8 +269,48 @@ module game_cu #(
                     asel = b000                                  
                     regfile_we = 1
                     regfile_wa = d7               // bullet_x
+                    game_fsm.d = GameStates.BULLET_ENCODING_X
+                
+                GameStates.BULLET_ENCODING_X:
+                    alufn_signal = b000000        // ADD
+                    regfile_ra1 = d7              // bullet_x
+                    bsel = b100                   // const 0
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d10               // bullet encoding
+                    game_fsm.d = GameStates.BULLET_ENCODING_X_SHIFT
+                
+                GameStates.BULLET_ENCODING_X_SHIFT:
+                    alufn_signal = b100000        // shift left
+                    regfile_ra1 = d10              // bullet encoding
+                    bsel = b110                   // const 8
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d10               // bullet encoding
+                    game_fsm.d = GameStates.BULLET_ENCODING_Y_SHIFT
+                
+                GameStates.BULLET_ENCODING_Y_SHIFT:
+                    alufn_signal = b100000        // shift left
+                    regfile_ra1 = d10              // bullet encoding
+                    bsel = b110                   // const 8
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d10               // bullet encoding
+                    game_fsm.d = GameStates.BULLET_ENCODING_COLOR
+                
+                GameStates.BULLET_ENCODING_COLOR:
+                    alufn_signal = b000000        // ADD
+                    regfile_ra1 = d6              // bullet_color
+                    regfile_ra2 = d10              // bullet encoding
+                    bsel = b000                   // const 0
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d10               // bullet encoding
                     game_fsm.d = GameStates.IDLE
-
+                
+                // removed xycolor state, moved alu fn signal up before repeat
+                // if game fail means encoding xycolor causing problem
+                // this is bullet init to encode  
                 
                 GameStates.CHECK_BULLET_BOUNDARY:
                     alufn_signal = b110101        //CMPLT
@@ -322,16 +330,66 @@ module game_cu #(
                         asel = b000                                  
                         regfile_we = 1
                         regfile_wa = d8               // bullet_y
-                        game_fsm.d = GameStates.IDLE
+                        game_fsm.d = GameStates.BULLET_ENCODING_Y
                     }
-                    else{             //reset bullet _y pos       
-                        alufn_signal = b000010        //MUL
-                        bsel = b001                    //constant 1 
-                        asel = b010                     //constant 13             
-                        regfile_we = 1
-                        regfile_wa = d8               // bullet_y
-                        game_fsm.d = GameStates.BULLET_INACTIVE
+                    else{             //reset bullet _y pos         
+                        game_fsm.d = GameStates.BULLET_RESET_Y
                     }
+                
+                GameStates.BULLET_ENCODING_Y:
+                    alufn_signal = b111111        // data_encode
+                    regfile_ra1 = d10              // bullet_encode
+                    regfile_ra2 = d8              // bullet_y
+                    bsel = b000                   // read from regfile 
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d10               // bullet encoding
+                    game_fsm.d = GameStates.CHECK_ENEMY_A_HIT
+                
+                GameStates.CHECK_ENEMY_A_HIT: // return hit flag
+                    alufn_signal = b110011        // CMPEQ
+                    regfile_ra1 = d10              // bullet_encode
+                    regfile_ra2 = d15              // enemy_encode
+                    bsel = b000                   // read from regfile 
+                    asel = b000                   // read from regfile               
+                    regfile_we = 1
+                    regfile_wa = d18               // check enemy condition
+                    game_fsm.d = GameStates.ENEMY_A_COLLIDED  // go to idle then
+                
+                GameStates.ENEMY_A_COLLIDED: // check hit flag
+                    regfile_ra2 = d18
+                    if (regfile_rd2[0]){              // XYCOLOR HIT
+                        game_fsm.d = GameStates.ENEMY_A_DIED 
+                    } 
+                    else{
+                        game_fsm.d = GameStates.IDLE 
+                    }
+                
+                GameStates.ENEMY_A_DIED: // set enemy info to color to 0
+                    alufn_signal = b111101        // enemy_color_encode
+                    regfile_ra1 = d15              // enemy A                                       
+                    bsel = b100                   // 0
+                    asel = b000                   // regfile
+                    regfile_we = 1    
+                    regfile_wa = d15  // Address for Enemy A's 
+                    game_fsm.d = GameStates.SET_ENEMY_A_INACTIVE
+                
+                GameStates.SET_ENEMY_A_INACTIVE:
+                    alufn_signal = b000000        //ADD
+                    bsel = b100                    // 0
+                    asel = b001                     // 0             
+                    regfile_we = 1
+                    regfile_wa = d4               // enemyA_active
+                    game_fsm.d = GameStates.BULLET_RESET_Y
+                
+                GameStates.BULLET_RESET_Y:
+                    alufn_signal = b000010        //MUL
+                    bsel = b001                    //constant 1 
+                    asel = b010                     //constant 13             
+                    regfile_we = 1
+                    regfile_wa = d8               // bullet_y
+                    game_fsm.d = GameStates.BULLET_INACTIVE
+                
                 GameStates.BULLET_INACTIVE:
                     alufn_signal = b000010        //MUL
                     bsel = b001                    

@@ -8,14 +8,13 @@ module alchitry_top (
     output io_segment[8],   // 7-segment LEDs on IO Shield
     output io_select[4],    // Digit select on IO Shield
     input io_button[5],     // 5 buttons on IO Shield
-    input io_dip[3][8],      // DIP switches on IO Shield
     output data
 ) {
     
     sig rst                 // reset signal
     const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 for sim, 10000000 otherwise in hardware
     const BULLET_SLOW_CLK_DIV = $is_sim() ? 9 : 22 //
-    
+    const FAST_CLOCK_DIV =  $is_sim() ? 7 : 21
     .clk(clk) {
         // The reset conditioner is used to synchronize the reset signal to the FPGA
         // clock. This ensures the entire FPGA comes out of reset at the same time.
@@ -40,7 +39,8 @@ module alchitry_top (
         reset_conditioner reset_cond
         
         .rst(rst){
-            game_data_path game_data_path (#BULLET_SLOW_CLK_DIV(BULLET_SLOW_CLK_DIV))
+            game_data_path game_data_path (#BULLET_SLOW_CLK_DIV(BULLET_SLOW_CLK_DIV),  
+                #FAST_CLOCK_DIV(FAST_CLOCK_DIV))
         }
     }
     
