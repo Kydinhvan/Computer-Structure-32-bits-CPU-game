@@ -29,6 +29,7 @@ module game_regfile #(
     output bullet_active_out[32],
     output enemy_stage_pointer_out[32],
     output bullet_encode_out[32],
+    output game_end_flag_out,
     
     output enemy_A_x_out[32],
     output enemy_A_y_out[32],
@@ -50,7 +51,7 @@ module game_regfile #(
     .clk(clk) {
         .rst(rst) {
             dff enemy_C_active[32](#INIT(0))
-            dff timer[6](#INIT(15))
+            dff timer[4](#INIT(15))
             dff score[32](#INIT(0))
             dff enemy_A_active[32](#INIT(0))
             dff bullet_color[32](#INIT(0))
@@ -175,6 +176,7 @@ module game_regfile #(
         check_boundary_out = check_boundary.q
         bullet_encode_out = bullet_encode.q
         enemy_stage_pointer_out = enemy_stage_pointer.q
+        game_end_flag_out = temp_reg3.q
         
         bullet_active_out = bullet_active.q
         

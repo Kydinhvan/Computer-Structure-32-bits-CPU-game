@@ -13,7 +13,7 @@ module ram_mode #(
     input left_btn,
     input right_btn,
     input start_btn,
-    //input io_dip[3][8],      // DIP switches on IO Shield
+    input game_end_flag_out,
     
     input player_pos_x_out[32],
     input player_pos_y_out[32],
@@ -43,6 +43,8 @@ module ram_mode #(
     // white(100), blue (011), DIM green (010), DIM RED (001), OFF(000)
     const LEDCOLOR = {24h0F0F0F, 24h030000, 24h000003, 24h000300, 24h000000}
     index_reverser index_reverser(#COLUMN_DIMENSION(COLUMN_DIMENSION), #SIZE($clog2(PIXEL_COUNT)))
+    game_end_rom rom(#COLUMN_DIMENSION(COLUMN_DIMENSION))
+    
     enum States {
         START_STATE,
         GAME_STATE
@@ -66,7 +68,8 @@ module ram_mode #(
         
         ram.address = 0        // address 0 selected by default
         ram.update = 0         // do not update ram  by default
-        
+        rom.address = 0 
+
         driver.update = 0 // do not refresh by default
         driver.clear = 0 // do not clear by default
         
@@ -117,13 +120,22 @@ module ram_mode #(
         ram.enemy_C_y = enemy_C_y_out
         ram.enemy_C_color = enemy_C_color_out[2:0] // only 2-bit encoding
         
+        ram.address = index_reverser.output_address
+        driver.color = LEDCOLOR[ram.out_encoding] 
         // connect reverser to led_strip 
         index_reverser.input_address = driver.pixel_address
         
         // always read from ram, pass to driver 
+        if (~game_end_flag_out){ //game end flag is 0
+            ram.address = index_reverser.output_address
+            driver.color = LEDCOLOR[ram.out_encoding]
+        }
+        else{ 
+            rom.address = index_reverser.output_address
+            driver.color = LEDCOLOR[rom.data]
+        }
+        
         driver.update = 1
-        ram.address = index_reverser.output_address
-        driver.color = LEDCOLOR[ram.out_encoding] 
         data = driver.data
         
         // debug 

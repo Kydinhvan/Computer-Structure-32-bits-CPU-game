@@ -96,6 +96,7 @@ module game_data_path #(
         .enemy_C_x_out(game_regfile.enemy_C_x_out),
         .enemy_C_y_out(game_regfile.enemy_C_y_out),
         .enemy_C_color_out(game_regfile.enemy_C_color_out), 
+        .game_end_flag_out(game_regfile.game_end_flag_out),
         .rst(rst),
         .clk(clk)
     )

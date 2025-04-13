@@ -1,7 +1,7 @@
 {
     "project": {
         "type": "V1.3",
-        "projectName": "enemy_stage increment",
+        "projectName": "FINAL_WORKING_GAME",
         "board": "Alchitry Au",
         "sourceFiles": [
             {
@@ -129,6 +129,12 @@
                 "file": {
                     "type": "DiskFile",
                     "path": "source/enemy_color_encode.luc"
+                }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/gameend_rom.luc"
                 }
             }
         ],
