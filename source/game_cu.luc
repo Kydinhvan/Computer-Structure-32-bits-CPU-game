@@ -8,13 +8,10 @@ module game_cu #(
     input rst,  // reset
     input regfile_rd2[32],
     input bullet_slow_clk_out,
-    
-    //    input red_bullet_btn,
-    //    input green_bullet_btn,
-    //    input blue_bullet_btn,
+    input enemy_A_slow_clk_out,
+    input timer_slow_clk_out,
     input left_btn,
     input right_btn,
-    //input shoot_btn,
     input redshoot_btn,
     input greenshoot_btn,
     //input blueshoot_btn,
@@ -35,6 +32,9 @@ module game_cu #(
         START,
         SET_ENEMY_A, SET_ENEMY_A_ACTIVE, SET_ENEMY_B, SET_ENEMY_B_ACTIVE, SET_ENEMY_C, SET_ENEMY_C_ACTIVE,
         
+        // TIMER
+        CHECK_GAMETIMER,DECR_TIMER,BRANCH_GAMETIMER,GAME_END,        
+        
         // Player's Input
         IDLE,
         CHECK_RIGHT_BOUND, CHECK_LEFT_BOUND,MOVE_RIGHT, MOVE_LEFT,
@@ -51,14 +51,18 @@ module game_cu #(
         BULLET_RESET_Y, BULLET_INACTIVE,
         
         // Next Enemy Wave
-        INCR_SCORE, ADD_ENEMY_ACTIVE_AB, ADD_ENEMY_ACTIVE_ABC, CHECK_ALL_ENEMY_DEAD, INCR_WAVE,CLEAR_ENEMY_POS
+        INCR_SCORE, ADD_ENEMY_ACTIVE_AB, ADD_ENEMY_ACTIVE_ABC, CHECK_ALL_ENEMY_DEAD, INCR_WAVE,CLEAR_ENEMY_POS,
+        
+        // Special 
+        ENEMY_A_MIGHT_SWAP_COLOR
+        
     }
-    // User input
-    //const CLK_FREQ = $is_sim() ? 1000 : 100000000
-    //button_conditioner movement_button[5](.clk(5x{{clk}}), #CLK_FREQ(5x{{CLK_FREQ}}))
-    //edge_detector movement_button_edge[5](.clk(5x{{clk}}), #RISE(5x{{1}}), #FALL(5x{{0}}))
+    
     .clk(clk){
         edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
+        edge_detector enemy_A_slow_clk_edge(#RISE(1),#FALL(0))
+        edge_detector slow_clk_edge(#RISE(1),#FALL(0))
+        
         .rst(rst){
             dff game_fsm[$width(GameStates)](#INIT(GameStates.START))
         }
@@ -66,7 +70,8 @@ module game_cu #(
     
     always {
         bullet_slow_clk_edge.in = bullet_slow_clk_out
-        
+        enemy_A_slow_clk_edge.in = enemy_A_slow_clk_out
+        slow_clk_edge.in = timer_slow_clk_out
         // standard setting unless otherwise overwritten by each case 
         alufn_signal = 0
         asel = 0 
@@ -137,6 +142,8 @@ module game_cu #(
                 
                 // when enemy die, change color to background, set pos to 0,0 incre score, set inactive 
                 GameStates.IDLE: 
+                    // add ram_mode timer, clear screen when win
+                    regfile_ra2 = d13
                     if (right_btn){     // check movement update x right
                         game_fsm.d = GameStates.CHECK_RIGHT_BOUND
                     }
@@ -144,32 +151,69 @@ module game_cu #(
                         game_fsm.d = GameStates.CHECK_LEFT_BOUND 
                     }
                     else if(redshoot_btn){ // check the button color
-                        regfile_ra2 = d13
+                        //regfile_ra2 = d13
                         if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
                             game_fsm.d = GameStates.SET_RED_BULLET_COLOR
                         }
                     }
                     else if(greenshoot_btn){ // check the button color
-                        regfile_ra2 = d13
+                        //regfile_ra2 = d13
                         if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
                             game_fsm.d = GameStates.SET_GREEN_BULLET_COLOR
                         }
+                    }
+                    else if (slow_clk_edge.out){
+                        game_fsm.d = GameStates.DECR_TIMER
                     }
                     //else if(blueshoot_btn){ // check the button color
                     //    regfile_ra2 = d13
                     //    if(~regfile_rd2[0]){ // only set bullet_active when bullet NOT active
                     //        game_fsm.d = GameStates.SET_BLUE_BULLET_COLOR
                     //    }
-                    //} 
-                    else{
-                        regfile_ra2 = d13
-                        if(regfile_rd2[0] & bullet_slow_clk_edge.out){ // bullet is active and edge high
-                            game_fsm.d = GameStates.CHECK_BULLET_BOUNDARY
-                        }
-                        else{
-                            game_fsm.d =  GameStates.IDLE
-                        }
+                    //}
+                    
+                    
+                    else if(regfile_rd2[0] & bullet_slow_clk_edge.out){ // bullet is active and edge high
+                        game_fsm.d = GameStates.CHECK_BULLET_BOUNDARY
                     }
+                    else{
+                        game_fsm.d =  GameStates.IDLE
+                    }
+                
+                GameStates.CHECK_GAMETIMER:
+                    alufn_signal = b110011                         //CMPEQ
+                    regfile_ra1 = d2          //timer reg
+                    asel = b000
+                    bsel = b100                              //constant 0
+                    regfile_we = 1
+                    regfile_wa = d20                 //temp reg 
+                    game_fsm.d = GameStates.BRANCH_GAMETIMER
+                
+                GameStates.BRANCH_GAMETIMER:
+                    regfile_ra2 = d20          //temp reg
+                    if (~regfile_rd2[0]){                 //if timer is not zero
+                        game_fsm.d = GameStates.DECR_TIMER
+                    }
+                    else{
+                        game_fsm.d = GameStates.GAME_END
+                    }
+                
+                GameStates.DECR_TIMER:
+                    alufn_signal = b000001        // SUB
+                    regfile_ra1 = d2              // timer
+                    bsel = b001                    // 1
+                    asel = b000                     // regfile             
+                    regfile_we = 1
+                    regfile_wa = d2               // timer
+                    game_fsm.d = GameStates.IDLE
+                
+                GameStates.GAME_END:
+                    alufn_signal = b000000     //ADD
+                    asel = b001                //constant 1
+                    bsel = b001                //constant 0
+                    regfile_we = 1
+                    regfile_wa = d21                 //temp reg 
+                    game_fsm.d = GameStates.GAME_END
                 
                 GameStates.CHECK_RIGHT_BOUND:
                     alufn_signal = b110101        //CMPLT
@@ -272,7 +316,6 @@ module game_cu #(
                 
                 // removed xycolor state, moved alu fn signal up before repeat
                 // if game fail means encoding xycolor causing problem
-                // this is bullet init to encode  
                 
                 GameStates.CHECK_BULLET_BOUNDARY:
                     alufn_signal = b110101        //CMPLT
@@ -306,6 +349,17 @@ module game_cu #(
                     asel = b000                   // read from regfile               
                     regfile_we = 1
                     regfile_wa = d10               // bullet encoding
+                    game_fsm.d = GameStates.ENEMY_A_MIGHT_SWAP_COLOR
+                
+                GameStates.ENEMY_A_MIGHT_SWAP_COLOR:
+                    if (enemy_A_slow_clk_edge.out){
+                        alufn_signal = b111101        // enemy_color_encode
+                        regfile_ra1 = d15              // enemy A                                       
+                        bsel = b011                   // 0
+                        asel = b000                   // regfile
+                        regfile_we = 1    
+                        regfile_wa = d15  // Address for Enemy A's
+                    }
                     game_fsm.d = GameStates.CHECK_ENEMY_A_HIT
                 
                 GameStates.CHECK_ENEMY_A_HIT: // return hit flag

@@ -20,7 +20,7 @@ module data_ram #(
     input bullet_y[$clog2(ROW_DIMENSION)],
     input bullet_active,
     input address[$clog2($resize(ROW_DIMENSION*COLUMN_DIMENSION, 16))],
-    // 
+    
     //enemy stuffs
     input enemy_A_x[$clog2(COLUMN_DIMENSION)],
     input enemy_A_y[$clog2(ROW_DIMENSION)],

@@ -4,8 +4,9 @@ module game_data_path #(
     PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
     BUFFER_SIZE = 1024 : BUFFER_SIZE > 0,
     BULLET_SLOW_CLK_DIV ~ 24 : BULLET_SLOW_CLK_DIV > 0,
-    FAST_CLOCK_DIV ~ 21 : FAST_CLOCK_DIV > 0
-    
+    FAST_CLOCK_DIV ~ 21 : FAST_CLOCK_DIV > 0,
+    ENEMY_A_SLOW_CLK_DIV ~ 24 : ENEMY_A_SLOW_CLK_DIV > 0,
+    TIMER_SLOW_CLK_DIV ~ 25 : TIMER_SLOW_CLK_DIV > 0
 ) (
     // Player controls
     input redshoot_btn,
@@ -26,6 +27,8 @@ module game_data_path #(
     output io_segment[8],
     output io_select[4],
     output bullet_slow_clk_out,
+    output timer_slow_clk_out,
+    
     output data_out
 ) {
     sig input_alu_a[32]
@@ -36,6 +39,10 @@ module game_data_path #(
     // Clock modules
     counter bullet_slow_clk(#SIZE(1), #DIV(BULLET_SLOW_CLK_DIV), .rst(rst),.clk(clk))
     counter fast_clk(#SIZE(1), #DIV(FAST_CLOCK_DIV), .rst(rst),.clk(clk))
+    counter enemy_A_slow_clk(#SIZE(1), #DIV(ENEMY_A_SLOW_CLK_DIV), .rst(rst),.clk(clk))
+    counter timer_slow_clk(#SIZE(1), #DIV(TIMER_SLOW_CLK_DIV), .rst(rst),.clk(clk))
+    
+    edge_detector edge_detector_game_timer(#RISE(1), #FALL(0), .in(timer_slow_clk.value),.clk(clk))
     
     game_cu game_cu(
         //.io_button(io_button),
@@ -46,6 +53,8 @@ module game_data_path #(
         .greenshoot_btn(greenshoot_btn),
         //.blueshoot_btn(blueshoot_btn),
         .bullet_slow_clk_out(bullet_slow_clk.value),
+        .enemy_A_slow_clk_out(enemy_A_slow_clk.value),
+        .timer_slow_clk_out(timer_slow_clk.value),
         .start_btn(start_btn),
         .rst(rst),
         .clk(clk)
@@ -138,5 +147,6 @@ module game_data_path #(
         }
         
         bullet_slow_clk_out = bullet_slow_clk.value
+        timer_slow_clk_out = timer_slow_clk.value
     }
 }

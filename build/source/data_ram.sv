@@ -77,17 +77,17 @@ module data_ram #(
     logic [($clog2(DEPTH))-1:0] D_enemy_C_writer_pointer_d, D_enemy_C_writer_pointer_q = 1'h0;
     localparam BACKGROUND_COLOR = 2'h0;
     localparam PLAYER_COLOR = 3'h4;
-    localparam _MP_WIDTH_1878232244 = $clog2(ENCODING_AMOUNT);
-    localparam _MP_ENTRIES_1878232244 = DEPTH;
-    logic [((($clog2(_MP_ENTRIES_1878232244)-1) - (0) + 1))-1:0] M_ram_waddr;
-    logic [(((_MP_WIDTH_1878232244-1) - (0) + 1))-1:0] M_ram_write_data;
+    localparam _MP_WIDTH_403761173 = $clog2(ENCODING_AMOUNT);
+    localparam _MP_ENTRIES_403761173 = DEPTH;
+    logic [((($clog2(_MP_ENTRIES_403761173)-1) - (0) + 1))-1:0] M_ram_waddr;
+    logic [(((_MP_WIDTH_403761173-1) - (0) + 1))-1:0] M_ram_write_data;
     logic M_ram_write_enable;
-    logic [((($clog2(_MP_ENTRIES_1878232244)-1) - (0) + 1))-1:0] M_ram_raddr;
-    logic [(((_MP_WIDTH_1878232244-1) - (0) + 1))-1:0] M_ram_read_data;
+    logic [((($clog2(_MP_ENTRIES_403761173)-1) - (0) + 1))-1:0] M_ram_raddr;
+    logic [(((_MP_WIDTH_403761173-1) - (0) + 1))-1:0] M_ram_read_data;
     
     simple_dual_port_ram #(
-        .WIDTH(_MP_WIDTH_1878232244),
-        .ENTRIES(_MP_ENTRIES_1878232244)
+        .WIDTH(_MP_WIDTH_403761173),
+        .ENTRIES(_MP_ENTRIES_403761173)
     ) ram (
         .rclk(clk),
         .wclk(clk),

@@ -25,12 +25,6 @@
             },
             {
                 "file": {
-                    "type": "DiskFile",
-                    "path": "source/bit_reverser.luc"
-                }
-            },
-            {
-                "file": {
                     "type": "Component",
                     "path": "Miscellaneous/pipeline.luc"
                 }

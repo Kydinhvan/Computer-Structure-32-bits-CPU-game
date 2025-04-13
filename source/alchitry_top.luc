@@ -14,6 +14,9 @@ module alchitry_top (
     const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 for sim, 10000000 otherwise in hardware
     const BULLET_SLOW_CLK_DIV = $is_sim() ? 9 : 22 //
     const FAST_CLOCK_DIV =  $is_sim() ? 7 : 21
+    const ENEMY_A_SLOW_CLK_DIV = $is_sim() ? 9 : 21
+    const TIMER_SLOW_CLK_DIV = $is_sim() ? 9 : 26
+    
     .clk(clk) {
         // The reset conditioner is used to synchronize the reset signal to the FPGA
         // clock. This ensures the entire FPGA comes out of reset at the same time.
@@ -39,7 +42,8 @@ module alchitry_top (
         
         .rst(rst){
             game_data_path game_data_path (#BULLET_SLOW_CLK_DIV(BULLET_SLOW_CLK_DIV),  
-                #FAST_CLOCK_DIV(FAST_CLOCK_DIV))
+                #FAST_CLOCK_DIV(FAST_CLOCK_DIV),#ENEMY_A_SLOW_CLK_DIV(ENEMY_A_SLOW_CLK_DIV),
+            #TIMER_SLOW_CLK_DIV(TIMER_SLOW_CLK_DIV))
         }
     }
     

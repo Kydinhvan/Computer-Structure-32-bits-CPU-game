@@ -10,7 +10,9 @@ module game_data_path #(
         parameter PIXEL_COUNT = 16'h100,
         parameter BUFFER_SIZE = 11'h400,
         parameter BULLET_SLOW_CLK_DIV = 5'h18,
-        parameter FAST_CLOCK_DIV = 5'h15
+        parameter FAST_CLOCK_DIV = 5'h15,
+        parameter ENEMY_A_SLOW_CLK_DIV = 5'h18,
+        parameter TIMER_SLOW_CLK_DIV = 5'h19
     ) (
         input wire redshoot_btn,
         input wire greenshoot_btn,
@@ -24,6 +26,7 @@ module game_data_path #(
         output reg [7:0] io_segment,
         output reg [3:0] io_select,
         output reg bullet_slow_clk_out,
+        output reg timer_slow_clk_out,
         output reg data_out
     );
     logic [31:0] input_alu_a;
@@ -47,17 +50,17 @@ module game_data_path #(
     );
     
     
-    localparam _MP_SIZE_1431791380 = 1'h1;
-    localparam _MP_DIV_1431791380 = BULLET_SLOW_CLK_DIV;
-    localparam _MP_TOP_1431791380 = 1'h0;
-    localparam _MP_UP_1431791380 = 1'h1;
+    localparam _MP_SIZE_1074286108 = 1'h1;
+    localparam _MP_DIV_1074286108 = BULLET_SLOW_CLK_DIV;
+    localparam _MP_TOP_1074286108 = 1'h0;
+    localparam _MP_UP_1074286108 = 1'h1;
     logic [0:0] M_bullet_slow_clk_value;
     
     counter #(
-        .SIZE(_MP_SIZE_1431791380),
-        .DIV(_MP_DIV_1431791380),
-        .TOP(_MP_TOP_1431791380),
-        .UP(_MP_UP_1431791380)
+        .SIZE(_MP_SIZE_1074286108),
+        .DIV(_MP_DIV_1074286108),
+        .TOP(_MP_TOP_1074286108),
+        .UP(_MP_UP_1074286108)
     ) bullet_slow_clk (
         .rst(rst),
         .clk(clk),
@@ -65,17 +68,17 @@ module game_data_path #(
     );
     
     
-    localparam _MP_SIZE_1612713399 = 1'h1;
-    localparam _MP_DIV_1612713399 = FAST_CLOCK_DIV;
-    localparam _MP_TOP_1612713399 = 1'h0;
-    localparam _MP_UP_1612713399 = 1'h1;
+    localparam _MP_SIZE_304224155 = 1'h1;
+    localparam _MP_DIV_304224155 = FAST_CLOCK_DIV;
+    localparam _MP_TOP_304224155 = 1'h0;
+    localparam _MP_UP_304224155 = 1'h1;
     logic [0:0] M_fast_clk_value;
     
     counter #(
-        .SIZE(_MP_SIZE_1612713399),
-        .DIV(_MP_DIV_1612713399),
-        .TOP(_MP_TOP_1612713399),
-        .UP(_MP_UP_1612713399)
+        .SIZE(_MP_SIZE_304224155),
+        .DIV(_MP_DIV_304224155),
+        .TOP(_MP_TOP_304224155),
+        .UP(_MP_UP_304224155)
     ) fast_clk (
         .rst(rst),
         .clk(clk),
@@ -83,10 +86,60 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_1223655353 = 16'h10;
-    localparam _MP_ROW_DIMENSION_1223655353 = 16'h10;
-    localparam _MP_PIXEL_COUNT_1223655353 = 16'h100;
-    localparam _MP_BUFFER_SIZE_1223655353 = 11'h400;
+    localparam _MP_SIZE_182511876 = 1'h1;
+    localparam _MP_DIV_182511876 = ENEMY_A_SLOW_CLK_DIV;
+    localparam _MP_TOP_182511876 = 1'h0;
+    localparam _MP_UP_182511876 = 1'h1;
+    logic [0:0] M_enemy_A_slow_clk_value;
+    
+    counter #(
+        .SIZE(_MP_SIZE_182511876),
+        .DIV(_MP_DIV_182511876),
+        .TOP(_MP_TOP_182511876),
+        .UP(_MP_UP_182511876)
+    ) enemy_A_slow_clk (
+        .rst(rst),
+        .clk(clk),
+        .value(M_enemy_A_slow_clk_value)
+    );
+    
+    
+    localparam _MP_SIZE_1592471667 = 1'h1;
+    localparam _MP_DIV_1592471667 = TIMER_SLOW_CLK_DIV;
+    localparam _MP_TOP_1592471667 = 1'h0;
+    localparam _MP_UP_1592471667 = 1'h1;
+    logic [0:0] M_timer_slow_clk_value;
+    
+    counter #(
+        .SIZE(_MP_SIZE_1592471667),
+        .DIV(_MP_DIV_1592471667),
+        .TOP(_MP_TOP_1592471667),
+        .UP(_MP_UP_1592471667)
+    ) timer_slow_clk (
+        .rst(rst),
+        .clk(clk),
+        .value(M_timer_slow_clk_value)
+    );
+    
+    
+    localparam _MP_RISE_1299715221 = 1'h1;
+    localparam _MP_FALL_1299715221 = 1'h0;
+    logic M_edge_detector_game_timer_out;
+    
+    edge_detector #(
+        .RISE(_MP_RISE_1299715221),
+        .FALL(_MP_FALL_1299715221)
+    ) edge_detector_game_timer (
+        .in(M_timer_slow_clk_value),
+        .clk(clk),
+        .out(M_edge_detector_game_timer_out)
+    );
+    
+    
+    localparam _MP_COLUMN_DIMENSION_1243074017 = 16'h10;
+    localparam _MP_ROW_DIMENSION_1243074017 = 16'h10;
+    localparam _MP_PIXEL_COUNT_1243074017 = 16'h100;
+    localparam _MP_BUFFER_SIZE_1243074017 = 11'h400;
     logic [31:0] M_game_cu_regfile_rd2;
     logic [5:0] M_game_cu_alufn_signal;
     logic [2:0] M_game_cu_asel;
@@ -99,16 +152,18 @@ module game_data_path #(
     logic [3:0] M_game_cu_debug;
     
     game_cu #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1223655353),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_1223655353),
-        .PIXEL_COUNT(_MP_PIXEL_COUNT_1223655353),
-        .BUFFER_SIZE(_MP_BUFFER_SIZE_1223655353)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1243074017),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_1243074017),
+        .PIXEL_COUNT(_MP_PIXEL_COUNT_1243074017),
+        .BUFFER_SIZE(_MP_BUFFER_SIZE_1243074017)
     ) game_cu (
         .left_btn(left_btn),
         .right_btn(right_btn),
         .redshoot_btn(redshoot_btn),
         .greenshoot_btn(greenshoot_btn),
         .bullet_slow_clk_out(M_bullet_slow_clk_value),
+        .enemy_A_slow_clk_out(M_enemy_A_slow_clk_value),
+        .timer_slow_clk_out(M_timer_slow_clk_value),
         .start_btn(start_btn),
         .rst(rst),
         .clk(clk),
@@ -125,8 +180,8 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_1047218181 = 16'h10;
-    localparam _MP_ROW_DIMENSION_1047218181 = 16'h10;
+    localparam _MP_COLUMN_DIMENSION_2119939377 = 16'h10;
+    localparam _MP_ROW_DIMENSION_2119939377 = 16'h10;
     logic [31:0] M_game_regfile_regfile_data;
     logic [31:0] M_game_regfile_rd1;
     logic [31:0] M_game_regfile_rd2;
@@ -159,8 +214,8 @@ module game_data_path #(
     logic [3:0] M_game_regfile_io_select;
     
     game_regfile #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1047218181),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_1047218181)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_2119939377),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_2119939377)
     ) game_regfile (
         .we(M_game_cu_regfile_we),
         .wa(M_game_cu_regfile_wa),
@@ -201,15 +256,15 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_350206711 = 16'h10;
-    localparam _MP_ROW_DIMENSION_350206711 = 16'h10;
+    localparam _MP_COLUMN_DIMENSION_1832381443 = 16'h10;
+    localparam _MP_ROW_DIMENSION_1832381443 = 16'h10;
     logic [31:0] M_rom_enemy_A_romdata_out;
     logic [31:0] M_rom_enemy_B_romdata_out;
     logic [31:0] M_rom_enemy_C_romdata_out;
     
     enemy_rom #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_350206711),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_350206711)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_1832381443),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_1832381443)
     ) rom (
         .enemy_stage_pointer_out(M_game_regfile_enemy_stage_pointer_out),
         .enemy_A_romdata_out(M_rom_enemy_A_romdata_out),
@@ -218,10 +273,10 @@ module game_data_path #(
     );
     
     
-    localparam _MP_COLUMN_DIMENSION_2062512831 = 16'h10;
-    localparam _MP_ROW_DIMENSION_2062512831 = 16'h10;
-    localparam _MP_PIXEL_COUNT_2062512831 = 16'h100;
-    localparam _MP_BUFFER_SIZE_2062512831 = 11'h400;
+    localparam _MP_COLUMN_DIMENSION_2147033162 = 16'h10;
+    localparam _MP_ROW_DIMENSION_2147033162 = 16'h10;
+    localparam _MP_PIXEL_COUNT_2147033162 = 16'h100;
+    localparam _MP_BUFFER_SIZE_2147033162 = 11'h400;
     logic [7:0] M_ram_mode_led;
     logic [2:0][7:0] M_ram_mode_io_led;
     logic [7:0] M_ram_mode_io_segment;
@@ -229,10 +284,10 @@ module game_data_path #(
     logic M_ram_mode_data;
     
     ram_mode #(
-        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_2062512831),
-        .ROW_DIMENSION(_MP_ROW_DIMENSION_2062512831),
-        .PIXEL_COUNT(_MP_PIXEL_COUNT_2062512831),
-        .BUFFER_SIZE(_MP_BUFFER_SIZE_2062512831)
+        .COLUMN_DIMENSION(_MP_COLUMN_DIMENSION_2147033162),
+        .ROW_DIMENSION(_MP_ROW_DIMENSION_2147033162),
+        .PIXEL_COUNT(_MP_PIXEL_COUNT_2147033162),
+        .BUFFER_SIZE(_MP_BUFFER_SIZE_2147033162)
     ) ram_mode (
         .left_btn(left_btn),
         .right_btn(right_btn),
@@ -341,6 +396,7 @@ module game_data_path #(
             end
         endcase
         bullet_slow_clk_out = M_bullet_slow_clk_value;
+        timer_slow_clk_out = M_timer_slow_clk_value;
     end
     
     

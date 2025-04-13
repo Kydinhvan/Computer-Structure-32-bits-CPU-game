@@ -46,7 +46,7 @@ module game_regfile #(
         output reg [3:0] io_select
     );
     logic [31:0] D_enemy_C_active_d, D_enemy_C_active_q = 1'h0;
-    logic [31:0] D_timer_d, D_timer_q = 1'h0;
+    logic [5:0] D_timer_d, D_timer_q = 4'hf;
     logic [31:0] D_score_d, D_score_q = 1'h0;
     logic [31:0] D_enemy_A_active_d, D_enemy_A_active_q = 1'h0;
     logic [31:0] D_bullet_color_d, D_bullet_color_q = 1'h0;
@@ -333,9 +333,9 @@ module game_regfile #(
         enemy_C_y_out = D_enemy_C_data_q[4'hf:4'h8];
         enemy_C_color_out = D_enemy_C_data_q[3'h7:1'h0];
         enemy_C_active_out = D_enemy_C_active_q;
-        io_led[1'h0] = D_score_q[3'h7:1'h0];
-        io_led[1'h1] = D_enemy_stage_pointer_q[3'h7:1'h0];
-        io_led[2'h2] = D_enemy_C_active_q[3'h7:1'h0];
+        io_led[1'h0] = D_bullet_x_q;
+        io_led[1'h1] = D_temp_reg3_q[3'h7:1'h0];
+        io_led[2'h2] = D_timer_q;
         led = D_player_x_pos_q;
     end
     
@@ -343,7 +343,7 @@ module game_regfile #(
     always @(posedge (clk)) begin
         if ((rst) == 1'b1) begin
             D_enemy_C_active_q <= 1'h0;
-            D_timer_q <= 1'h0;
+            D_timer_q <= 4'hf;
             D_score_q <= 1'h0;
             D_enemy_A_active_q <= 1'h0;
             D_bullet_color_q <= 1'h0;
