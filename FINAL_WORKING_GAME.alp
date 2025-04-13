@@ -136,6 +136,12 @@
                     "type": "DiskFile",
                     "path": "source/gameend_rom.luc"
                 }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/bomb_rom.luc"
+                }
             }
         ],
         "constraintFiles": [

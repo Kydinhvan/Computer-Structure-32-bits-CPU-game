@@ -8,7 +8,6 @@
         input rst,  // reset
         input regfile_rd2[32],
         input bullet_slow_clk_out,
-        input enemy_A_slow_clk_out,
         input timer_slow_clk_out,
         input left_btn,
         input right_btn,
@@ -51,16 +50,13 @@
             BULLET_RESET_Y, BULLET_INACTIVE,
             
             // Next Enemy Wave
-            INCR_SCORE, ADD_ENEMY_ACTIVE_AB, ADD_ENEMY_ACTIVE_ABC, CHECK_ALL_ENEMY_DEAD, INCR_WAVE,CLEAR_ENEMY_POS,
-            
-            // Special 
-            ENEMY_A_MIGHT_SWAP_COLOR
+            INCR_SCORE, ADD_ENEMY_ACTIVE_AB, ADD_ENEMY_ACTIVE_ABC, CHECK_ALL_ENEMY_DEAD, INCR_WAVE,
+            CLEAR_ENEMY_POS
             
         }
         
         .clk(clk){
             edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
-            edge_detector enemy_A_slow_clk_edge(#RISE(1),#FALL(0))
             edge_detector slow_clk_edge(#RISE(1),#FALL(0))
             
             .rst(rst){
@@ -70,8 +66,8 @@
         
         always {
             bullet_slow_clk_edge.in = bullet_slow_clk_out
-            enemy_A_slow_clk_edge.in = enemy_A_slow_clk_out
             slow_clk_edge.in = timer_slow_clk_out
+        
             // standard setting unless otherwise overwritten by each case 
             alufn_signal = 0
             asel = 0 
@@ -349,17 +345,6 @@
                         asel = b000                   // read from regfile               
                         regfile_we = 1
                         regfile_wa = d10               // bullet encoding
-                        game_fsm.d = GameStates.ENEMY_A_MIGHT_SWAP_COLOR
-                    
-                    GameStates.ENEMY_A_MIGHT_SWAP_COLOR:
-                        if (enemy_A_slow_clk_edge.out){
-                            alufn_signal = b111101        // enemy_color_encode
-                            regfile_ra1 = d15              // enemy A                                       
-                            bsel = b011                   // 0
-                            asel = b000                   // regfile
-                            regfile_we = 1    
-                            regfile_wa = d15  // Address for Enemy A's
-                        }
                         game_fsm.d = GameStates.CHECK_ENEMY_A_HIT
                     
                     GameStates.CHECK_ENEMY_A_HIT: // return hit flag

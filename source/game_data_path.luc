@@ -42,8 +42,6 @@ module game_data_path #(
     counter enemy_A_slow_clk(#SIZE(1), #DIV(ENEMY_A_SLOW_CLK_DIV), .rst(rst),.clk(clk))
     counter timer_slow_clk(#SIZE(1), #DIV(TIMER_SLOW_CLK_DIV), .rst(rst),.clk(clk))
     
-    edge_detector edge_detector_game_timer(#RISE(1), #FALL(0), .in(timer_slow_clk.value),.clk(clk))
-    
     game_cu game_cu(
         //.io_button(io_button),
         .left_btn(left_btn),
@@ -53,7 +51,6 @@ module game_data_path #(
         .greenshoot_btn(greenshoot_btn),
         //.blueshoot_btn(blueshoot_btn),
         .bullet_slow_clk_out(bullet_slow_clk.value),
-        .enemy_A_slow_clk_out(enemy_A_slow_clk.value),
         .timer_slow_clk_out(timer_slow_clk.value),
         .start_btn(start_btn),
         .rst(rst),
@@ -97,6 +94,7 @@ module game_data_path #(
         .enemy_C_y_out(game_regfile.enemy_C_y_out),
         .enemy_C_color_out(game_regfile.enemy_C_color_out), 
         .game_end_flag_out(game_regfile.game_end_flag_out),
+        .timer_slow_clk_out(timer_slow_clk.value),        
         .rst(rst),
         .clk(clk)
     )

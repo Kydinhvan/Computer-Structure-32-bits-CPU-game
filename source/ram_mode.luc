@@ -14,6 +14,7 @@ module ram_mode #(
     input right_btn,
     input start_btn,
     input game_end_flag_out,
+    input timer_slow_clk_out,
     
     input player_pos_x_out[32],
     input player_pos_y_out[32],
@@ -44,6 +45,7 @@ module ram_mode #(
     const LEDCOLOR = {24h0F0F0F, 24h030000, 24h000003, 24h000300, 24h000000}
     index_reverser index_reverser(#COLUMN_DIMENSION(COLUMN_DIMENSION), #SIZE($clog2(PIXEL_COUNT)))
     game_end_rom rom(#COLUMN_DIMENSION(COLUMN_DIMENSION))
+    bomb_animation_rom rom_animate(#COLUMN_DIMENSION(COLUMN_DIMENSION))
     
     enum States {
         START_STATE,
@@ -52,11 +54,14 @@ module ram_mode #(
     }
     .clk(clk){
         edge_detector bullet_slow_clk_edge(#RISE(1),#FALL(0))
-        edge_detector fast_clk_edge(#RISE(1),#FALL(0))        
+        edge_detector fast_clk_edge(#RISE(1),#FALL(0))     
+        edge_detector slow_clk_edge(#RISE(1),#FALL(0))
+        
         .rst(rst){
             data_ram ram(#ROW_DIMENSION(ROW_DIMENSION), #ENCODING_AMOUNT(ENCODING_AMOUNT), #COLUMN_DIMENSION(COLUMN_DIMENSION))
             ws2812b_driver driver(#PIXEL_COUNT(PIXEL_COUNT)) 
             dff fsm[$width(States)](#INIT(States.START_STATE))
+            dff frame_counter[$clog2(6)]  // 6 frames
         }
     }
     
@@ -69,7 +74,7 @@ module ram_mode #(
         ram.address = 0        // address 0 selected by default
         ram.update = 0         // do not update ram  by default
         rom.address = 0 
-
+        rom_animate.address = 0
         driver.update = 0 // do not refresh by default
         driver.clear = 0 // do not clear by default
         
@@ -77,6 +82,7 @@ module ram_mode #(
         // the matrix we use has top RIGHT as 0,0
         bullet_slow_clk_edge.in = bullet_slow_clk_out
         fast_clk_edge.in = fast_clk_out
+        slow_clk_edge.in = timer_slow_clk_out
         
         // update the ram whenever player moves or io_button[0] is pressed
         
@@ -131,10 +137,24 @@ module ram_mode #(
             driver.color = LEDCOLOR[ram.out_encoding]
         }
         else{ 
-            rom.address = index_reverser.output_address
-            driver.color = LEDCOLOR[rom.data]
+            rom_animate.address = index_reverser.output_address
+            case(frame_counter.q){
+                3d0: driver.color = LEDCOLOR[rom_animate.frame0]
+                3d1: driver.color = LEDCOLOR[rom_animate.frame1]
+                3d2: driver.color = LEDCOLOR[rom_animate.frame2]
+                3d3: driver.color = LEDCOLOR[rom_animate.frame3]
+                3d4: driver.color = LEDCOLOR[rom_animate.frame4]
+                3d5: driver.color = LEDCOLOR[rom_animate.frame5]
+                default: driver.color = LEDCOLOR[rom_animate.frame5]
+            }
         }
-        
+        // Increment animation frame
+        if (game_end_flag_out & slow_clk_edge.out){
+            frame_counter.d = frame_counter.q + 1
+        }
+        else{
+            frame_counter.d = frame_counter.q
+        }
         driver.update = 1
         data = driver.data
         
