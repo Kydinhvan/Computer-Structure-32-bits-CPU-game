@@ -85,12 +85,14 @@ OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_verilog -library xil_defaultlib -sv {
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/alu.sv
+  C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/bin_to_dec.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/bomb_animation_rom.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/bullet_encode.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/bullet_moving_encode.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/button_conditioner.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/counter.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/data_ram.sv
+  C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/decoder.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/edge_detector.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/enemy_color_encode.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/enemy_rom.sv
@@ -99,9 +101,11 @@ read_verilog -library xil_defaultlib -sv {
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/game_end_rom.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/game_regfile.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/index_reverser.sv
+  C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/multi_seven_seg.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/pipeline.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/ram_mode.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/reset_conditioner.sv
+  C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/seven_seg.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/ws2812b_driver.sv
   C:/Users/User/FINAL_WORKING_GAME/build/vivado/FINAL_WORKING_GAME.srcs/sources_1/imports/source/alchitry_top.sv
 }

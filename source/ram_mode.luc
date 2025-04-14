@@ -57,6 +57,9 @@ module ram_mode #(
         edge_detector fast_clk_edge(#RISE(1),#FALL(0))     
         edge_detector slow_clk_edge(#RISE(1),#FALL(0))
         
+        edge_detector left_btn_edge(#RISE(0),#FALL(1))
+        edge_detector right_btn_edge(#RISE(0),#FALL(1))
+        
         .rst(rst){
             data_ram ram(#ROW_DIMENSION(ROW_DIMENSION), #ENCODING_AMOUNT(ENCODING_AMOUNT), #COLUMN_DIMENSION(COLUMN_DIMENSION))
             ws2812b_driver driver(#PIXEL_COUNT(PIXEL_COUNT)) 
@@ -83,6 +86,8 @@ module ram_mode #(
         bullet_slow_clk_edge.in = bullet_slow_clk_out
         fast_clk_edge.in = fast_clk_out
         slow_clk_edge.in = timer_slow_clk_out
+        left_btn_edge.in = left_btn
+        right_btn_edge.in = right_btn
         
         // update the ram whenever player moves or io_button[0] is pressed
         
@@ -97,7 +102,8 @@ module ram_mode #(
                 driver.clear = 1
             
             States.GAME_STATE:
-                if (left_btn| right_btn | (bullet_active_out & bullet_slow_clk_edge.out) |fast_clk_edge.out){
+                if (left_btn_edge.out | right_btn_edge.out | 
+                   (bullet_active_out & bullet_slow_clk_edge.out) |fast_clk_edge.out){
                     ram.update = 1
                 }
                 fsm.d = States.GAME_STATE

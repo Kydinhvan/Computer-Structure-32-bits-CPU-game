@@ -11,13 +11,11 @@ module game_data_path #(
     // Player controls
     input redshoot_btn,
     input greenshoot_btn,
-    //input blueshoot_btn,
+    input blueshoot_btn,
     input left_btn,
     input right_btn,
-    //input shoot_btn,
     input start_btn,
     
-    //input start_button,
     input clk,  // clock
     input rst,  // reset
     
@@ -28,6 +26,8 @@ module game_data_path #(
     output io_select[4],
     output bullet_slow_clk_out,
     output timer_slow_clk_out,
+    output score_seven_seg_out[32],
+    output timer_seven_seg_out[32],
     
     output data_out
 ) {
@@ -43,13 +43,11 @@ module game_data_path #(
     counter timer_slow_clk(#SIZE(1), #DIV(TIMER_SLOW_CLK_DIV), .rst(rst),.clk(clk))
     
     game_cu game_cu(
-        //.io_button(io_button),
         .left_btn(left_btn),
         .right_btn(right_btn),
-        //.shoot_btn(shoot_btn),
         .redshoot_btn(redshoot_btn),
         .greenshoot_btn(greenshoot_btn),
-        //.blueshoot_btn(blueshoot_btn),
+        .blueshoot_btn(blueshoot_btn),
         .bullet_slow_clk_out(bullet_slow_clk.value),
         .timer_slow_clk_out(timer_slow_clk.value),
         .start_btn(start_btn),
@@ -147,5 +145,7 @@ module game_data_path #(
         
         bullet_slow_clk_out = bullet_slow_clk.value
         timer_slow_clk_out = timer_slow_clk.value
+        score_seven_seg_out = game_regfile.score_out
+        timer_seven_seg_out = game_regfile.timer_out
     }
 }

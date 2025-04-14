@@ -8,6 +8,11 @@ module alchitry_top (
     output io_segment[8],   // 7-segment LEDs on IO Shield
     output io_select[4],    // Digit select on IO Shield
     input io_button[5],     // 5 buttons on IO Shield
+    input left_btn,
+    input right_btn,
+    input red_btn,
+    input green_btn,
+    input blue_btn,
     output data
 ) {
     sig rst                 // reset signal
@@ -16,36 +21,37 @@ module alchitry_top (
     const FAST_CLOCK_DIV =  $is_sim() ? 7 : 21
     const ENEMY_A_SLOW_CLK_DIV = $is_sim() ? 9 : 21
     const TIMER_SLOW_CLK_DIV = $is_sim() ? 9 : 26
+    const SEVEN_SEG_DIV = $is_sim() ? 16 : 16
     
     .clk(clk) {
         // The reset conditioner is used to synchronize the reset signal to the FPGA
         // clock. This ensures the entire FPGA comes out of reset at the same time.
-        edge_detector edge_dt_btn_left (#RISE(1), #FALL(0))
-        edge_detector edge_dt_btn_right(#RISE(1), #FALL(0))
-        // edge_detector edge_dt_btn_shoot(#RISE(1), #FALL(0))
-        edge_detector edge_dt_btn_redshoot (#RISE(1), #FALL(0))
-        edge_detector edge_dt_btn_greenshoot(#RISE(1), #FALL(0))
-        //edge_detector edge_dt_btn_blueshoot(#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_left (#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_right(#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_red_shoot (#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_green_shoot(#RISE(0), #FALL(1))
+        edge_detector edge_dt_btn_blue_shoot(#RISE(0), #FALL(1))
         
         edge_detector edge_dt_btn_start_btn(#RISE(1), #FALL(0))
         
         
         button_conditioner btn_cond_left(#CLK_FREQ(CLK_FREQ))
         button_conditioner btn_cond_right(#CLK_FREQ(CLK_FREQ)) 
-        //button_conditioner btn_cond_shoot(#CLK_FREQ(CLK_FREQ)) 
-        button_conditioner btn_cond_redshoot(#CLK_FREQ(CLK_FREQ))
-        button_conditioner btn_cond_greenshoot(#CLK_FREQ(CLK_FREQ)) 
-        //button_conditioner btn_cond_blueshoot(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_red_shoot(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_green_shoot(#CLK_FREQ(CLK_FREQ)) 
+        button_conditioner btn_cond_blue_shoot(#CLK_FREQ(CLK_FREQ))
         
         button_conditioner btn_cond_start_btn(#CLK_FREQ(CLK_FREQ)) 
         reset_conditioner reset_cond
         
         .rst(rst){
+            multi_seven_seg seg(#DIV(SEVEN_SEG_DIV))            
             game_data_path game_data_path (#BULLET_SLOW_CLK_DIV(BULLET_SLOW_CLK_DIV),  
                 #FAST_CLOCK_DIV(FAST_CLOCK_DIV),#ENEMY_A_SLOW_CLK_DIV(ENEMY_A_SLOW_CLK_DIV),
-            #TIMER_SLOW_CLK_DIV(TIMER_SLOW_CLK_DIV))
+                #TIMER_SLOW_CLK_DIV(TIMER_SLOW_CLK_DIV))
         }
     }
+    bin_to_dec bin_to_dec_converter(#DIGITS(4))
     
     always {
         reset_cond.in = ~rst_n  // input raw inverted reset signal
@@ -61,27 +67,41 @@ module alchitry_top (
         data = 0
         io_led = 3x{{8h00}}
         
-        btn_cond_left.in = io_button[3]
-        btn_cond_right.in = io_button[4]
+        //update 7segments
+        seg.values = 4x{{4b0}} // default to all 0 first
+        //bin_to_dec_converter.value = game_data_path.timer_seven_seg_out
+        bin_to_dec_converter.value = b111100
+        
+        seg.values = bin_to_dec_converter.digits
+        
+        io_segment = seg.seg
+        io_select = ~seg.sel
+        
+        //btn_cond_left.in = io_button[3]
+        //btn_cond_right.in = io_button[4]
         //btn_cond_shoot.in = io_button[1]
-        btn_cond_redshoot.in = io_button[1]
-        btn_cond_greenshoot.in = io_button[0]
+        //btn_cond_redshoot.in = io_button[1]
+        //btn_cond_greenshoot.in = io_button[0]
         btn_cond_start_btn.in = io_button[2]
+        
+        btn_cond_left.in = left_btn
+        btn_cond_right.in = right_btn
+        btn_cond_red_shoot.in = red_btn
+        btn_cond_green_shoot.in = green_btn
+        btn_cond_blue_shoot.in = blue_btn
         
         edge_dt_btn_left.in = btn_cond_left.out
         edge_dt_btn_right.in = btn_cond_right.out
-        //edge_dt_btn_shoot.in = btn_cond_shoot.out
-        edge_dt_btn_redshoot.in = btn_cond_redshoot.out
-        edge_dt_btn_greenshoot.in = btn_cond_greenshoot.out
-        //edge_dt_btn_blueshoot.in = btn_cond_blueshoot.out
+        edge_dt_btn_red_shoot.in = btn_cond_red_shoot.out
+        edge_dt_btn_green_shoot.in = btn_cond_green_shoot.out
+        edge_dt_btn_blue_shoot.in = btn_cond_blue_shoot.out
         edge_dt_btn_start_btn.in = btn_cond_start_btn.out
         
         game_data_path.left_btn = edge_dt_btn_left.out
         game_data_path.right_btn = edge_dt_btn_right.out
-        //game_data_path.shoot_btn = edge_dt_btn_shoot.out
-        game_data_path.redshoot_btn = edge_dt_btn_redshoot.out
-        game_data_path.greenshoot_btn = edge_dt_btn_greenshoot.out
-        //game_data_path.blueshoot_btn = edge_dt_btn_blueshoot.out
+        game_data_path.redshoot_btn = edge_dt_btn_red_shoot.out
+        game_data_path.greenshoot_btn = edge_dt_btn_green_shoot.out
+        game_data_path.blueshoot_btn = edge_dt_btn_blue_shoot.out
         game_data_path.start_btn = edge_dt_btn_start_btn.out
         
         io_segment = game_data_path.io_segment

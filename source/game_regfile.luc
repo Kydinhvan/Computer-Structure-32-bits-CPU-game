@@ -51,7 +51,7 @@ module game_regfile #(
     .clk(clk) {
         .rst(rst) {
             dff enemy_C_active[32](#INIT(0))
-            dff timer[4](#INIT(15))
+            dff timer[6](#INIT(60))
             dff score[32](#INIT(0))
             dff enemy_A_active[32](#INIT(0))
             dff bullet_color[32](#INIT(0))
@@ -196,7 +196,7 @@ module game_regfile #(
         enemy_C_active_out = enemy_C_active.q
         
         io_led[0] = bullet_x.q
-        io_led[1] = temp_reg3.q[7:0]
+        io_led[1] = score.q[7:0]
         io_led[2] = timer.q
         led = player_x_pos.q
     }

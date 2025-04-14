@@ -168,3 +168,18 @@ set_property IOSTANDARD LVCMOS33 [get_ports {io_segment[7]}]
 set_property PACKAGE_PIN M1 [get_ports {data}]
 set_property IOSTANDARD LVCMOS33 [get_ports {data}]
 
+set_property PACKAGE_PIN T4 [get_ports {left_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {left_btn}]
+
+set_property PACKAGE_PIN R3 [get_ports {right_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {right_btn}]
+
+set_property PACKAGE_PIN L5 [get_ports {red_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {red_btn}]
+
+set_property PACKAGE_PIN P5 [get_ports {green_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {green_btn}]
+
+set_property PACKAGE_PIN M5 [get_ports {blue_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {blue_btn}]
+

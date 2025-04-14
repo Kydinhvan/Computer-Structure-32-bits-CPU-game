@@ -14,12 +14,12 @@ module game_cu #(
         input wire rst,
         input wire [31:0] regfile_rd2,
         input wire bullet_slow_clk_out,
-        input wire enemy_A_slow_clk_out,
         input wire timer_slow_clk_out,
         input wire left_btn,
         input wire right_btn,
         input wire redshoot_btn,
         input wire greenshoot_btn,
+        input wire blueshoot_btn,
         input wire start_btn,
         output reg [5:0] alufn_signal,
         output reg [2:0] asel,
@@ -76,15 +76,14 @@ module game_cu #(
     localparam E_GameStates_CHECK_ALL_ENEMY_DEAD = 6'h2a;
     localparam E_GameStates_INCR_WAVE = 6'h2b;
     localparam E_GameStates_CLEAR_ENEMY_POS = 6'h2c;
-    localparam E_GameStates_ENEMY_A_MIGHT_SWAP_COLOR = 6'h2d;
-    localparam _MP_RISE_672744127 = 1'h1;
-    localparam _MP_FALL_672744127 = 1'h0;
+    localparam _MP_RISE_1763531315 = 1'h1;
+    localparam _MP_FALL_1763531315 = 1'h0;
     logic M_bullet_slow_clk_edge_in;
     logic M_bullet_slow_clk_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_672744127),
-        .FALL(_MP_FALL_672744127)
+        .RISE(_MP_RISE_1763531315),
+        .FALL(_MP_FALL_1763531315)
     ) bullet_slow_clk_edge (
         .clk(clk),
         .in(M_bullet_slow_clk_edge_in),
@@ -92,29 +91,14 @@ module game_cu #(
     );
     
     
-    localparam _MP_RISE_681497263 = 1'h1;
-    localparam _MP_FALL_681497263 = 1'h0;
-    logic M_enemy_A_slow_clk_edge_in;
-    logic M_enemy_A_slow_clk_edge_out;
-    
-    edge_detector #(
-        .RISE(_MP_RISE_681497263),
-        .FALL(_MP_FALL_681497263)
-    ) enemy_A_slow_clk_edge (
-        .clk(clk),
-        .in(M_enemy_A_slow_clk_edge_in),
-        .out(M_enemy_A_slow_clk_edge_out)
-    );
-    
-    
-    localparam _MP_RISE_39852806 = 1'h1;
-    localparam _MP_FALL_39852806 = 1'h0;
+    localparam _MP_RISE_1720827483 = 1'h1;
+    localparam _MP_FALL_1720827483 = 1'h0;
     logic M_slow_clk_edge_in;
     logic M_slow_clk_edge_out;
     
     edge_detector #(
-        .RISE(_MP_RISE_39852806),
-        .FALL(_MP_FALL_39852806)
+        .RISE(_MP_RISE_1720827483),
+        .FALL(_MP_FALL_1720827483)
     ) slow_clk_edge (
         .clk(clk),
         .in(M_slow_clk_edge_in),
@@ -127,7 +111,6 @@ module game_cu #(
         D_game_fsm_d = D_game_fsm_q;
         
         M_bullet_slow_clk_edge_in = bullet_slow_clk_out;
-        M_enemy_A_slow_clk_edge_in = enemy_A_slow_clk_out;
         M_slow_clk_edge_in = timer_slow_clk_out;
         alufn_signal = 1'h0;
         asel = 1'h0;
@@ -213,10 +196,17 @@ module game_cu #(
                                     if (M_slow_clk_edge_out) begin
                                         D_game_fsm_d = 6'h7;
                                     end else begin
-                                        if (regfile_rd2[1'h0] & M_bullet_slow_clk_edge_out) begin
-                                            D_game_fsm_d = 6'h16;
+                                        if (blueshoot_btn) begin
+                                            regfile_ra2 = 4'hd;
+                                            if (~regfile_rd2[1'h0]) begin
+                                                D_game_fsm_d = 6'h12;
+                                            end
                                         end else begin
-                                            D_game_fsm_d = 6'hb;
+                                            if (regfile_rd2[1'h0] & M_bullet_slow_clk_edge_out) begin
+                                                D_game_fsm_d = 6'h16;
+                                            end else begin
+                                                D_game_fsm_d = 6'hb;
+                                            end
                                         end
                                     end
                                 end
@@ -386,17 +376,6 @@ module game_cu #(
                     asel = 3'h0;
                     regfile_we = 1'h1;
                     regfile_wa = 4'ha;
-                    D_game_fsm_d = 6'h2d;
-                end
-                6'h2d: begin
-                    if (M_enemy_A_slow_clk_edge_out) begin
-                        alufn_signal = 6'h3d;
-                        regfile_ra1 = 4'hf;
-                        bsel = 3'h3;
-                        asel = 3'h0;
-                        regfile_we = 1'h1;
-                        regfile_wa = 4'hf;
-                    end
                     D_game_fsm_d = 6'h19;
                 end
                 6'h19: begin
