@@ -9,14 +9,22 @@ module alu (
 ) {
     
     sig out_sig[32]
+    adder adder
+    multiplier multiplier
     bullet_moving_encode bullet_moving_encode
     bullet_encode bullet_encode
     enemy_color_encode enemy_color_encode
     always {
+        adder.a = a
+        adder.b = b
+        adder.alufn_signal = alufn
+        z = adder.z
+        v = adder.v
+        n = adder.n
         
-        z = 0
-        v = 0
-        n = 0
+        multiplier.a = a
+        multiplier.b = b 
+        
         bullet_moving_encode.a = a
         bullet_moving_encode.b = b
         bullet_encode.a = a
@@ -25,35 +33,15 @@ module alu (
         enemy_color_encode.b = b
         case(alufn){
             6h00: // ADD
-                out_sig = a + b
-                z = ~|out_sig
-                v = (a[31] & (b[31] ^ alufn[0]) & !out_sig[31]) | (!a[31] & !(b[31] ^ alufn[0]) & out_sig[31]) 
-                n = out_sig[31]
+                out_sig = adder.out
             6h01: // SUB
-                out_sig = a - b
-                z = ~|out_sig
-                v = (a[31] & (b[31] ^ alufn[0]) & !out_sig[31]) | (!a[31] & !(b[31] ^ alufn[0]) & out_sig[31]) 
-                n = out_sig[31]   
+                out_sig = adder.out
             6h02: // MUL
-                out_sig = a * b 
-            6h18: // BITWISE AND
-                out_sig = a & b 
-            6h1E: // BITWISE OR 
-                out_sig = a | b 
-            6h16: // BITWISE XOR
-                out_sig = a ^ b 
-            6h1A: // "A"
-                out_sig = a
-            6h20: // SHL 
-                out_sig = a << b[4:0]
-            6h21: // SHR 
-                out_sig = a >> b[4:0]
-            6h23: // SRA 
-                out_sig = a >>> b[4:0]
+                out_sig = multiplier.mul
             6h33: // CMPEQ 
-                out_sig = a == b 
+                out_sig = a == b
             6h35: // CMPLT 
-                out_sig = a < b 
+                out_sig = a < b
             6h37: // CMPLE
                 out_sig = a <= b
             6b111101:
@@ -62,16 +50,10 @@ module alu (
                 out_sig = bullet_encode.out
             6b111111:
                 out_sig = bullet_moving_encode.out
-            
             default:
                 out_sig = 0
-            
         }
-        
-        
         out = out_sig
-        
-        
         
     }
 }

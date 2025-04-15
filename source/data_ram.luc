@@ -1,9 +1,3 @@
-/*
-This module demonstrates the purpose of using a ram, e.g: to update player location
-Player is rendered as a square (4 dots)
-Each time a new x,y player position is given, we need to store it and also erase the old one 
-Now also supports shooting: A single bullet is tracked, moves up automatically, and gets rendered
-*/
 module data_ram #(
     ROW_DIMENSION = 8 : ROW_DIMENSION > 0,
     COLUMN_DIMENSION = 8 : COLUMN_DIMENSION > 0,
@@ -25,14 +19,17 @@ module data_ram #(
     input enemy_A_x[$clog2(COLUMN_DIMENSION)],
     input enemy_A_y[$clog2(ROW_DIMENSION)],
     input enemy_A_color[3],
+    input enemy_A_active,
     
     input enemy_B_x[$clog2(COLUMN_DIMENSION)],
     input enemy_B_y[$clog2(ROW_DIMENSION)],
     input enemy_B_color[3],
+    input enemy_B_active,
     
     input enemy_C_x[$clog2(COLUMN_DIMENSION)],
     input enemy_C_y[$clog2(ROW_DIMENSION)],
-    input enemy_C_color[3],    
+    input enemy_C_color[3], 
+    input enemy_C_active,   
     
     output out_encoding[3],
     output ready,
@@ -175,31 +172,51 @@ module data_ram #(
             States.WRITE_ENEMY_A_PIXEL2:
                 ram.write_enable = b1
                 ram.waddr = enemy_A_writer_pointer.q - COLUMN_DIMENSION
-                ram.write_data = enemy_A_color
+                if (enemy_A_active){
+                    ram.write_data = enemy_A_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_A_PIXEL3
             
             States.WRITE_ENEMY_A_PIXEL3:
                 ram.write_enable = b1
                 ram.waddr = enemy_A_writer_pointer.q + 1
-                ram.write_data = enemy_A_color
+                if (enemy_A_active){
+                    ram.write_data = enemy_A_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_A_PIXEL4
             
             States.WRITE_ENEMY_A_PIXEL4:
                 ram.write_enable = b1
                 ram.waddr = enemy_A_writer_pointer.q - 1
-                ram.write_data = enemy_A_color
+                if (enemy_A_active){
+                    ram.write_data = enemy_A_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_A_PIXEL5
             
             States.WRITE_ENEMY_A_PIXEL5:
                 ram.write_enable = b1
                 ram.waddr = enemy_A_writer_pointer.q + 1 + COLUMN_DIMENSION
-                ram.write_data = enemy_A_color
+                if (enemy_A_active){
+                    ram.write_data = enemy_A_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_A_PIXEL6
             
             States.WRITE_ENEMY_A_PIXEL6:
                 ram.write_enable = b1
                 ram.waddr = enemy_A_writer_pointer.q + COLUMN_DIMENSION - 1
-                ram.write_data = enemy_A_color
+                if (enemy_A_active){
+                    ram.write_data = enemy_A_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_B_PIXEL1
                 enemy_A_writer_pointer.d = enemy_A_writer_pointer.q
             
@@ -212,31 +229,51 @@ module data_ram #(
             States.WRITE_ENEMY_B_PIXEL2:
                 ram.write_enable = b1
                 ram.waddr = enemy_B_writer_pointer.q - COLUMN_DIMENSION
-                ram.write_data = enemy_B_color
+                if (enemy_B_active){
+                    ram.write_data = enemy_B_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_B_PIXEL3
             
             States.WRITE_ENEMY_B_PIXEL3:
                 ram.write_enable = b1
                 ram.waddr = enemy_B_writer_pointer.q + 1
-                ram.write_data = enemy_B_color
+                if (enemy_B_active){
+                    ram.write_data = enemy_B_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_B_PIXEL4
             
             States.WRITE_ENEMY_B_PIXEL4:
                 ram.write_enable = b1
                 ram.waddr = enemy_B_writer_pointer.q - 1
-                ram.write_data = enemy_B_color
+                if (enemy_B_active){
+                    ram.write_data = enemy_B_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_B_PIXEL5
             
             States.WRITE_ENEMY_B_PIXEL5:
                 ram.write_enable = b1
                 ram.waddr = enemy_B_writer_pointer.q + 1 + COLUMN_DIMENSION
-                ram.write_data = enemy_B_color
+                if (enemy_B_active){
+                    ram.write_data = enemy_B_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_B_PIXEL6
             
             States.WRITE_ENEMY_B_PIXEL6:
                 ram.write_enable = b1
                 ram.waddr = enemy_B_writer_pointer.q + COLUMN_DIMENSION - 1
-                ram.write_data = enemy_B_color
+                if (enemy_B_active){
+                    ram.write_data = enemy_B_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_C_PIXEL1
                 enemy_B_writer_pointer.d = enemy_B_writer_pointer.q
             
@@ -249,31 +286,51 @@ module data_ram #(
             States.WRITE_ENEMY_C_PIXEL2:
                 ram.write_enable = b1
                 ram.waddr = enemy_C_writer_pointer.q - COLUMN_DIMENSION
-                ram.write_data = enemy_C_color
+                if (enemy_C_active){
+                    ram.write_data = enemy_C_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_C_PIXEL3
             
             States.WRITE_ENEMY_C_PIXEL3:
                 ram.write_enable = b1
                 ram.waddr = enemy_C_writer_pointer.q + 1
-                ram.write_data = enemy_C_color
+                if (enemy_C_active){
+                    ram.write_data = enemy_C_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_C_PIXEL4
             
             States.WRITE_ENEMY_C_PIXEL4:
                 ram.write_enable = b1
                 ram.waddr = enemy_C_writer_pointer.q - 1
-                ram.write_data = enemy_C_color
+                if (enemy_C_active){
+                    ram.write_data = enemy_C_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_C_PIXEL5
             
             States.WRITE_ENEMY_C_PIXEL5:
                 ram.write_enable = b1
                 ram.waddr = enemy_C_writer_pointer.q + 1 + COLUMN_DIMENSION
-                ram.write_data = enemy_C_color
+                if (enemy_C_active){
+                    ram.write_data = enemy_C_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 fsm.d = States.WRITE_ENEMY_C_PIXEL6
             
             States.WRITE_ENEMY_C_PIXEL6:
                 ram.write_enable = b1
                 ram.waddr = enemy_C_writer_pointer.q + COLUMN_DIMENSION - 1
-                ram.write_data = enemy_C_color
+                if (enemy_C_active){
+                    ram.write_data = enemy_C_color + d4
+                } else {
+                    ram.write_data = b000
+                }
                 enemy_C_writer_pointer.d = enemy_C_writer_pointer.q
                 if (bullet_active && bullet_written.q) {
                     bullet_writer_pointer.d = bullet_last_addr.q

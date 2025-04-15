@@ -109,14 +109,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {io_led[2][6]}]
 set_property PACKAGE_PIN L2 [get_ports {io_led[2][7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {io_led[2][7]}]
 
-set_property PACKAGE_PIN C6 [get_ports {io_button[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {io_button[0]}]
-set_property PULLDOWN true [get_ports {io_button[0]}]
-
-set_property PACKAGE_PIN C7 [get_ports {io_button[1]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {io_button[1]}]
-set_property PULLDOWN true [get_ports {io_button[1]}]
-
 set_property PACKAGE_PIN A7 [get_ports {io_button[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {io_button[2]}]
 set_property PULLDOWN true [get_ports {io_button[2]}]
@@ -129,6 +121,34 @@ set_property PACKAGE_PIN P11 [get_ports {io_button[4]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {io_button[4]}]
 set_property PULLDOWN true [get_ports {io_button[4]}]
 
+set_property PACKAGE_PIN R3 [get_ports {left_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {left_btn}]
+set_property PULLDOWN true [get_ports {left_btn}]
+
+set_property PACKAGE_PIN T4 [get_ports {right_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {right_btn}]
+set_property PULLDOWN true [get_ports {right_btn}]
+
+set_property PACKAGE_PIN L5 [get_ports {red_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {red_btn}]
+set_property PULLDOWN true [get_ports {red_btn}]
+
+set_property PACKAGE_PIN M5 [get_ports {green_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {green_btn}]
+set_property PULLDOWN true [get_ports {green_btn}]
+
+set_property PACKAGE_PIN P5 [get_ports {blue_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {blue_btn}]
+set_property PULLDOWN true [get_ports {blue_btn}]
+
+set_property PACKAGE_PIN C7 [get_ports {start_btn}]
+set_property IOSTANDARD LVCMOS33 [get_ports {start_btn}]
+set_property PULLDOWN true [get_ports {start_btn}]
+
+set_property PACKAGE_PIN P14 [get_ports {external_reset_button}]
+set_property IOSTANDARD LVCMOS33 [get_ports {external_reset_button}]
+set_property PULLDOWN true [get_ports {external_reset_button}]
+
 set_property PACKAGE_PIN P8 [get_ports {io_select[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {io_select[0]}]
 
@@ -138,7 +158,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports {io_select[1]}]
 set_property PACKAGE_PIN N9 [get_ports {io_select[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {io_select[2]}]
 
-set_property PACKAGE_PIN P9 [get_ports {io_select[3]}]
+set_property PACKAGE_PIN R15 [get_ports {io_select[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {io_select[3]}]
 
 set_property PACKAGE_PIN T5 [get_ports {io_segment[0]}]
@@ -167,19 +187,4 @@ set_property IOSTANDARD LVCMOS33 [get_ports {io_segment[7]}]
 
 set_property PACKAGE_PIN M1 [get_ports {data}]
 set_property IOSTANDARD LVCMOS33 [get_ports {data}]
-
-set_property PACKAGE_PIN T4 [get_ports {left_btn}]
-set_property IOSTANDARD LVCMOS33 [get_ports {left_btn}]
-
-set_property PACKAGE_PIN R3 [get_ports {right_btn}]
-set_property IOSTANDARD LVCMOS33 [get_ports {right_btn}]
-
-set_property PACKAGE_PIN L5 [get_ports {red_btn}]
-set_property IOSTANDARD LVCMOS33 [get_ports {red_btn}]
-
-set_property PACKAGE_PIN P5 [get_ports {green_btn}]
-set_property IOSTANDARD LVCMOS33 [get_ports {green_btn}]
-
-set_property PACKAGE_PIN M5 [get_ports {blue_btn}]
-set_property IOSTANDARD LVCMOS33 [get_ports {blue_btn}]
 

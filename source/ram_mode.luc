@@ -2,7 +2,7 @@ module ram_mode #(
     COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
     ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0,
     PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
-    BUFFER_SIZE = 1024 : BUFFER_SIZE > 0 // ensure this value is larger than PIXEL_COUNT * $clog2(COLOR_ENCODING)
+    BUFFER_SIZE = 2048 : BUFFER_SIZE > 0 // ensure this value is larger than PIXEL_COUNT * $clog2(COLOR_ENCODING)
 ) (
     input clk,              // 100MHz clock
     input rst,            // reset button (active low)
@@ -29,23 +29,28 @@ module ram_mode #(
     input enemy_A_x_out[8],
     input enemy_A_y_out[8],
     input enemy_A_color_out[8],
+    input enemy_A_active,
     
     input enemy_B_x_out[8],
     input enemy_B_y_out[8],
     input enemy_B_color_out[8],
+    input enemy_B_active,
+    
     
     input enemy_C_x_out[8],
     input enemy_C_y_out[8],
     input enemy_C_color_out[8],
+    input enemy_C_active,
     
     output data
 ) {
-    const ENCODING_AMOUNT = 5 
+    const ENCODING_AMOUNT = 8 
+    // light blue(111), light green(110), light red(101),
     // white(100), blue (011), DIM green (010), DIM RED (001), OFF(000)
-    const LEDCOLOR = {24h0F0F0F, 24h030000, 24h000003, 24h000300, 24h000000}
+    const LEDCOLOR = {24h0F030A, 24h08080E, 24h080F08, 24h0F0F0F, 24h030000, 24h000003, 24h000300, 24h000000}
     index_reverser index_reverser(#COLUMN_DIMENSION(COLUMN_DIMENSION), #SIZE($clog2(PIXEL_COUNT)))
-    game_end_rom rom(#COLUMN_DIMENSION(COLUMN_DIMENSION))
-    bomb_animation_rom rom_animate(#COLUMN_DIMENSION(COLUMN_DIMENSION))
+    game_end_rom rom_animate(#COLUMN_DIMENSION(COLUMN_DIMENSION))
+    init_rom start_screen(#COLUMN_DIMENSION(COLUMN_DIMENSION))
     
     enum States {
         START_STATE,
@@ -64,7 +69,8 @@ module ram_mode #(
             data_ram ram(#ROW_DIMENSION(ROW_DIMENSION), #ENCODING_AMOUNT(ENCODING_AMOUNT), #COLUMN_DIMENSION(COLUMN_DIMENSION))
             ws2812b_driver driver(#PIXEL_COUNT(PIXEL_COUNT)) 
             dff fsm[$width(States)](#INIT(States.START_STATE))
-            dff frame_counter[$clog2(6)]  // 6 frames
+            dff frame_counter[$clog2(3)]  // 3 frames
+            
         }
     }
     
@@ -76,8 +82,8 @@ module ram_mode #(
         
         ram.address = 0        // address 0 selected by default
         ram.update = 0         // do not update ram  by default
-        rom.address = 0 
         rom_animate.address = 0
+        start_screen.address = 0
         driver.update = 0 // do not refresh by default
         driver.clear = 0 // do not clear by default
         
@@ -97,13 +103,18 @@ module ram_mode #(
                     fsm.d = States.GAME_STATE
                 }
                 else{
+                    start_screen.address = index_reverser.output_address
+                    driver.color = LEDCOLOR[start_screen.frame]
+                    if (slow_clk_edge.out){
+                        ram.update = 1
+                    }
                     fsm.d = States.START_STATE
                 }
                 driver.clear = 1
             
             States.GAME_STATE:
                 if (left_btn_edge.out | right_btn_edge.out | 
-                   (bullet_active_out & bullet_slow_clk_edge.out) |fast_clk_edge.out){
+                    (bullet_active_out & bullet_slow_clk_edge.out) |fast_clk_edge.out){
                     ram.update = 1
                 }
                 fsm.d = States.GAME_STATE
@@ -123,19 +134,23 @@ module ram_mode #(
         ram.enemy_A_x = enemy_A_x_out
         ram.enemy_A_y = enemy_A_y_out
         ram.enemy_A_color = enemy_A_color_out[2:0] // only 2-bit encoding for color
+        ram.enemy_A_active = enemy_A_active
         
         ram.enemy_B_x = enemy_B_x_out
         ram.enemy_B_y = enemy_B_y_out
         ram.enemy_B_color = enemy_B_color_out[2:0] // only 2-bit encoding
+        ram.enemy_B_active = enemy_B_active
         
         ram.enemy_C_x = enemy_C_x_out
         ram.enemy_C_y = enemy_C_y_out
         ram.enemy_C_color = enemy_C_color_out[2:0] // only 2-bit encoding
+        ram.enemy_C_active = enemy_C_active
         
         ram.address = index_reverser.output_address
         driver.color = LEDCOLOR[ram.out_encoding] 
         // connect reverser to led_strip 
         index_reverser.input_address = driver.pixel_address
+        
         
         // always read from ram, pass to driver 
         if (~game_end_flag_out){ //game end flag is 0
@@ -145,13 +160,10 @@ module ram_mode #(
         else{ 
             rom_animate.address = index_reverser.output_address
             case(frame_counter.q){
-                3d0: driver.color = LEDCOLOR[rom_animate.frame0]
-                3d1: driver.color = LEDCOLOR[rom_animate.frame1]
-                3d2: driver.color = LEDCOLOR[rom_animate.frame2]
-                3d3: driver.color = LEDCOLOR[rom_animate.frame3]
-                3d4: driver.color = LEDCOLOR[rom_animate.frame4]
-                3d5: driver.color = LEDCOLOR[rom_animate.frame5]
-                default: driver.color = LEDCOLOR[rom_animate.frame5]
+                2d0: driver.color = LEDCOLOR[rom_animate.frame0]
+                2d1: driver.color = LEDCOLOR[rom_animate.frame1]
+                2d2: driver.color = LEDCOLOR[rom_animate.frame2]
+                default: driver.color = LEDCOLOR[rom_animate.frame2]
             }
         }
         // Increment animation frame
@@ -161,6 +173,7 @@ module ram_mode #(
         else{
             frame_counter.d = frame_counter.q
         }
+        
         driver.update = 1
         data = driver.data
         
