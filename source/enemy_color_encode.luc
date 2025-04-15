@@ -1,0 +1,9 @@
+module enemy_color_encode (
+    input a[32],
+    input b[32],
+    output out[32]
+) {
+    always {
+        out = c{b00000000,a[23:8],b[7:0]}
+    }
+}

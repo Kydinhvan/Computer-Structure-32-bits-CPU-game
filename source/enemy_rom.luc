@@ -1,0 +1,105 @@
+module enemy_rom #(
+    COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
+    ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0
+)(
+    input enemy_stage_pointer_out[3],
+    output enemy_A_romdata_out[32],
+    output enemy_B_romdata_out[32],
+    output enemy_C_romdata_out[32]
+){
+    
+    // Each wave: list of x,y positions and colors
+const ENEMY_WAVES_X = {
+    {4d2,  4d7,  4d12},  // Wave 19
+    {4d1,  4d8,  4d14},
+    {4d3,  4d9,  4d13},
+    {4d4,  4d7,  4d10},
+    {4d2,  4d6,  4d12},
+    {4d4,  4d6,  4d8},
+    {4d2,  4d5,  4d9},
+    {4d3,  4d8,  4d13},
+    {4d1,  4d7,  4d14},  // Wave 11
+    {4d2,  4d6,  4d11},
+    {4d4,  4d9,  4d13},
+    {4d2,  4d4,  4d7},
+    {4d3,  4d8,  4d12},
+    {4d2,  4d5,  4d10},
+    {4d1,  4d3,  4d14},
+    {4d4,  4d8,  4d12},
+    {4d2,  4d6,  4d9},
+    {4d3,  4d5,  4d11},
+    {4d4,  4d9,  4d13},
+    {4d2,  4d7,  4d12}   // Wave 0
+}
+
+const ENEMY_WAVES_Y = {
+    {4d3,  4d3,  4d3},   // Wave 19
+    {4d7,  4d6,  4d8},
+    {4d8,  4d5,  4d6},
+    {4d6,  4d9,  4d5},
+    {4d2,  4d5,  4d6},
+    {4d6,  4d2,  4d4},
+    {4d3,  4d6,  4d3},
+    {4d9,  4d7,  4d3},
+    {4d4,  4d7,  4d8},   // Wave 11
+    {4d6,  4d4,  4d7},
+    {4d3,  4d5,  4d9},
+    {4d7,  4d3,  4d6},
+    {4d8,  4d6,  4d9},
+    {4d5,  4d2,  4d6},
+    {4d3,  4d4,  4d7},
+    {4d8,  4d5,  4d6},
+    {4d7,  4d3,  4d5},
+    {4d6,  4d4,  4d7},
+    {4d9,  4d5,  4d6},
+    {4d3,  4d3,  4d3}    // Wave 0
+}
+
+const ENEMY_COLOR = {
+    {b001, b010, b011},   // Wave 19
+    {b010, b001, b010},
+    {b001, b001, b001},
+    {b010, b010, b010},
+    {b011, b011, b011},
+    {b001, b010, b001},
+    {b010, b001, b010},
+    {b011, b001, b011},
+    {b001, b011, b010},   // Wave 11
+    {b010, b010, b001},
+    {b011, b011, b001},
+    {b001, b010, b011},
+    {b010, b001, b010},
+    {b011, b001, b001},
+    {b010, b010, b010},
+    {b001, b011, b010},
+    {b011, b010, b011},
+    {b001, b010, b001},
+    {b011, b011, b011},
+    {b001, b001, b001}    // Wave 0
+}
+
+    
+    always{
+        
+        enemy_A_romdata_out = c{
+            b00000000, // Padding upper 8 bits
+            $resize(ENEMY_WAVES_X[enemy_stage_pointer_out][0], 8),
+            $resize(ENEMY_WAVES_Y[enemy_stage_pointer_out][0], 8),
+            $resize(ENEMY_COLOR[enemy_stage_pointer_out][0], 8)
+        }
+        
+        enemy_B_romdata_out = c{
+            8h00, // Padding upper 8 bits
+            $resize(ENEMY_WAVES_X[enemy_stage_pointer_out][1], 8),
+            $resize(ENEMY_WAVES_Y[enemy_stage_pointer_out][1], 8),
+            $resize(ENEMY_COLOR[enemy_stage_pointer_out][1], 8)
+        }
+        
+        enemy_C_romdata_out = c{
+            8h00, // Padding upper 8 bits
+            $resize(ENEMY_WAVES_X[enemy_stage_pointer_out][2], 8),
+            $resize(ENEMY_WAVES_Y[enemy_stage_pointer_out][2], 8),
+            $resize(ENEMY_COLOR[enemy_stage_pointer_out][2], 8)
+        }
+    }
+}

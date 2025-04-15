@@ -1,0 +1,107 @@
+module alchitry_top (
+    input clk,              // 100MHz clock
+    input rst_n,            // reset button (active low)
+    output led[8],          // 8 user controllable LEDs
+    input usb_rx,           // USB->Serial input
+    output usb_tx,          // USB->Serial output
+    output io_led[3][8],    // LEDs on IO Shield
+    output io_segment[8],   // 7-segment LEDs on IO Shield
+    output io_select[4],    // Digit select on IO Shield
+    input io_button[5],     // 5 buttons on IO Shield
+    input left_btn,
+    input right_btn,
+    input red_btn,
+    input green_btn,
+    input blue_btn,
+    input start_btn,
+    input external_reset_button,
+    output data
+) {
+    sig rst                 // reset signal
+    const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 for sim, 10000000 otherwise in hardware
+    const BULLET_SLOW_CLK_DIV = $is_sim() ? 9 : 22 //
+    const FAST_CLOCK_DIV =  $is_sim() ? 7 : 21
+    const ENEMY_A_SLOW_CLK_DIV = $is_sim() ? 9 : 21
+    const TIMER_SLOW_CLK_DIV = $is_sim() ? 9 : 26
+    
+    .clk(clk) {
+        // The reset conditioner is used to synchronize the reset signal to the FPGA
+        // clock. This ensures the entire FPGA comes out of reset at the same time.
+        edge_detector edge_dt_btn_left (#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_right(#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_red_shoot (#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_green_shoot(#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_blue_shoot(#RISE(1), #FALL(0))
+        edge_detector edge_dt_btn_start_btn(#RISE(0), #FALL(1))
+        
+        button_conditioner btn_cond_left(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_right(#CLK_FREQ(CLK_FREQ)) 
+        button_conditioner btn_cond_red_shoot(#CLK_FREQ(CLK_FREQ))
+        button_conditioner btn_cond_green_shoot(#CLK_FREQ(CLK_FREQ)) 
+        button_conditioner btn_cond_blue_shoot(#CLK_FREQ(CLK_FREQ))
+        
+        button_conditioner btn_cond_start_btn(#CLK_FREQ(CLK_FREQ)) 
+        reset_conditioner reset_cond
+        reset_conditioner external_reset_cond        
+        
+        .rst(rst){
+            multi_seven_seg seg (#DIV($is_sim() ? 1 : 16), #DIGITS(4))
+            game_data_path game_data_path (#BULLET_SLOW_CLK_DIV(BULLET_SLOW_CLK_DIV),  
+                #FAST_CLOCK_DIV(FAST_CLOCK_DIV),#ENEMY_A_SLOW_CLK_DIV(ENEMY_A_SLOW_CLK_DIV),
+                #TIMER_SLOW_CLK_DIV(TIMER_SLOW_CLK_DIV))
+        }
+    }
+    bin_to_dec bin_to_dec_converte0(#DIGITS(2))
+    bin_to_dec bin_to_dec_converte1(#DIGITS(2))    
+    always {
+        reset_cond.in = ~rst_n // input raw inverted reset signal
+        external_reset_cond.in = external_reset_button // input raw external reset signal
+        rst = reset_cond.out | external_reset_cond.out   // conditioned reset
+        led = 8h00              // turn LEDs off
+        
+        usb_tx = usb_rx         // echo the serial data
+        
+        io_segment = 8hF
+        io_select = 4hF
+        led = 8h00
+        data = 0
+        io_led = 3x{{8h00}}
+        
+        //update 7segments
+        bin_to_dec_converte0.value = game_data_path.timer_seven_seg_out[6:0]
+        bin_to_dec_converte1.value = game_data_path.score_seven_seg_out[6:0]        
+        
+        seg.values = c{bin_to_dec_converte1.digits,bin_to_dec_converte0.digits}
+        
+        io_segment = seg.seg // connect segments to the driver
+        io_select = ~seg.sel  // connect digit select to the driver
+        
+        
+        btn_cond_start_btn.in = start_btn | io_button[2]
+        
+        btn_cond_left.in = left_btn 
+        btn_cond_right.in = right_btn
+        btn_cond_red_shoot.in = red_btn
+        btn_cond_green_shoot.in = green_btn
+        btn_cond_blue_shoot.in = blue_btn
+        
+        edge_dt_btn_left.in = btn_cond_left.out
+        edge_dt_btn_right.in = btn_cond_right.out
+        edge_dt_btn_red_shoot.in = btn_cond_red_shoot.out
+        edge_dt_btn_green_shoot.in = btn_cond_green_shoot.out
+        edge_dt_btn_blue_shoot.in = btn_cond_blue_shoot.out
+        edge_dt_btn_start_btn.in = btn_cond_start_btn.out
+        
+        game_data_path.left_btn = edge_dt_btn_left.out
+        game_data_path.right_btn = edge_dt_btn_right.out
+        game_data_path.redshoot_btn = edge_dt_btn_red_shoot.out
+        game_data_path.greenshoot_btn = edge_dt_btn_green_shoot.out
+        game_data_path.blueshoot_btn = edge_dt_btn_blue_shoot.out
+        game_data_path.start_btn = edge_dt_btn_start_btn.out
+        
+        data = game_data_path.data_out
+        led = game_data_path.led
+        io_led = game_data_path.io_led 
+        
+    }
+}

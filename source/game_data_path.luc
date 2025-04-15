@@ -1,0 +1,154 @@
+module game_data_path #(
+    COLUMN_DIMENSION = 16d16 : COLUMN_DIMENSION > 0,
+    ROW_DIMENSION = 16d16 : ROW_DIMENSION > 0,
+    PIXEL_COUNT = 16d256 : PIXEL_COUNT > 0,
+    BUFFER_SIZE = 1024 : BUFFER_SIZE > 0,
+    BULLET_SLOW_CLK_DIV ~ 24 : BULLET_SLOW_CLK_DIV > 0,
+    FAST_CLOCK_DIV ~ 21 : FAST_CLOCK_DIV > 0,
+    ENEMY_A_SLOW_CLK_DIV ~ 24 : ENEMY_A_SLOW_CLK_DIV > 0,
+    TIMER_SLOW_CLK_DIV ~ 25 : TIMER_SLOW_CLK_DIV > 0
+) (
+    // Player controls
+    input redshoot_btn,
+    input greenshoot_btn,
+    input blueshoot_btn,
+    input left_btn,
+    input right_btn,
+    input start_btn,
+    
+    input clk,  // clock
+    input rst,  // reset
+    
+    // Outputs
+    output led[8],
+    output io_led[3][8],
+    output io_segment[8],
+    output io_select[4],
+    output bullet_slow_clk_out,
+    output timer_slow_clk_out,
+    output score_seven_seg_out[32],
+    output timer_seven_seg_out[32],
+    
+    output data_out
+) {
+    sig input_alu_a[32]
+    sig input_alu_b[32]
+    
+    alu game_alu
+    
+    // Clock modules
+    counter bullet_slow_clk(#SIZE(1), #DIV(BULLET_SLOW_CLK_DIV), .rst(rst),.clk(clk))
+    counter fast_clk(#SIZE(1), #DIV(FAST_CLOCK_DIV), .rst(rst),.clk(clk))
+    counter enemy_A_slow_clk(#SIZE(1), #DIV(ENEMY_A_SLOW_CLK_DIV), .rst(rst),.clk(clk))
+    counter timer_slow_clk(#SIZE(1), #DIV(TIMER_SLOW_CLK_DIV), .rst(rst),.clk(clk))
+    
+    game_cu game_cu(
+        .left_btn(left_btn),
+        .right_btn(right_btn),
+        .redshoot_btn(redshoot_btn),
+        .greenshoot_btn(greenshoot_btn),
+        .blueshoot_btn(blueshoot_btn),
+        .bullet_slow_clk_out(bullet_slow_clk.value),
+        .timer_slow_clk_out(timer_slow_clk.value),
+        .start_btn(start_btn),
+        .rst(rst),
+        .clk(clk)
+    )
+    
+    // REGFILE
+    game_regfile game_regfile(
+        .we(game_cu.regfile_we),
+        .wa(game_cu.regfile_wa),
+        .ra1(game_cu.regfile_ra1),
+        .ra2(game_cu.regfile_ra2),
+        .rst(rst),
+        .clk(clk)
+    )
+    
+    // display
+    enemy_rom rom(
+        .enemy_stage_pointer_out(game_regfile.enemy_stage_pointer_out)
+    ) 
+    
+    ram_mode ram_mode(
+        .left_btn(left_btn),
+        .right_btn(right_btn),
+        .start_btn(start_btn),
+        .player_pos_x_out(game_regfile.player_pos_x_out),
+        .player_pos_y_out(game_regfile.player_pos_y_out),
+        .bullet_colour_out(game_regfile.bullet_color_out),
+        .player_bullet_x_out(game_regfile.player_bullet_x_out),
+        .player_bullet_y_out(game_regfile.player_bullet_y_out),
+        .bullet_active_out(game_regfile.bullet_active_out),
+        .bullet_slow_clk_out(bullet_slow_clk.value),
+        .fast_clk_out(fast_clk.value),
+        .enemy_A_x_out(game_regfile.enemy_A_x_out),        
+        .enemy_A_y_out(game_regfile.enemy_A_y_out),
+        .enemy_A_color_out(game_regfile.enemy_A_color_out),
+        .enemy_A_active(game_regfile.enemy_A_active_out),
+        .enemy_B_x_out(game_regfile.enemy_B_x_out),
+        .enemy_B_y_out(game_regfile.enemy_B_y_out),
+        .enemy_B_color_out(game_regfile.enemy_B_color_out),
+        .enemy_B_active(game_regfile.enemy_B_active_out),
+        .enemy_C_x_out(game_regfile.enemy_C_x_out),
+        .enemy_C_y_out(game_regfile.enemy_C_y_out),
+        .enemy_C_color_out(game_regfile.enemy_C_color_out),
+        .enemy_C_active(game_regfile.enemy_C_active_out), 
+        .game_end_flag_out(game_regfile.game_end_flag_out),
+        .timer_slow_clk_out(timer_slow_clk.value),        
+        .rst(rst),
+        .clk(clk)
+    )
+    
+    always {
+        // bootstrap rd2 output to CU for convenient branching conditions
+        game_cu.regfile_rd2 = game_regfile.rd2
+        data_out = ram_mode.data
+        io_segment = 8hff
+        io_select = 4hf
+        led = 8b0
+        io_led[0] = game_regfile.io_led[0]
+        io_led[1] = game_regfile.io_led[1]
+        io_led[2] = game_regfile.io_led[2]
+        led = game_regfile.led
+        // ASEL mux
+        case (game_cu.asel) {
+            b000 : input_alu_a = game_regfile.rd1
+            b001 : input_alu_a = 0
+            b010 : input_alu_a = 13
+            b011 : input_alu_a = 32h30F
+            default : input_alu_a = 0
+        }
+        
+        // BSEL mux
+        case (game_cu.bsel) {
+            b000 : input_alu_b = game_regfile.rd2
+            b001 : input_alu_b = 1
+            b010 : input_alu_b = 14
+            b011 : input_alu_b = 2
+            b100 : input_alu_b = 0
+            b101 : input_alu_b = 3
+            b110 : input_alu_b = 8
+            default: input_alu_b = 0
+        }
+        
+        game_alu.a = input_alu_a
+        game_alu.b = input_alu_b
+        game_alu.alufn = game_cu.alufn_signal
+        
+        // WDSEL mux for writing back to REGFILE
+        case (game_cu.wdsel) {
+            b00 : game_regfile.regfile_data = game_alu.out
+            b01 : game_regfile.regfile_data = rom.enemy_A_romdata_out  // Write Enemy A ROM
+            b10 : game_regfile.regfile_data = rom.enemy_B_romdata_out  // Write Enemy B from ROM       
+            b11 : game_regfile.regfile_data = rom.enemy_C_romdata_out  // Write Enemy C from ROM
+            
+            default : game_regfile.regfile_data = game_alu.out
+        }
+        
+        bullet_slow_clk_out = bullet_slow_clk.value
+        timer_slow_clk_out = timer_slow_clk.value
+        score_seven_seg_out = game_regfile.score_out
+        timer_seven_seg_out = game_regfile.timer_out
+    }
+}

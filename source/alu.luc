@@ -1,0 +1,59 @@
+module alu (
+    input a[32],
+    input b[32],
+    input alufn[6],
+    output out[32],
+    output z,
+    output v,
+    output n
+) {
+    
+    sig out_sig[32]
+    adder adder
+    multiplier multiplier
+    bullet_moving_encode bullet_moving_encode
+    bullet_encode bullet_encode
+    enemy_color_encode enemy_color_encode
+    always {
+        adder.a = a
+        adder.b = b
+        adder.alufn_signal = alufn
+        z = adder.z
+        v = adder.v
+        n = adder.n
+        
+        multiplier.a = a
+        multiplier.b = b 
+        
+        bullet_moving_encode.a = a
+        bullet_moving_encode.b = b
+        bullet_encode.a = a
+        bullet_encode.b = b
+        enemy_color_encode.a = a
+        enemy_color_encode.b = b
+        case(alufn){
+            6h00: // ADD
+                out_sig = adder.out
+            6h01: // SUB
+                out_sig = adder.out
+            6h02: // MUL
+                out_sig = multiplier.mul
+            6h33: // CMPEQ 
+                out_sig = a == b
+            6h35: // CMPLT 
+                out_sig = a < b
+            6h37: // CMPLE
+                out_sig = a <= b
+            6b111101:
+                out_sig = enemy_color_encode.out
+            6b111110: // data_encode
+                out_sig = bullet_encode.out
+            6b111111:
+                out_sig = bullet_moving_encode.out
+            default:
+                out_sig = 0
+        }
+        out = out_sig
+        
+    }
+}
